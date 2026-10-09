@@ -128,7 +128,14 @@ details.resid summary{cursor:pointer;color:var(--acc);font-weight:600}
 .bout .mblock{grid-template-columns:repeat(3,minmax(0,1fr))}
 .rate h2{font-size:16px;margin:6px 0}
 .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
-@media (max-width:900px){.xgrid,.rgrid{grid-template-columns:1fr}}
+/* MESH screen (v1.2.0) */
+.xgrid.three{grid-template-columns:1fr 1fr 1fr}
+.mesh .mtab{flex:none;width:100%}
+.mesh .mtab td.lab{white-space:normal}
+.warn .w.err{color:var(--hot)}
+.warn .w:not(.err):not(.okline){color:#9a5b00}
+.warn .w.okline{color:#2e7d32}
+@media (max-width:900px){.xgrid,.rgrid,.xgrid.three{grid-template-columns:1fr}}
 #printdoc{display:none}
 @media print{
  @page{margin:12mm}
@@ -170,12 +177,12 @@ button.small{padding:3px 9px;font-size:12px}
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.1.0</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.2.0</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.1.0, build 2026-10-02. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.1.0';</script>
+<!-- Web Gear Calc v1.2.0, build 2026-10-09. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.2.0';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -585,6 +592,191 @@ const G = {inv, ainv, deg, D2R, DEPTH, SPLINE_DEPTH, SPLINE_DED_CONST, SPLINE_PA
   generateExternal, tifShaperExt, extSpur, extShaperExact, intSpur, genInternal, helical, helicalShaperExact,
   worm, rack, spline, splineMinorFromPoint, splineWidthFromPoint, dpFromBp, fmt};
 if (typeof module !== 'undefined' && module.exports) module.exports = G; else root.GCP3 = G;
+})(typeof window !== 'undefined' ? window : this);
+
+</script>
+<script>
+/* Web Gear Calc - two-gear mesh (new in v1.2.0): external spur / external helical pair on parallel axes.
+   Plain script: global GCP3MESH in the browser, module.exports in node. Lengths in inches, angles in degrees at the API.
+   Method (all in the transverse plane for helical gears):
+     tight mesh (zero backlash):  inv a_w = (N1 psi1 + N2 psi2 - pi) / (N1 + N2),  psi = s_t / d + inv a_t
+       (GCP3 generateExternal; equal to KHK eq. inv a_w = 2 tan a (x1+x2)/(z1+z2) + inv a when s is written with x)
+     center:  a_w = (db1 + db2) / (2 cos a_w)
+     backlash at a center a >= a_w:  a' = acos((rb1+rb2)/a),  jt (operating pitch circle) = dw1' (N1+N2)/N1 (inv a' - inv a_w)
+       jbt = jt cos a' (along the line of action),  jn = jbt cos(beta_b),  jt(ref) = jbt / cos a_t  (KHK Table 6.1 convention)
+     contact ratio:  e_a = (sqrt(ra1^2-rb1^2) + sqrt(ra2^2-rb2^2) - a sin a') / (pi m_t cos a_t)  (KHK eq. 10.9),
+                     e_b = b sin(beta) / (pi m_n)  (KHK eq. 10.21a),  e_g = e_a + e_b
+     start of active profile on gear 1 (mate tip on the line of action): L1 = a sin a' - sqrt(ra2^2 - rb2^2), r_SAP1 = sqrt(rb1^2 + L1^2);
+       L1 <= 0: the mate tip passes the interference point (involute interference); r_SAP1 < r_TIF1: tip-to-fillet interference. */
+(function (root) {
+'use strict';
+const G = (typeof module !== 'undefined' && module.exports) ? require('./gcp3.js') : root.GCP3;
+const {PI, sin, cos, tan, atan, acos, sqrt, abs, max, min} = Math;
+const D2R = PI / 180, R2D = 180 / PI;
+const inv = a => tan(a) - a;
+function ainv(x) { if (!(x > 0)) return NaN; let a = Math.cbrt(3 * x); for (let i = 0; i < 80; i++) { const f = inv(a) - x; a -= f / tan(a) ** 2; if (abs(f) < 1e-16) break; } return a; }
+
+const THK = {tn: 'Normal circular thickness (at the reference diameter)', tt: 'Transverse circular thickness', mow: 'Measurement over pins / balls',
+  span: 'Span over k teeth (normal)', x: 'Profile shift coefficient x (normal)'};
+
+// one gear: {N, od, root, thk: {kind, v, d (pin/ball size), k (span teeth)}, tif (optional, overrides), gen (optional)}
+function gearSetup(g, B, i) {
+  const {Pt, mn, phin, phit, beta, bb} = B, N = g.N, d = N / Pt, db = d * cos(phit), errs = [];
+  const t = g.thk || {}, v = t.v;
+  let st = null;
+  if (!(N >= 3)) errs.push(`Gear ${i}: enter the number of teeth.`);
+  else if (!(v > -1e9 && isFinite(v))) errs.push(`Gear ${i}: enter the tooth thickness (any one way).`);
+  else if (t.kind === 'tn') st = v / cos(beta);
+  else if (t.kind === 'tt') st = v;
+  else if (t.kind === 'x') st = (PI / 2 + 2 * v * tan(phin)) * mn / cos(beta);
+  else if (t.kind === 'mow') { if (!(t.d > 0)) errs.push(`Gear ${i}: enter the pin / ball size.`); else st = G.tFromMowExt(N, d, db, phit, v, t.d, bb); }
+  else if (t.kind === 'span') {
+    if (!(t.k >= 2)) errs.push(`Gear ${i}: enter the number of teeth spanned (k).`);
+    else { const pbn = PI * mn * cos(phin), nbt = v - (t.k - 1) * pbn; st = d * (nbt / cos(bb) / db - inv(phit)); }
+  } else errs.push(`Gear ${i}: choose how the tooth thickness is given.`);
+  if (st !== null && !(st > 0 && isFinite(st))) { errs.push(`Gear ${i}: the tooth thickness works out non-positive; check the thickness input.`); st = null; }
+  const out = {i, N, d, db, rb: db / 2, st, errs};
+  if (st === null || errs.length) return out;
+  out.sn = st * cos(beta);
+  out.x = (out.sn / mn - PI / 2) / (2 * tan(phin));             // equivalent normal profile shift coefficient
+  out.psi = st / d + inv(phit);
+  if (!(g.od > 0)) errs.push(`Gear ${i}: enter the outside diameter.`);
+  if (!(g.root > 0)) errs.push(`Gear ${i}: enter the root diameter.`);
+  if (errs.length) return out;
+  out.od = g.od; out.root = g.root; out.ra = g.od / 2; out.rf = g.root / 2;
+  if (out.ra <= out.rb) errs.push(`Gear ${i}: the outside diameter is not above the base circle (D ${fx(2 * out.rb)}).`);
+  if (out.rf >= out.ra) errs.push(`Gear ${i}: the root diameter must be smaller than the outside diameter.`);
+  // tooth thickness at the tip (transverse arc) and normal
+  if (out.ra > out.rb) {
+    const aa = acos(out.rb / out.ra); out.sat = g.od * (out.psi - inv(aa));
+    const ba = atan(tan(beta) * g.od / d); out.san = out.sat * cos(ba);
+    out.apex = out.psi > 0 ? out.db / cos(ainv(out.psi)) : null;
+  }
+  // TIF: given (e.g. carried from the EXT / HELIX screen) or the rack (hob) TIF with the produced dedendum, sharp tip, transverse plane
+  out.dedP = (d - g.root) / 2;
+  if (g.tif > 0) { out.tif = g.tif; out.tifSrc = 'given'; out.undercut = !!g.U; }
+  else if (out.dedP > 0) {
+    const T = G.tifRack(N, Pt, phit, st, out.dedP);
+    out.undercut = T.U; out.tif = T.D; out.tifSrc = 'hob';
+    if (out.tif === null) out.tif = out.db;                   // fully undercut / no crossing found: use the base circle
+  } else { out.tif = out.db; out.tifSrc = 'base'; out.undercut = false; }
+  out.rtif = out.tif / 2;
+  return out;
+}
+const FX0 = x => (+x).toFixed(5);
+let FX = FX0;                 // length formatter for messages (the UI passes inp.fmtLen to show mm when metric)
+const fx = x => FX(x);
+
+function atCenter(B, g1, g2, a, a0, aw0) {
+  const rbs = g1.rb + g2.rb, r = {a};
+  if (!(a > rbs)) { r.err = `Center distance must exceed the sum of the base radii (${fx(rbs)}).`; return r; }
+  const aw = acos(rbs / a); r.aw = aw * R2D; r.invaw = inv(aw);
+  r.dw1 = g1.db / cos(aw); r.dw2 = g2.db / cos(aw);
+  r.jt = r.dw1 * (g1.N + g2.N) / g1.N * (inv(aw) - inv(aw0));      // circumferential backlash on the operating pitch circle
+  r.jbt = r.jt * cos(aw); r.jn = r.jbt * cos(B.bb); r.jtRef = r.jbt / cos(B.phit);
+  r.jth1 = r.jt / (r.dw1 / 2) * R2D; r.jth2 = r.jt / (r.dw2 / 2) * R2D;   // angular backlash (deg) of each gear with the other held
+  r.da = a - a0;
+  r.c12 = a - g1.ra - g2.rf; r.c21 = a - g2.ra - g1.rf;              // tip of 1 to root of 2, tip of 2 to root of 1
+  const ga1 = sqrt(g1.ra ** 2 - g1.rb ** 2), ga2 = sqrt(g2.ra ** 2 - g2.rb ** 2), Lt = a * sin(aw);
+  r.Lt = Lt; r.path = ga1 + ga2 - Lt; r.ea = r.path / B.pbt;
+  r.L1 = Lt - ga2; r.L2 = Lt - ga1;                                    // SAP positions from the tangent points T1, T2
+  r.sap1 = r.L1 > 0 ? 2 * sqrt(g1.rb ** 2 + r.L1 ** 2) : null; r.sap2 = r.L2 > 0 ? 2 * sqrt(g2.rb ** 2 + r.L2 ** 2) : null;
+  r.invol1 = r.L1 <= 0; r.invol2 = r.L2 <= 0;
+  r.t2f1 = !r.invol1 && r.sap1 < g1.tif - 1e-9; r.t2f2 = !r.invol2 && r.sap2 < g2.tif - 1e-9;
+  r.eb = B.b > 0 ? B.b * sin(B.beta) / (PI * B.mn) : null; r.eg = r.eb !== null ? r.ea + r.eb : null;
+  return r;
+}
+
+function meshCalc(inp) {
+  FX = typeof inp.fmtLen === 'function' ? inp.fmtLen : FX0;
+  const errs = [], warn = [], notes = [];
+  const Pn = inp.Pn, phin = (inp.phin ?? 20) * D2R, beta = (inp.beta || 0) * D2R;
+  if (!(Pn > 0)) return {err: 'Enter the normal diametral pitch or module.'};
+  if (!(phin > 0 && phin < 60 * D2R)) return {err: 'Enter the normal pressure angle (deg).'};
+  if (!(beta >= 0 && beta < 60 * D2R)) return {err: 'Helix angle must be 0 (spur) to below 60 deg.'};
+  const Pt = Pn * cos(beta), mn = 1 / Pn, mt = mn / cos(beta), phit = atan(tan(phin) / cos(beta)), bb = atan(tan(beta) * cos(phit));
+  const B = {Pn, Pt, mn, mt, phin, phit, beta, bb, pt: PI / Pt, pbt: PI / Pt * cos(phit), pbn: PI * mn * cos(phin), b: inp.b > 0 ? inp.b : null};
+  if (beta > 0) {
+    const h1 = inp.hand1, h2 = inp.hand2;
+    if (h1 && h2 && h1 === h2) errs.push(`Hands: both gears are ${h1 === 'R' ? 'right' : 'left'}-hand. External helical gears on parallel axes must have opposite hands (one right, one left).`);
+    else if (!(h1 && h2)) notes.push('Hands not given: external helical gears on parallel axes must be of opposite hand.');
+  }
+  const g1 = gearSetup(inp.gears[0] || {}, B, 1), g2 = gearSetup(inp.gears[1] || {}, B, 2);
+  errs.push(...g1.errs, ...g2.errs);
+  const out = {B: {Pn, Pt, mn, mt, phin: phin * R2D, phit: phit * R2D, beta: beta * R2D, bb: bb * R2D, pt: B.pt, pbt: B.pbt, pbn: B.pbn, b: B.b}, g: [g1, g2], warn, notes};
+  if (errs.length) { out.err = errs.join(' '); return out; }
+  const invw = (g1.N * g1.psi + g2.N * g2.psi - PI) / (g1.N + g2.N);
+  if (!(invw > 0)) { out.err = 'The teeth are too thin to mesh at a positive operating pressure angle (inv a_w <= 0); check the thicknesses.'; return out; }
+  const aw0 = ainv(invw), a0 = (g1.db + g2.db) / (2 * cos(aw0));
+  out.tight = Object.assign(atCenter(B, g1, g2, a0, a0, aw0), {invaw: invw});
+  out.tight.jt = 0; out.tight.jbt = 0; out.tight.jn = 0; out.tight.jtRef = 0; out.tight.jth1 = 0; out.tight.jth2 = 0;
+  out.std = (g1.N + g2.N) / (2 * Pt);                               // standard center distance
+  out.y = (a0 - out.std) / mn;                                      // center distance modification coefficient (normal module units)
+  if (inp.C > 0) {
+    out.entered = atCenter(B, g1, g2, inp.C, a0, aw0);
+    if (out.entered.err) errs.push(out.entered.err);
+    else if (out.entered.jt < -1e-9) errs.push(`The entered center distance is ${fx(-out.entered.da)} below the tight-mesh center: the teeth would interfere (negative backlash ${fx(out.entered.jn)} normal).`);
+  }
+  // checks at both centers (tight mesh is the worst case for interference; the entered center for clearance and contact ratio)
+  const cMin = inp.cMin > 0 ? inp.cMin : 0.1 * mn;
+  out.cMin = cMin;
+  for (const [nm, r] of [['tight mesh', out.tight], ['entered center', out.entered]]) {
+    if (!r || r.err) continue;
+    for (const [c, lab] of [[r.c12, 'gear 1 tip to gear 2 root'], [r.c21, 'gear 2 tip to gear 1 root']]) {
+      if (c < -1e-9) errs.push(`Clearance ${lab} is negative at the ${nm} (${fx(c)}): the tip hits the mate's root.`);
+      else if (c < cMin) warn.push(`Clearance ${lab} is small at the ${nm}: ${fx(c)} (warning level ${fx(cMin)}).`);
+    }
+    if (r.invol1) errs.push(`Involute interference at the ${nm}: gear 2's tip passes the interference point of gear 1 (contact would start below gear 1's base circle).`);
+    if (r.invol2) errs.push(`Involute interference at the ${nm}: gear 1's tip passes the interference point of gear 2 (contact would start below gear 2's base circle).`);
+    if (r.t2f1) errs.push(`Tip-to-fillet interference at the ${nm}: gear 2's tip reaches gear 1 at D ${fx(r.sap1)}, below gear 1's TIF ${fx(g1.tif)}.`);
+    if (r.t2f2) errs.push(`Tip-to-fillet interference at the ${nm}: gear 1's tip reaches gear 2 at D ${fx(r.sap2)}, below gear 2's TIF ${fx(g2.tif)}.`);
+    if (r.ea < 1) errs.push(`Transverse contact ratio below 1 at the ${nm} (${r.ea.toFixed(3)}): the mesh will not run continuously (KHK: keep it at 1 or greater).`);
+  }
+  for (const g of [g1, g2]) {
+    if (g.undercut) warn.push(`Gear ${g.i} is undercut (${g.tifSrc === 'hob' ? 'rack / hob TIF rule, as GCP3' : 'as given'}); TIF ${fx(g.tif)}.`);
+    if (g.sat !== undefined && g.sat <= 0) errs.push(`Gear ${g.i}: the tooth is pointed below the outside diameter (apex D ${g.apex ? fx(g.apex) : '-'}).`);
+    if (g.tifSrc === 'hob') notes.push(`Gear ${g.i} TIF: rack (hob) generation with the produced dedendum ${fx(g.dedP)}, sharp tip, transverse plane (as GCP3's EXT / HELIX TIF). Type the TIF if the gear was cut otherwise.`);
+  }
+  if (errs.length) out.err = errs.join(' ');
+  out.ok = !errs.length;
+  return out;
+}
+
+// tight-mesh partner: the tooth thickness of gear 2 that meshes tight at center a (inverse use), for convenience/tests
+function thicknessForCenter(inp, a) {
+  const r = meshCalc(inp); if (!r.tight) return null;
+  const B = r.B, g1 = r.g[0], g2 = r.g[1], aw = acos((g1.rb + g2.rb) / a);
+  const psi2 = ((g1.N + g2.N) * inv(aw) + PI - g1.N * g1.psi) / g2.N, phit = B.phit * D2R;
+  return (psi2 - inv(phit)) * g2.d;    // transverse thickness
+}
+
+// drawing layout at center a (transverse plane, exact) or the normal-plane virtual pair (approximate).
+// Gear 1 centre (0,0), gear 2 centre (0,a); profile.js frames have a tooth space centred on +y and rotate clockwise.
+// rot1 puts a gear-1 tooth on the line of centres; rot2 = pi turns gear 2 toward gear 1 with a space on the line,
+// plus half the angular backlash so the flanks touch on one side (the gap on the other side is the backlash).
+function layout(res, a, plane, carry) {
+  const B = res.B, g = res.g, normal = plane === 'N' && B.beta > 0;
+  const beta = B.beta * D2R, cb = cos(beta);
+  const spec = (gi, k) => {
+    const c = carry && carry[k];
+    if (!normal) return {N: gi.N, P: B.Pt, phi: B.phit * D2R, t: gi.st, Rt: gi.ra, gen: (c && c.gen) || {type: 'rack', h: gi.dedP, rho: 0}, minorGiven: gi.root, tif: gi.tif};
+    const Nv = gi.N / cb ** 3, dv = Nv / B.Pn;
+    return {N: Nv, P: B.Pn, phi: B.phin * D2R, t: gi.sn, Rt: dv / 2 + (gi.ra - gi.d / 2), gen: {type: 'rack', h: gi.dedP, rho: 0}};
+  };
+  const s1 = spec(g[0], 0), s2 = spec(g[1], 1);
+  // tight centre and backlash of the pair that is drawn (transverse: exact; normal: virtual spur pair, approximate)
+  const psi = s => s.t / (s.N / s.P) + inv(s.phi);
+  const iw = (s1.N * psi(s1) + s2.N * psi(s2) - PI) / (s1.N + s2.N), aw0 = ainv(iw);
+  const db1 = s1.N / s1.P * cos(s1.phi), db2 = s2.N / s2.P * cos(s2.phi), a0 = (db1 + db2) / (2 * cos(aw0));
+  const A = normal ? a0 + (a - res.tight.a) : a;
+  const aw = acos(min(1, (db1 + db2) / (2 * A))), dw2 = db2 / cos(aw);
+  const jt = db1 / cos(aw) * (s1.N + s2.N) / s1.N * (inv(aw) - inv(aw0));
+  const jth2 = jt / (dw2 / 2);
+  return {a: A, s1, s2, rot1: PI / s1.N, rot2: PI + jth2 / 2, jth2, jt, normal};
+}
+
+const API = {layout, meshCalc, gearSetup, thicknessForCenter, ainv, inv, THK};
+if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.GCP3MESH = API;
 })(typeof window !== 'undefined' ? window : this);
 
 </script>
@@ -2294,12 +2486,14 @@ function home() {
       h('span', {class: 'key'}, String(i + 1)), h('span', {class: 'tname'}, MODS[m].name), h('span', {class: 'tid'}, m),
       h('span', {class: 'blurb'}, MODS[m].blurb))),
       X ? h('a', {class: 'tile newmod', href: '#BEVEL', id: 'tile-BEVEL'}, h('span', {class: 'key'}, '8'), h('span', {class: 'tname'}, 'Bevel Gears'),
-        h('span', {class: 'tid'}, 'BEVEL (new)'), h('span', {class: 'blurb'}, 'Straight, spiral, Zerol; hypoid geometry (approx.); AGMA 2003-style rating')) : null),
+        h('span', {class: 'tid'}, 'BEVEL (new)'), h('span', {class: 'blurb'}, 'Straight, spiral, Zerol; hypoid geometry (approx.); AGMA 2003-style rating')) : null,
+      window.GCP3MESHUI ? h('a', {class: 'tile newmod', href: '#MESH', id: 'tile-MESH'}, h('span', {class: 'key'}, '9'), h('span', {class: 'tname'}, 'Two-Gear Mesh'),
+        h('span', {class: 'tid'}, 'MESH (new)'), h('span', {class: 'blurb'}, 'EXT or HELIX pair: tight-mesh center, backlash, clearance, contact ratio, interference, mesh drawing')) : null),
     X ? h('div', {class: 'idmenu'}, h('h2', {}, 'Measure / Identify (reverse engineering)'),
       h('p', {class: 'lead'}, 'Measure a worn or broken gear and work back to its design: ranked standard pitch and pressure-angle candidates with confidence.'),
       h('div', {class: 'idlinks'}, ORDER.concat(['BEVEL']).map(m => h('a', {class: 'idlink', href: '#' + m + '-ID', id: 'idlink-' + m}, m)))) : null,
-    h('p', {class: 'foot'}, 'Keys: 1-8 open a screen from this menu. On a screen: Enter = next field, Esc = clear the field, Ctrl+P = print.'),
-    h('p', {class: 'about', id: 'about'}, `About: Web Gear Calc ${window.WGC_VERSION || ''}, an offline gear calculator based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear & Supply Corp., Novi, MI. Every screen shows a tooth profile drawing; BEVEL adds a dimensioned mesh sketch.`)));
+    h('p', {class: 'foot'}, 'Keys: 1-9 open a screen from this menu. On a screen: Enter = next field, Esc = clear the field, Ctrl+P = print.'),
+    h('p', {class: 'about', id: 'about'}, `About: Web Gear Calc ${window.WGC_VERSION || ''}, an offline gear calculator based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear & Supply Corp., Novi, MI. Every screen shows a tooth profile drawing; BEVEL adds a dimensioned mesh sketch; MESH checks a pair of EXT or HELIX gears in mesh.`)));
 }
 
 function optField(mod, key, label, title) {
@@ -2386,6 +2580,8 @@ function screen(mod) {
       h('button', {id: 'saveBtn', onclick: () => download(mod), title: 'Save the printout as a text file (GCP3 format)'}, 'Save .TXT'),
       h('button', {id: 'copyBtn', class: 'ghost', onclick: () => copyText(mod)}, 'Copy'),
       h('button', {id: 'printBtn', onclick: () => { update(); window.print(); }, title: 'Print the GCP3-format printout'}, 'Print'),
+      (mod === 'EXT' || mod === 'HELIX') && window.GCP3MESHUI ? h('button', {class: 'ghost', id: 'meshBtn', title: 'Open the Two-Gear Mesh screen with this gear as Gear 1',
+        onclick: () => { update(); window.GCP3MESHUI.carry(mod, LAST); }}, 'Mesh with mate') : null,
       window.GCP3X ? h('a', {class: 'btn idbtn', id: 'idBtn', href: '#' + mod + '-ID', title: 'Measure a worn gear and identify its design'}, 'Measure / Identify') : null),
     optsBar(mod),
     h('div', {class: 'msg', id: 'msg'}),
@@ -2520,7 +2716,7 @@ function route() {
 document.addEventListener('keydown', e => {
   const t = e.target;
   const onHome = !CUR && !(window.GCP3X && window.GCP3X.handles((location.hash || '').replace('#', '').toUpperCase()));
-  if (onHome && !(t && t.tagName === 'INPUT') && /^[1-8]$/.test(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) { location.hash = '#' + (e.key === '8' ? 'BEVEL' : ORDER[+e.key - 1]); return; }
+  if (onHome && !(t && t.tagName === 'INPUT') && /^[1-9]$/.test(e.key) && !e.ctrlKey && !e.altKey && !e.metaKey) { location.hash = '#' + (e.key === '8' ? 'BEVEL' : e.key === '9' ? 'MESH' : ORDER[+e.key - 1]); return; }
   if (t && t.tagName === 'INPUT' && CUR) {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -3397,6 +3593,327 @@ function sketchFigure(r) {
 }
 
 window.GCP3PV = {panel, update, redraw, bevelPanel, bevelUpdate, figureFor, gearFigure, sketchFigure, PREF};
+})();
+
+</script>
+<script>
+/* Web Gear Calc - MESH screen (new in v1.2.0): two-gear mesh of external spur (EXT) or external helical (HELIX) gears.
+   Plain script, loaded after ui_profile.js. Uses GCP3UI (ui.js), GCP3MESH (mesh.js), GCP3PROF (profile.js), GCP3VIEW (viewer.js). */
+(function () {
+'use strict';
+const U = window.GCP3UI, MS = window.GCP3MESH, PR = window.GCP3PROF, V = window.GCP3VIEW;
+const {h, parseNum, fv, flash, selAll} = U;
+const $ = (s, el) => (el || document).querySelector(s);
+const {PI, sin, cos, tan, atan2, hypot, abs, min, max} = Math;
+const D2R = PI / 180, KEY = 'MESH';
+const store = {
+  get(k) { try { return JSON.parse(window.localStorage.getItem('gcp3web.' + k)); } catch (e) { return null; } },
+  set(k, v) { try { window.localStorage.setItem('gcp3web.' + k, JSON.stringify(v)); } catch (e) { /* ignore */ } },
+};
+const S = store.get('mesh') || {typed: {}, opts: {}, units: U.units, carry: [null, null]};
+const save = () => store.set('mesh', S);
+const LF = () => U.LF();
+const uName = () => (U.units === 'M' ? 'mm' : 'in');
+const L = v => fv(v, 'len');
+
+// field kinds
+const PAIR = [['pitch', 'pitch', 'num'], ['pa', 'Normal pressure angle (deg)', 'deg'], ['ha', 'Helix angle (deg)', 'deg'], ['b', 'Face width (for overlap ratio, opt.)', 'len'],
+  ['C', 'Center distance to check (opt.)', 'len'], ['cmin', 'Warn when clearance below (blank = 0.1 m)', 'len']];
+const GEARF = i => [['N' + i, 'Number of teeth', 'int'], ['od' + i, 'Outside diameter', 'len'], ['root' + i, 'Root diameter', 'len'], ['tv' + i, 'thickness', 'thk'],
+  ['pd' + i, 'Pin / ball size', 'len'], ['k' + i, 'Teeth spanned k', 'int'], ['tif' + i, 'TIF diameter (blank = hob rule)', 'len']];
+function kind(k) {
+  const f = PAIR.concat(GEARF(1), GEARF(2)).find(x => x[0] === k); if (!f) return 'num';
+  if (f[2] === 'thk') return (S.opts['tk' + k.slice(-1)] || 'tn') === 'x' ? 'num' : 'len';
+  return f[2];
+}
+function units() {
+  if (S.units !== U.units) {
+    const f = U.units === 'M' ? 25.4 : 1 / 25.4;
+    for (const [k, v] of Object.entries(S.typed)) { if (kind(k) !== 'len') continue; const n = parseNum(v); if (n !== null && !isNaN(n)) S.typed[k] = String(+(n * f).toPrecision(10)); }
+    S.units = U.units; save();
+  }
+}
+function val(k) { const s = S.typed[k]; if (s === undefined) return null; const v = parseNum(s); if (v === null || isNaN(v)) return null; return kind(k) === 'len' ? v / LF() : v; }
+function field(k, label, knd, title) {
+  const t = S.typed[k] ?? '';
+  return h('label', {class: 'xf', title: title || null}, h('span', {class: 'xl'}, label + (knd === 'len' ? ` (${uName()})` : '')),
+    h('input', {type: 'text', inputmode: knd === 'int' ? 'numeric' : 'decimal', autocomplete: 'off', spellcheck: 'false', 'data-x': k, id: `x-MESH-${k}`,
+      value: t, class: t !== '' ? 'typed' : '', onfocus: selAll,
+      oninput: e => { const v = e.target.value; if (v.trim() === '') delete S.typed[k]; else S.typed[k] = v; e.target.classList.toggle('typed', v.trim() !== ''); save(); update(); },
+      onkeydown: e => { if (e.key === 'Enter') { e.preventDefault(); const all = Array.from(document.querySelectorAll('#app input[data-x]')); const i = all.indexOf(e.target); if (i >= 0 && all[i + 1]) { all[i + 1].focus(); all[i + 1].select(); } }
+        else if (e.key === 'Escape') { e.target.value = ''; e.target.dispatchEvent(new Event('input', {bubbles: true})); } }}));
+}
+function select(k, label, opts, def, onch) {
+  if (S.opts[k] === undefined) S.opts[k] = def;
+  return h('label', {class: 'xf sel'}, h('span', {class: 'xl'}, label),
+    h('select', {id: `xs-MESH-${k}`, onchange: e => { S.opts[k] = e.target.value; save(); if (onch) onch(); else update(); }}, opts.map(([v, t]) => h('option', {value: v, selected: String(S.opts[k]) === String(v)}, t))));
+}
+const helical = () => S.opts.type === 'HELIX';
+const THK_OPTS = () => [['tn', helical() ? 'Normal circular thickness' : 'Circular tooth thickness (CTT)']].concat(helical() ? [['tt', 'Transverse circular thickness (GCP3 line 8)']] : [])
+  .concat([['mow', helical() ? 'Measurement over balls / pins' : 'Measurement over pins (MOW)'], ['span', helical() ? 'Span over k teeth (normal)' : 'Span over k teeth'], ['x', 'Profile shift coefficient x' + (helical() ? ' (normal)' : '')]]);
+const thkLabel = i => ({tn: helical() ? 'Normal circ. thickness' : 'Circular tooth thickness', tt: 'Transverse circ. thickness', mow: 'Measurement over pins / balls', span: 'Span measurement', x: 'Profile shift coefficient x'})[S.opts['tk' + i] || 'tn'];
+
+function gearSet(i) {
+  const k = S.opts['tk' + i] || 'tn';
+  return h('fieldset', {class: 'xset', id: 'gear' + i}, h('legend', {}, `Gear ${i}` + (S.carry[i - 1] && carrySig(i) === S.carry[i - 1].sig ? ` (from ${S.carry[i - 1].from})` : '')),
+    field('N' + i, 'Number of teeth', 'int'), field('od' + i, 'Outside diameter', 'len'), field('root' + i, 'Root diameter', 'len', 'Actual (produced) root diameter'),
+    select('tk' + i, 'Tooth thickness given as', THK_OPTS(), 'tn', () => { delete S.typed['tv' + i]; save(); screen(); }),
+    field('tv' + i, thkLabel(i), k === 'x' ? 'num' : 'len'),
+    k === 'mow' ? field('pd' + i, helical() ? 'Ball / pin size' : 'Pin size', 'len') : null,
+    k === 'span' ? field('k' + i, 'Teeth spanned k', 'int') : null,
+    field('tif' + i, 'TIF diameter (blank = hob rule)', 'len', 'True involute form diameter. Blank: rack (hob) generation with the produced dedendum, as GCP3. Carried from the EXT / HELIX screen when you use "Mesh with mate".'),
+    helical() ? select('hand' + i, 'Hand of helix', [['', 'not given'], ['R', 'Right hand'], ['L', 'Left hand']], '') : null);
+}
+const carrySig = i => JSON.stringify(['N', 'od', 'root', 'tv', 'pd', 'k', 'tif'].map(f => S.typed[f + i] ?? '').concat([S.opts['tk' + i] || 'tn', S.opts.type, S.typed.pitch, S.opts.pmode, S.typed.pa, S.typed.ha]));
+
+function inputs() {
+  const p = val('pitch'), pm = S.opts.pmode || 'DP';
+  const Pn = p > 0 ? (pm === 'DP' ? p : 25.4 / p) : null;
+  const gear = i => {
+    const c = S.carry[i - 1] && S.carry[i - 1].sig === carrySig(i) ? S.carry[i - 1] : null;
+    return {N: val('N' + i), od: val('od' + i), root: val('root' + i), tif: val('tif' + i), U: c ? c.U : false,
+      thk: {kind: S.opts['tk' + i] || 'tn', v: val('tv' + i), d: val('pd' + i), k: val('k' + i)}};
+  };
+  return {Pn, phin: val('pa') ?? null, beta: helical() ? (val('ha') ?? null) : 0, hand1: S.opts.hand1 || '', hand2: S.opts.hand2 || '', b: val('b'), C: val('C'), cMin: val('cmin'),
+    gears: [gear(1), gear(2)]};
+}
+function compute() {
+  const inp = inputs();
+  if (!(inp.Pn > 0)) return {err: 'Enter the normal ' + ((S.opts.pmode || 'DP') === 'DP' ? 'diametral pitch.' : 'module.')};
+  if (!(inp.phin > 0)) return {err: 'Enter the normal pressure angle.'};
+  if (helical() && !(inp.beta > 0)) return {err: 'Enter the helix angle (or choose Spur).'};
+  inp.fmtLen = x => (+x * LF()).toFixed(5);
+  const r = MS.meshCalc(inp); r.inp = inp; return r;
+}
+
+// ------------------------------------------------------------------ screen
+const ST = {last: null, viewer: null, key: null};
+function screen() {
+  units();
+  const a = $('#app'); a.textContent = '';
+  if (!S.opts.type) S.opts.type = 'EXT';
+  if (!S.opts.pmode) S.opts.pmode = U.units === 'M' ? 'MOD' : 'DP';
+  a.append(h('section', {class: 'screen mesh', id: 'screen-MESH'},
+    h('div', {class: 'titlebar'}, h('h1', {}, 'Two-Gear Mesh Screen'), h('span', {class: 'hdr', id: 'mhdr'}, 'new module (not in GCP3)'), h('span', {class: 'grow'}),
+      h('input', {id: 'fname', class: 'fname', value: 'MESH.TXT', spellcheck: 'false'}),
+      h('button', {id: 'saveBtn', onclick: () => download()}, 'Save .TXT'),
+      h('button', {id: 'printBtn', onclick: () => { update(); window.print(); }}, 'Print')),
+    h('div', {class: 'opts'},
+      select('type', 'Gears', [['EXT', 'External spur (EXT)'], ['HELIX', 'External helical (HELIX), parallel axes']], 'EXT', () => screen()),
+      select('pmode', 'Pitch is', [['DP', 'Normal diametral pitch'], ['MOD', 'Normal module (mm)']], S.opts.pmode, () => screen()),
+      h('span', {class: 'grow'}),
+      h('button', {class: 'ghost', id: 'exK43', onclick: () => example('k43'), title: 'KHK Table 4.3: m 3, 20 deg, z 12/24, x 0.6/0.36'}, 'Example: KHK 4.3 spur'),
+      h('button', {class: 'ghost', id: 'exK49', onclick: () => example('k49'), title: 'KHK Table 4.9: mn 3, 20 deg, beta 30, z 12 L / 60 R, xn 0.09809/0'}, 'KHK 4.9 helical'),
+      h('button', {class: 'ghost', id: 'clearBtn', onclick: () => { S.typed = {}; S.carry = [null, null]; save(); screen(); }}, 'Clear all')),
+    h('div', {class: 'xgrid three'},
+      h('fieldset', {class: 'xset', id: 'pairset'}, h('legend', {}, 'Pair'),
+        field('pitch', (S.opts.pmode || 'DP') === 'DP' ? 'Normal diametral pitch' : 'Normal module (mm)', 'num'), field('pa', 'Normal pressure angle (deg)', 'deg'),
+        helical() ? field('ha', 'Helix angle (deg)', 'deg') : null, field('b', 'Face width (for overlap ratio, opt.)', 'len'),
+        field('C', 'Center distance to check (opt.)', 'len', 'Blank: only the tight-mesh (zero backlash) results are shown'),
+        field('cmin', 'Warn when clearance below (blank = 0.1 m)', 'len', 'Your warning level for tip-to-root clearance (not a standard value). Default 0.1 x normal module.')),
+      gearSet(1), gearSet(2)),
+    h('div', {class: 'msg', id: 'msg'}),
+    h('div', {class: 'bout', id: 'mout'}),
+    h('div', {class: 'warn', id: 'warn'}),
+    figPanel(),
+    h('details', {class: 'pv', id: 'pvbox'}, h('summary', {}, 'Printout preview'), h('pre', {id: 'pv'})),
+    h('p', {class: 'legend'}, 'Method: tight mesh inv \u03b1w = inv \u03b1 + 2 tan \u03b1 (x1+x2)/(z1+z2) from the actual thicknesses (transverse plane for helical; GCP3 Shaper Ex. uses the same relation). ',
+      'Sources: KHK Gear Technical Reference (Tables 4.3, 4.9, 6.1/6.2, eq. 10.9, 10.21a). Lengths in ', h('b', {}, U.units === 'M' ? 'millimetres' : 'inches'), '.')));
+  update();
+}
+function example(w) {                 // KHK worked examples are metric: switch the app to mm and type the published values
+  if (w === 'k43') { S.opts.type = 'EXT'; S.opts.pmode = 'MOD'; S.opts.tk1 = 'x'; S.opts.tk2 = 'x';
+    S.typed = {pitch: '3', pa: '20', N1: '12', od1: '44.84', root1: '32.1', tv1: '0.6', N2: '24', od2: '79.4', root2: '66.66', tv2: '0.36', C: '56.6'}; }
+  if (w === 'k49') { S.opts.type = 'HELIX'; S.opts.pmode = 'MOD'; S.opts.tk1 = 'x'; S.opts.tk2 = 'x'; S.opts.hand1 = 'L'; S.opts.hand2 = 'R';
+    S.typed = {pitch: '3', pa: '20', ha: '30', b: '30', N1: '12', od1: '48.153', root1: '34.657', tv1: '0.09809', N2: '60', od2: '213.842', root2: '200.346', tv2: '0', C: '125.1'}; }
+  S.units = 'M'; S.carry = [null, null]; save();
+  if (U.units !== 'M') { U.setUnits('M'); flash('Switched to Metric (mm): the KHK example is in millimetres.'); } else screen();
+}
+
+// ------------------------------------------------------------------ results
+const f5 = x => (x === null || x === undefined || !isFinite(x)) ? '' : (+x).toFixed(5);
+const f3 = x => (x === null || x === undefined || !isFinite(x)) ? '' : (+x).toFixed(3);
+function rowsGear(r) {
+  const g = r.g, hel = r.B.beta > 0;
+  const R = [['Reference pitch diameter', L(g[0].d), L(g[1].d)], ['Base diameter', L(g[0].db), L(g[1].db)],
+    [hel ? 'Transverse circ. thickness' : 'Circular tooth thickness', L(g[0].st), L(g[1].st)]];
+  if (hel) R.push(['Normal circ. thickness', L(g[0].sn), L(g[1].sn)]);
+  R.push(['Profile shift coefficient x' + (hel ? ' (normal)' : ''), f5(g[0].x), f5(g[1].x)], ['Outside / root diameter', `${L(g[0].od)} / ${L(g[0].root)}`, `${L(g[1].od)} / ${L(g[1].root)}`],
+    ['T.I.F. diameter', `${L(g[0].tif)}${g[0].undercut ? ' U' : ''} (${g[0].tifSrc})`, `${L(g[1].tif)}${g[1].undercut ? ' U' : ''} (${g[1].tifSrc})`],
+    [hel ? 'Normal tip land' : 'Tip land (arc)', L(hel ? g[0].san : g[0].sat), L(hel ? g[1].san : g[1].sat)]);
+  return R;
+}
+function rowsCenter(r, c, tight) {
+  const hel = r.B.beta > 0, R = [];
+  R.push(['Center distance', L(c.a), ''], [hel ? 'Operating transverse PA (deg)' : 'Operating pressure angle (deg)', f5(c.aw), ''], ['Operating pitch diameter', L(c.dw1), L(c.dw2)]);
+  if (tight) R.push(['Standard center distance', L(r.std), ''], ['Change from standard center', L(c.a - r.std), ''], ['Center distance modification coeff. y', f5(r.y), '']);
+  else R.push(['Change from tight mesh', L(c.da), ''], ['Circumferential backlash (operating pitch circle)', L(c.jt), ''],
+    ['Circumferential backlash (reference circle)', L(c.jtRef), ''], ['Normal backlash', L(c.jn), ''], ['Angular backlash (deg), other gear held', f5(c.jth1), f5(c.jth2)]);
+  R.push(['Tip clearance (this tip to mate root)', L(c.c12), L(c.c21)], ['Start of active profile (diameter)', c.sap1 === null ? '*Interference*' : L(c.sap1), c.sap2 === null ? '*Interference*' : L(c.sap2)],
+    ['Transverse contact ratio', f3(c.ea), '']);
+  if (hel && c.eb !== null) R.push(['Overlap (face) ratio', f3(c.eb), ''], ['Total contact ratio', f3(c.eg), '']);
+  return R;
+}
+function table(id, title, rows, cols) {
+  return h('table', {class: 'gcp btab mtab', id}, h('thead', {}, h('tr', {}, h('th', {}, title), h('th', {}, cols[0]), h('th', {}, cols[1]))),
+    h('tbody', {}, rows.map(([l, a, b]) => h('tr', {}, h('td', {class: 'lab'}, l), h('td', {class: 'g'}, h('span', {class: 'val'}, a)), h('td', {class: 's'}, h('span', {class: 'val'}, b))))));
+}
+function update() {
+  if (!$('#mout')) return;
+  const r = compute(); ST.last = r;
+  const msg = $('#msg'), out = $('#mout'), w = $('#warn'); out.textContent = ''; w.textContent = '';
+  const fatal = !r.tight;
+  msg.textContent = fatal ? (r.err || '') : ''; msg.className = 'msg' + (fatal && r.err ? ' on' : '');
+  if (fatal) { figUpdate(null); $('#pv').textContent = ''; $('#printdoc').textContent = ''; return; }
+  const B = r.B;
+  $('#mhdr').textContent = `${B.beta > 0 ? 'Helical' : 'Spur'}   ${f5(B.Pn).replace(/0+$/, '').replace(/\.$/, '')} NDP = m ${(25.4 / B.Pn).toFixed(4)} mm   \u03b1n ${+B.phin.toFixed(6)}\u00b0` + (B.beta > 0 ? `   \u03b2 ${+B.beta.toFixed(6)}\u00b0   \u03b1t ${B.phit.toFixed(5)}\u00b0` : '');
+  out.append(table('mgear', 'Gears', rowsGear(r), ['Gear 1', 'Gear 2']));
+  out.append(table('mtight', 'Tight mesh (zero backlash)', rowsCenter(r, r.tight, true), ['Gear 1', 'Gear 2']));
+  if (r.entered && !r.entered.err) out.append(table('mentered', 'At the entered center distance', rowsCenter(r, r.entered, false), ['Gear 1', 'Gear 2']));
+  const errs = r.err ? r.err.split(/(?<=\.)\s+(?=[A-Z])/) : [];
+  for (const x of errs) w.append(h('div', {class: 'w err'}, x));
+  for (const x of r.warn) w.append(h('div', {class: 'w'}, x));
+  for (const x of r.notes) w.append(h('div', {class: 'note'}, x));
+  w.append(h('div', {class: 'w ' + (r.ok ? 'okline' : 'err'), id: 'mstatus'}, r.ok ? (r.warn.length ? 'Mesh OK, with warnings.' : 'Mesh OK: no interference, clearances and contact ratio acceptable.') : 'Mesh has problems (see above).'));
+  figUpdate(r);
+  const txt = text(r); $('#pv').textContent = txt; $('#printdoc').textContent = txt;
+}
+function text(r) {
+  const P = (s, n) => String(s).padEnd(n), o = ['', P(U.units === 'M' ? ' *Metric*' : ' *English*', 19) + 'Two-Gear Mesh Screen (Web Gear Calc, new module)', ' ' + $('#mhdr').textContent, ''];
+  const sec = (title, rows) => { o.push(P(' ' + title, 46) + P('Gear 1', 16) + 'Gear 2'); for (const [l, a, b] of rows) o.push(P('  ' + l, 46) + P(a, 16) + b); o.push(''); };
+  sec('Gears', rowsGear(r)); sec('Tight mesh (zero backlash)', rowsCenter(r, r.tight, true));
+  if (r.entered && !r.entered.err) sec('At the entered center distance', rowsCenter(r, r.entered, false));
+  if (r.err) for (const x of r.err.split(/(?<=\.)\s+(?=[A-Z])/)) o.push(' *' + x);
+  for (const x of r.warn) o.push(' ' + x);
+  o.push(' ' + (r.ok ? 'Mesh OK' : 'Mesh has problems'), '', '');
+  return o.join('\r\n');
+}
+function download() {
+  update(); const t = $('#pv').textContent;
+  let name = ($('#fname').value || 'MESH.TXT').trim().replace(/[\\/:*?"<>|]+/g, '_'); if (!/\.[A-Za-z0-9]{1,4}$/.test(name)) name += '.TXT';
+  const blob = new Blob([t], {type: 'text/plain'}), url = URL.createObjectURL(blob), a = h('a', {href: url, download: name, style: 'display:none'});
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1500); flash('Saved ' + name + ' (check your Downloads folder)');
+}
+
+// ------------------------------------------------------------------ mesh drawing
+const PREF = Object.assign({plane: 'T', at: 'E', teeth: '3'}, store.get('meshfig') || {});
+const savePref = () => store.set('meshfig', PREF);
+function figPanel() {
+  const seg = (id, items, cur, on) => h('span', {class: 'seg', role: 'group', id}, items.map(([k, lab, tt]) => h('button', {type: 'button', class: 'small' + (cur() === k ? ' on' : ''), id: `${id}-${k}`, title: tt || null,
+    onclick: e => { on(k); e.target.parentNode.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === e.target)); figUpdate(ST.last, true); }}, lab)));
+  const ctl = h('span', {class: 'figctls'},
+    seg('ms-at', [['E', 'Entered C', 'Draw at the entered center distance'], ['T', 'Tight', 'Draw at the tight-mesh center distance']], () => PREF.at, k => { PREF.at = k; savePref(); }),
+    helical() ? seg('ms-plane', [['T', 'Transverse', 'Transverse plane (exact)'], ['N', 'Normal', 'Normal plane: virtual spur gears N/cos\u00b3\u03b2 (approximate)']], () => PREF.plane, k => { PREF.plane = k; savePref(); }) : null,
+    h('label', {class: 'figctl'}, 'Teeth ', h('select', {id: 'ms-teeth', onchange: e => { PREF.teeth = e.target.value; savePref(); figUpdate(ST.last, true); }},
+      [['2', '5'], ['3', '7'], ['5', '11'], ['all', 'all']].map(([v, t]) => h('option', {value: v, selected: PREF.teeth === v ? '' : null}, t)))));
+  ST.viewer = V.create({id: 'msv', title: 'Mesh drawing', controls: ctl, file: () => 'MESH_drawing', stamp: () => `Web Gear Calc ${window.WGC_VERSION || ''} - MESH - ${new Date().toISOString().slice(0, 10)}`});
+  return h('details', {class: 'profbox', id: 'meshbox', open: ''}, h('summary', {}, 'Mesh drawing (both gears at the center distance)'), ST.viewer.root);
+}
+let figT = null;
+function figUpdate(r, keep) { clearTimeout(figT); figT = setTimeout(() => figDraw(r, keep), 60); }
+const rotCW = (p, a) => [p[0] * cos(a) + p[1] * sin(a), -p[0] * sin(a) + p[1] * cos(a)];
+const pathS = (pts, close) => pts.map((p, i) => (i ? 'L' : 'M') + (+p[0].toPrecision(9)) + ' ' + (+(-p[1]).toPrecision(9))).join('') + (close ? 'Z' : '');
+function figDraw(r, keep) {
+  const vw = ST.viewer; if (!vw) return;
+  if (!r || !r.tight) { vw.set(null); vw.root.dataset.ready = '0'; return; }
+  const useE = PREF.at === 'E' && r.entered && !r.entered.err && r.entered.jt >= -1e-9;
+  const C = useE ? r.entered.a : r.tight.a, plane = helical() ? PREF.plane : 'T';
+  const lay = MS.layout(r, C, plane, null);
+  let T1, T2;
+  try { T1 = PR.spurTooth(lay.s1); T2 = PR.spurTooth(lay.s2); } catch (e) { vw.set(null); vw.root.dataset.ready = '0'; return; }
+  const a = lay.a, cen2 = [0, a];
+  const K1 = PREF.teeth === 'all' ? Math.ceil(T1.N / 2) : +PREF.teeth, K2 = PREF.teeth === 'all' ? Math.ceil(T2.N / 2) : +PREF.teeth;
+  const o1 = PR.gearOutline(T1, K1).map(p => rotCW(p, lay.rot1));
+  const o2 = PR.gearOutline(T2, K2).map(p => { const q = rotCW(p, lay.rot2); return [q[0], q[1] + a]; });
+  // operating geometry of the drawn pair
+  const rb1 = T1.Rb, rb2 = T2.Rb, aw = Math.acos(min(1, (rb1 + rb2) / a)), rw1 = rb1 / cos(aw), rw2 = rb2 / cos(aw);
+  const T1p = [-rb1 * sin(aw), rb1 * cos(aw)], T2p = [rb2 * sin(aw), a - rb2 * cos(aw)], u = [(T2p[0] - T1p[0]), (T2p[1] - T1p[1])], Lt = hypot(u[0], u[1]); u[0] /= Lt; u[1] /= Lt;
+  const ga1 = Math.sqrt(max(0, T1.Rt ** 2 - rb1 ** 2)), ga2 = Math.sqrt(max(0, T2.Rt ** 2 - rb2 ** 2));
+  const Apt = [T1p[0] + u[0] * (Lt - ga2), T1p[1] + u[1] * (Lt - ga2)], Ept = [T1p[0] + u[0] * ga1, T1p[1] + u[1] * ga1];
+  const g = r.g, normal = lay.normal;
+  const span1 = PREF.teeth === 'all' ? PI : min(PI, (K1 + 1) * 2 * PI / T1.N), span2 = PREF.teeth === 'all' ? PI : min(PI, (K2 + 1) * 2 * PI / T2.N);
+  const arc = (c, rr, half, up) => { const p = []; for (let i = 0; i <= 90; i++) { const t = -half + 2 * half * i / 90; p.push([c[0] + rr * sin(t), c[1] + (up ? 1 : -1) * rr * cos(t)]); } return p; };
+  function figBox() {          // SVG coordinates (y down): bounds of the drawn outlines and the line of action, plus a margin
+    let x0 = 1e99, x1 = -1e99, y0 = 1e99, y1 = -1e99;
+    for (const p of o1.concat(o2, [T1p, T2p])) { x0 = min(x0, p[0]); x1 = max(x1, p[0]); y0 = min(y0, -p[1]); y1 = max(y1, -p[1]); }
+    const m = 0.04 * max(x1 - x0, y1 - y0), w = max(-x0, x1) + m;   // symmetric about the line of centres
+    return [-w, y0 - m, w, y1 + m];
+  }
+  const fig = {
+    key: ['mesh', plane, T1.N, T2.N, PREF.teeth].join('|'),
+    title: normal ? `Normal plane (virtual spur pair Nv = ${T1.N.toFixed(3)} / ${T2.N.toFixed(3)}, APPROXIMATE)` : `Transverse plane at C ${L(a)} ${uName()} (${useE ? 'entered' : 'tight mesh'})`,
+    notes: [normal ? 'APPROXIMATE: normal plane drawn as the virtual spur gears N/cos\u00b3\u03b2 with the normal module, pressure angle and thickness, at the virtual tight center plus the same center change.' :
+      'Exact transverse section: tooth spaces generated by a rack (hob) with each gear\u2019s produced dedendum, true involute flanks. Gear 2 is turned so the flanks touch on one side; the gap on the other side is the backlash.',
+      `Line of action T1-T2 (operating PA ${f5(aw / D2R)}\u00b0); thick segment = path of contact from the start of active profile to the tip (contact ratio ${f3(r[useE ? 'entered' : 'tight'].ea)}${normal ? ', transverse value' : ''}).`],
+    build(sc) {
+      let s = '';
+      s += `<path d="${pathS(o1)}" fill="none" stroke="#1f5a99" stroke-width="1.6" vector-effect="non-scaling-stroke" class="gear g1"/>`;
+      s += `<path d="${pathS(o2)}" fill="none" stroke="#a0522d" stroke-width="1.6" vector-effect="non-scaling-stroke" class="gear g2"/>`;
+      const circ = (c, rr, half, up, col, dash, cls) => `<path d="${pathS(arc(c, rr, half, up))}" fill="none" stroke="${col}" stroke-width="0.9" ${dash ? `stroke-dasharray="${dash}"` : ''} vector-effect="non-scaling-stroke" class="${cls || ''}"/>`;
+      s += circ([0, 0], rw1, span1, true, '#c62828', '10 3 2 3', 'opc') + circ(cen2, rw2, span2, false, '#c62828', '10 3 2 3', 'opc');
+      s += circ([0, 0], rb1, span1, true, '#ef6c00', '4 3') + circ(cen2, rb2, span2, false, '#ef6c00', '4 3');
+      if (!normal) { s += circ([0, 0], g[0].tif / 2, span1 * 0.7, true, '#00838f', '2 2') + circ(cen2, g[1].tif / 2, span2 * 0.7, false, '#00838f', '2 2'); }
+      s += V.line([0, 0], [0, -a], 'stroke="#999" stroke-width="0.6" stroke-dasharray="12 3 2 3"');
+      s += V.line([T1p[0], -T1p[1]], [T2p[0], -T2p[1]], 'stroke="#2e7d32" stroke-width="1" class="loa"');
+      s += V.line([Apt[0], -Apt[1]], [Ept[0], -Ept[1]], 'stroke="#2e7d32" stroke-width="4" stroke-opacity="0.75" class="poc"');
+      for (const [p, lab] of [[T1p, 'T1'], [T2p, 'T2'], [Apt, 'A (SAP 1)'], [Ept, 'E (SAP 2)']]) s += `<circle cx="${p[0]}" cy="${-p[1]}" r="${3 * sc}" fill="#2e7d32"/>` + V.text([p[0] + 5 * sc, -p[1] - 4 * sc], lab, 11 * sc, 'fill="#2e7d32"');
+      s += `<circle cx="0" cy="${-rw1}" r="${3 * sc}" fill="#c62828"/>` + V.text([6 * sc, -rw1 + 12 * sc], 'P', 11 * sc, 'fill="#c62828"');
+      s += V.text([-rw1 * sin(span1 * 0.55) - 4 * sc, -rw1 * cos(span1 * 0.55)], `Gear 1 (${normal ? 'Nv ' + T1.N.toFixed(2) : T1.N + ' T'})${normal ? ' (virtual)' : ''}`, 12 * sc, 'fill="#1f5a99" text-anchor="end" font-weight="700"');
+      s += V.text([-rw2 * sin(span2 * 0.55) - 4 * sc, -(a - rw2 * cos(span2 * 0.55))], `Gear 2 (${normal ? 'Nv ' + T2.N.toFixed(2) : T2.N + ' T'})${normal ? ' (virtual)' : ''}`, 12 * sc, 'fill="#a0522d" text-anchor="end" font-weight="700"');
+      const lb = [rw1 * 0.0, 0];
+      s += V.text([lb[0] + rw1 * 0.15, -(rw1 + (a - rw1) * 0.5)], `C ${L(a)}`, 11 * sc, 'fill="#555"');
+      return {svg: s, box: figBox()};
+    },
+    readout(x, y) {
+      const p = [x, -y], r1 = hypot(p[0], p[1]), r2 = hypot(p[0], p[1] - a);
+      return {text: `D1 ${L(2 * r1)}   D2 ${L(2 * r2)} ${uName()}`};
+    },
+  };
+  vw.set(fig, keep && ST.key === fig.key); ST.key = fig.key; vw.root.dataset.ready = '1';
+  const note = $('#msv-note'); if (note) note.textContent = fig.notes.join(' ');
+}
+
+// ------------------------------------------------------------------ carry the current EXT / HELIX gear into the MESH screen as Gear 1
+function carry(mod, v) {
+  if (!v || v.err || !v.geo) { flash('Enter the gear first (the screen must compute without errors).'); return; }
+  units();
+  const f = LF(), len = x => String(+(x * f).toPrecision(9)), T = S.typed;
+  const keep2 = {}; for (const k of Object.keys(T)) if (/2$/.test(k)) keep2[k] = T[k];
+  const pm = U.units === 'M' ? 'MOD' : 'DP';
+  let gen, tif, U0, root, N;
+  const rowD = (rows, n) => { const x = (rows || []).find(q => q.n === n); return x ? x.d : null; };
+  if (mod === 'EXT') {
+    const gg = v.geo; N = gg.N; S.opts.type = 'EXT';
+    T.pitch = pm === 'DP' ? String(+gg.P.toPrecision(12)) : String(+(25.4 / gg.P).toPrecision(12)); T.pa = String(+(gg.phi / D2R).toPrecision(12)); delete T.ha;
+    root = rowD(v.rows, 9); gen = gg.gen; tif = gg.tif; U0 = gg.U;
+    T.N1 = String(N); T.od1 = len(2 * gg.Rt); T.root1 = len(root); S.opts.tk1 = 'tn'; T.tv1 = len(gg.t);
+  } else {
+    const gg = v.geo, tr = gg.tr, rr = v.rowsR || [], gv = n => { const x = rr.find(q => q.n === n); return x ? x.g : null; };
+    N = gg.N; S.opts.type = 'HELIX';
+    const NDP = gv(20), NPA = gv(22);
+    T.pitch = pm === 'DP' ? String(+NDP.toPrecision(12)) : String(+(25.4 / NDP).toPrecision(12)); T.pa = String(+(+NPA).toPrecision(12)); T.ha = String(+(+gg.HA).toPrecision(12));
+    root = rowD(v.rows, 10); gen = tr.gen; tif = tr.tif; U0 = tr.U;
+    T.N1 = String(N); T.od1 = len(2 * tr.Rt); T.root1 = len(root); S.opts.tk1 = 'tt'; T.tv1 = len(tr.t);
+  }
+  S.opts.pmode = pm;
+  for (const k of ['pd1', 'k1']) delete T[k];
+  if (tif > 0) T.tif1 = len(tif); else delete T.tif1;
+  Object.assign(T, keep2);
+  delete T.C;                   // the tight-mesh center changes with the new Gear 1: re-enter the center to check
+  S.carry = [{from: mod, gen, U: !!U0, sig: null}, S.carry[1]];
+  S.carry[0].sig = carrySig(1);
+  save(); location.hash = '#MESH'; flash(`${mod} gear (${N} T) loaded as Gear 1. Enter the mate as Gear 2.`);
+}
+
+// ------------------------------------------------------------------ routing: extend GCP3X (ui_extra.js)
+const X0 = window.GCP3X;
+window.GCP3MESHUI = {carry, get last() { return ST.last; }, screen};
+if (X0) {
+  const handles = X0.handles, crumb = X0.crumb, render = X0.render;
+  X0.handles = id => id === KEY || handles(id);
+  X0.crumb = id => id === KEY ? 'Two-Gear Mesh' : crumb(id);
+  X0.render = id => { if (id === KEY) { $('#printdoc').textContent = ''; screen(); } else render(id); };
+}
 })();
 
 </script>
