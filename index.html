@@ -191,18 +191,31 @@ button.danger{color:#fff;background:var(--hot);border-color:var(--hot)}
 #profset .xgrid{display:grid;gap:14px;margin-bottom:6px}
 #profset .xf .note{display:block;margin-top:3px}
 #profset #mprofBtn{margin-right:8px}
+/* MESH results, three columns (v1.3.1): Gear 1 | Pair | Gear 2; narrow screens stack Pair first */
+.mcols{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:12px;align-items:start;width:100%}
+.mcol{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 12px 10px;min-width:0}
+#mpair{background:#f6f9fd;border-color:#b9cbe4}
+.mcolh{font-weight:700;font-size:15px;margin:2px 0 6px;color:#1f3b63}
+#mg1 .mcolh{color:#1f5a99}#mg2 .mcolh{color:#a0522d}
+.msec{margin:6px 0 4px}.msech{font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);border-bottom:1px solid var(--line);padding-bottom:2px;margin-bottom:3px}
+.mrow{display:flex;justify-content:space-between;gap:10px;padding:2px 0;font-size:14px}
+.mrow .lab{color:#374151}.mrow .val{font-family:ui-monospace,Menlo,Consolas,monospace;white-space:nowrap;text-align:right}
+.mbig{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;background:#fff;border:2px solid #1f5a99;border-radius:8px;padding:8px 12px;margin:2px 0 8px}
+.mbig .lab{font-weight:600;color:#1f3b63;flex-basis:100%}.mbig .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:700;color:#1f5a99}
+.mflags{margin-top:8px}.mflags .w,.mflags .note{font-size:13px}
+@media (max-width:900px){.mcols{grid-template-columns:1fr}#mpair{order:-1}}
 
 </style>
 </head>
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.0</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.1</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.0, build 2026-10-10. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.0';</script>
+<!-- Web Gear Calc v1.3.1, build 2026-10-10. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.1';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -3778,30 +3791,66 @@ function example(w) {                 // KHK worked examples are metric: switch 
 // ------------------------------------------------------------------ results
 const f5 = x => (x === null || x === undefined || !isFinite(x)) ? '' : (+x).toFixed(5);
 const f3 = x => (x === null || x === undefined || !isFinite(x)) ? '' : (+x).toFixed(3);
-function rowsGear(r) {
-  const g = r.g, hel = r.B.beta > 0;
-  const R = [['Reference pitch diameter', L(g[0].d), L(g[1].d)], ['Base diameter', L(g[0].db), L(g[1].db)],
-    [hel ? 'Transverse circ. thickness' : 'Circular tooth thickness', L(g[0].st), L(g[1].st)]];
-  if (hel) R.push(['Normal circ. thickness', L(g[0].sn), L(g[1].sn)]);
-  R.push(['Profile shift coefficient x' + (hel ? ' (normal)' : ''), f5(g[0].x), f5(g[1].x)], ['Outside / root diameter', `${L(g[0].od)} / ${L(g[0].root)}`, `${L(g[1].od)} / ${L(g[1].root)}`],
-    ['T.I.F. diameter', `${L(g[0].tif)}${g[0].undercut ? ' U' : ''} (${g[0].tifSrc})`, `${L(g[1].tif)}${g[1].undercut ? ' U' : ''} (${g[1].tifSrc})`],
-    [hel ? 'Normal tip land' : 'Tip land (arc)', L(hel ? g[0].san : g[0].sat), L(hel ? g[1].san : g[1].sat)]);
-  return R;
+// ------------------------------------------------------------------ results: three columns, Gear 1 | Pair | Gear 2 (v1.3.1 layout)
+// row = [key, screen label, print label (<= 14 chars), value]
+function gearCol(r, i) {
+  const g = r.g[i - 1], hel = r.B.beta > 0, j = 3 - i, N = r.inp && r.inp.gears ? r.inp.gears[i - 1].N : g.N;
+  const sap = c => (c['sap' + i] === null ? '*Interference*' : L(c['sap' + i]));
+  const at = c => [['dw', 'Operating pitch diameter', 'Op.pitch dia', L(c['dw' + i])], ['sap', 'Start of active profile (diameter)', 'SAP dia.', sap(c)],
+    ['clr', `Tip clearance onto Gear ${j}'s root`, `Tip clr G${j}`, L(c[i === 1 ? 'c12' : 'c21'])]];
+  const S0 = [['N', 'Number of teeth', 'Teeth', String(N)], ['od', 'Outside diameter', 'OD', L(g.od)], ['root', 'Root diameter', 'Root dia.', L(g.root)],
+    ['d', 'Reference pitch diameter', 'Pitch dia.', L(g.d)], ['db', 'Base diameter', 'Base dia.', L(g.db)],
+    ['st', hel ? 'Transverse circ. thickness' : 'Circular tooth thickness', hel ? 'Trans. CTT' : 'CTT', L(g.st)]];
+  if (hel) S0.push(['sn', 'Normal circ. thickness', 'Normal CTT', L(g.sn)]);
+  S0.push(['x', 'Profile shift coefficient x' + (hel ? ' (normal)' : ''), 'Shift x', f5(g.x)],
+    ['tif', 'T.I.F. diameter', 'TIF dia.', `${L(g.tif)}${g.undercut ? ' U' : ''}`], ['tifsrc', 'TIF from', 'TIF from', g.tifSrc],
+    ['land', hel ? 'Normal tip land' : 'Tip land (arc)', 'Tip land', L(hel ? g.san : g.sat)]);
+  if (hel) S0.push(['hand', 'Hand of helix', 'Hand', ({R: 'Right', L: 'Left'})[S.opts['hand' + i]] || 'not given']);
+  const secs = [['geo', 'Gear data', S0], ['tight', 'Tight mesh', at(r.tight)]];
+  if (r.entered && !r.entered.err) secs.push(['ent', 'At the entered center', at(r.entered)]);
+  return secs;
 }
-function rowsCenter(r, c, tight) {
-  const hel = r.B.beta > 0, R = [];
-  R.push(['Center distance', L(c.a), ''], [hel ? 'Operating transverse PA (deg)' : 'Operating pressure angle (deg)', f5(c.aw), ''], ['Operating pitch diameter', L(c.dw1), L(c.dw2)]);
-  if (tight) R.push(['Standard center distance', L(r.std), ''], ['Change from standard center', L(c.a - r.std), ''], ['Center distance modification coeff. y', f5(r.y), '']);
-  else R.push(['Change from tight mesh', L(c.da), ''], ['Circumferential backlash (operating pitch circle)', L(c.jt), ''],
-    ['Circumferential backlash (reference circle)', L(c.jtRef), ''], ['Normal backlash', L(c.jn), ''], ['Angular backlash (deg), other gear held', f5(c.jth1), f5(c.jth2)]);
-  R.push(['Tip clearance (this tip to mate root)', L(c.c12), L(c.c21)], ['Start of active profile (diameter)', c.sap1 === null ? '*Interference*' : L(c.sap1), c.sap2 === null ? '*Interference*' : L(c.sap2)],
-    ['Transverse contact ratio', f3(c.ea), '']);
-  if (hel && c.eb !== null) R.push(['Overlap (face) ratio', f3(c.eb), ''], ['Total contact ratio', f3(c.eg), '']);
-  return R;
+function pairCol(r) {
+  const B = r.B, hel = B.beta > 0, t = r.tight, P0 = [];
+  P0.push((S.opts.pmode || 'DP') === 'DP' ? ['pitch', 'Normal diametral pitch', 'Normal DP', f5(B.Pn)] : ['pitch', 'Normal module (mm)', 'Normal mod.', f5(25.4 / B.Pn)],
+    ['pa', 'Normal pressure angle (deg)', 'Normal PA', f5(B.phin)]);
+  if (hel) P0.push(['ha', 'Helix angle (deg)', 'Helix angle', f5(B.beta)], ['pat', 'Transverse pressure angle (deg)', 'Trans. PA', f5(B.phit)]);
+  P0.push(['std', 'Standard center distance', 'Std. center', L(r.std)]);
+  const T0 = [['C', 'Center distance', 'Center dist.', L(t.a)], ['aw', hel ? 'Operating transverse PA (deg)' : 'Operating pressure angle (deg)', 'Oper. PA', f5(t.aw)],
+    ['dstd', 'Change from standard center', 'Chg from std', L(t.a - r.std)], ['y', 'Center distance modification coeff. y', 'Coeff. y', f5(r.y)],
+    ['ea', 'Transverse contact ratio', 'Contact rat.', f3(t.ea)]];
+  if (hel && t.eb !== null) T0.push(['eb', 'Overlap (face) ratio', 'Overlap rat.', f3(t.eb)], ['eg', 'Total contact ratio', 'Total ratio', f3(t.eg)]);
+  const secs = [['pair', 'Pair', P0], ['tight', 'Tight mesh (zero backlash)', T0]];
+  const e = r.entered;
+  if (e && !e.err) {
+    const E0 = [['C', 'Center distance (entered)', 'Center dist.', L(e.a)], ['da', 'Change from tight mesh', 'Chg fr tight', L(e.da)],
+      ['aw', hel ? 'Operating transverse PA (deg)' : 'Operating pressure angle (deg)', 'Oper. PA', f5(e.aw)],
+      ['jt', 'Circumferential backlash (operating pitch circle)', 'Circ BL op.', L(e.jt)], ['jtRef', 'Circumferential backlash (reference circle)', 'Circ BL ref.', L(e.jtRef)],
+      ['jn', 'Normal backlash', 'Normal BL', L(e.jn)], ['jth1', 'Angular backlash (deg), Gear 1 (Gear 2 held)', 'AngBL G1 deg', f5(e.jth1)],
+      ['jth2', 'Angular backlash (deg), Gear 2 (Gear 1 held)', 'AngBL G2 deg', f5(e.jth2)], ['ea', 'Transverse contact ratio', 'Contact rat.', f3(e.ea)]];
+    if (hel && e.eb !== null) E0.push(['eb', 'Overlap (face) ratio', 'Overlap rat.', f3(e.eb)], ['eg', 'Total contact ratio', 'Total ratio', f3(e.eg)]);
+    secs.push(['ent', 'At the entered center distance', E0]);
+  }
+  return secs;
 }
-function table(id, title, rows, cols) {
-  return h('table', {class: 'gcp btab mtab', id}, h('thead', {}, h('tr', {}, h('th', {}, title), h('th', {}, cols[0]), h('th', {}, cols[1]))),
-    h('tbody', {}, rows.map(([l, a, b]) => h('tr', {}, h('td', {class: 'lab'}, l), h('td', {class: 'g'}, h('span', {class: 'val'}, a)), h('td', {class: 's'}, h('span', {class: 'val'}, b))))));
+// which column a message belongs to: 1, 2 (that gear) or 0 (pair)
+function owner(m) {
+  const x = /^Gear (\d)\b/.exec(m) || /^Clearance gear (\d) tip/.exec(m) || /interference point of gear (\d)/.exec(m) || /below gear (\d)'s TIF/.exec(m);
+  return x ? +x[1] : 0;
+}
+function msgs(r) {
+  const out = {0: [], 1: [], 2: []};
+  for (const x of (r.err ? r.err.split(/(?<=\.)\s+(?=[A-Z])/) : [])) out[owner(x)].push(['err', x]);
+  for (const x of r.warn) out[owner(x)].push(['warn', x]);
+  for (const x of r.notes) out[owner(x)].push(['note', x]);
+  return out;
+}
+function col(id, title, secs, mm, extra) {
+  return h('div', {class: 'mcol', id},
+    h('div', {class: 'mcolh'}, title), extra || null,
+    secs.map(([sk, st, rows]) => h('div', {class: 'msec', 'data-sec': sk}, h('div', {class: 'msech'}, st),
+      rows.map(([k, l, , v]) => h('div', {class: 'mrow', 'data-k': k}, h('span', {class: 'lab'}, l), h('span', {class: 'val'}, v))))),
+    mm.length ? h('div', {class: 'warn mflags'}, mm.map(([t, x]) => h('div', {class: t === 'err' ? 'w err' : t === 'warn' ? 'w' : 'note'}, x))) : null);
 }
 function update() {
   if (!$('#mout')) return;
@@ -3812,24 +3861,43 @@ function update() {
   if (fatal) { figUpdate(null); $('#pv').textContent = ''; $('#printdoc').textContent = ''; return; }
   const B = r.B;
   $('#mhdr').textContent = `${B.beta > 0 ? 'Helical' : 'Spur'}   ${f5(B.Pn).replace(/0+$/, '').replace(/\.$/, '')} NDP = m ${(25.4 / B.Pn).toFixed(4)} mm   \u03b1n ${+B.phin.toFixed(6)}\u00b0` + (B.beta > 0 ? `   \u03b2 ${+B.beta.toFixed(6)}\u00b0   \u03b1t ${B.phit.toFixed(5)}\u00b0` : '');
-  out.append(table('mgear', 'Gears', rowsGear(r), ['Gear 1', 'Gear 2']));
-  out.append(table('mtight', 'Tight mesh (zero backlash)', rowsCenter(r, r.tight, true), ['Gear 1', 'Gear 2']));
-  if (r.entered && !r.entered.err) out.append(table('mentered', 'At the entered center distance', rowsCenter(r, r.entered, false), ['Gear 1', 'Gear 2']));
-  const errs = r.err ? r.err.split(/(?<=\.)\s+(?=[A-Z])/) : [];
-  for (const x of errs) w.append(h('div', {class: 'w err'}, x));
-  for (const x of r.warn) w.append(h('div', {class: 'w'}, x));
-  for (const x of r.notes) w.append(h('div', {class: 'note'}, x));
-  w.append(h('div', {class: 'w ' + (r.ok ? 'okline' : 'err'), id: 'mstatus'}, r.ok ? (r.warn.length ? 'Mesh OK, with warnings.' : 'Mesh OK: no interference, clearances and contact ratio acceptable.') : 'Mesh has problems (see above).'));
+  const mm = msgs(r), c = S.carry || [];
+  const src = i => (c[i - 1] && c[i - 1].sig === carrySig(i) ? ` (from ${c[i - 1].from})` : '');
+  const big = h('div', {class: 'mbig', id: 'mbig'}, h('span', {class: 'lab'}, 'Tight-mesh center distance'), h('span', {class: 'val'}, L(r.tight.a)), h('span', {class: 'u'}, ' ' + uName()));
+  out.append(h('div', {class: 'mcols', id: 'mres'},
+    col('mg1', 'Gear 1' + src(1), gearCol(r, 1), mm[1]),
+    col('mpair', 'Pair', pairCol(r), mm[0], big),
+    col('mg2', 'Gear 2' + src(2), gearCol(r, 2), mm[2])));
+  w.append(h('div', {class: 'w ' + (r.ok ? 'okline' : 'err'), id: 'mstatus'}, r.ok ? (r.warn.length ? 'Mesh OK, with warnings.' : 'Mesh OK: no interference, clearances and contact ratio acceptable.') : 'Mesh has problems (see the flags in the columns).'));
   figUpdate(r);
   const txt = text(r); $('#pv').textContent = txt; $('#printdoc').textContent = txt;
 }
-function text(r) {
-  const P = (s, n) => String(s).padEnd(n), o = ['', P(U.units === 'M' ? ' *Metric*' : ' *English*', 19) + 'Two-Gear Mesh Screen (Web Gear Calc, new module)', ' ' + $('#mhdr').textContent, ''];
-  const sec = (title, rows) => { o.push(P(' ' + title, 46) + P('Gear 1', 16) + 'Gear 2'); for (const [l, a, b] of rows) o.push(P('  ' + l, 46) + P(a, 16) + b); o.push(''); };
-  sec('Gears', rowsGear(r)); sec('Tight mesh (zero backlash)', rowsCenter(r, r.tight, true));
-  if (r.entered && !r.entered.err) sec('At the entered center distance', rowsCenter(r, r.entered, false));
-  if (r.err) for (const x of r.err.split(/(?<=\.)\s+(?=[A-Z])/)) o.push(' *' + x);
-  for (const x of r.warn) o.push(' ' + x);
+function text(r) {           // printout: three 26-character columns (Gear 1 | Pair | Gear 2), 80 columns wide
+  const P = (x, n) => String(x).padEnd(n), W = 26;
+  const cell = (lab, v) => { v = String(v); lab = String(lab).slice(0, Math.max(0, W - 2 - v.length)); return lab + ' '.repeat(Math.max(1, W - 1 - lab.length - v.length)) + v; };   // never cuts the value
+  const line = (a, b, c) => (P(a, W) + ' ' + P(b, W) + ' ' + c).replace(/\s+$/, '');
+  const wrap = (t, ind) => { const o = []; let l = ind; for (const w of t.split(' ')) { if ((l + w).length > 79 && l.trim()) { o.push(l.replace(/\s+$/, '')); l = ind + '  '; } l += w + ' '; } o.push(l.replace(/\s+$/, '')); return o; };
+  const o = ['', P(U.units === 'M' ? ' *Metric*' : ' *English*', 19) + 'Two-Gear Mesh Screen (Web Gear Calc, new module)', ' ' + $('#mhdr').textContent, ''];
+  const dash = ' ' + '-'.repeat(W - 2);
+  o.push(line(' GEAR 1', ' PAIR', ' GEAR 2'), line(dash, dash, dash));
+  o.push(line('', cell(' TIGHT CENTER', L(r.tight.a)), ''), '');
+  const g1 = gearCol(r, 1), g2 = gearCol(r, 2), pc = pairCol(r), sec = (arr, k) => arr.find(x => x[0] === k);
+  const block = (A, Bc, C) => {
+    const ST = {'Tight mesh (zero backlash)': 'Tight mesh (no backlash)', 'At the entered center distance': 'At entered center', 'At the entered center': 'At entered center', 'Pair': 'Pair data'}, t_ = X => (X ? ' ' + (ST[X[1]] || X[1]) : '');
+    o.push(line(t_(A), t_(Bc), t_(C)));
+    const n = Math.max(A ? A[2].length : 0, Bc ? Bc[2].length : 0, C ? C[2].length : 0);
+    const f = (X, k) => (X && X[2][k] ? cell('  ' + X[2][k][2], X[2][k][3]) : '');
+    for (let k = 0; k < n; k++) o.push(line(f(A, k), f(Bc, k), f(C, k)));
+    o.push('');
+  };
+  block(sec(g1, 'geo'), sec(pc, 'pair'), sec(g2, 'geo'));
+  block(sec(g1, 'tight'), sec(pc, 'tight'), sec(g2, 'tight'));
+  if (sec(pc, 'ent')) block(sec(g1, 'ent'), sec(pc, 'ent'), sec(g2, 'ent'));
+  const mm = msgs(r);
+  for (const [i, t] of [[1, 'Gear 1'], [0, 'Pair'], [2, 'Gear 2']]) {
+    const xs = mm[i].filter(([k]) => k !== 'note'); if (!xs.length) continue;
+    o.push(' ' + t + ':'); for (const [k, x] of xs) o.push(...wrap((k === 'err' ? '*' : '') + x, '   '));
+  }
   o.push(' ' + (r.ok ? 'Mesh OK' : 'Mesh has problems'), '', '');
   return o.join('\r\n');
 }
