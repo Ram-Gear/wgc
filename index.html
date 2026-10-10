@@ -171,18 +171,38 @@ button.small{padding:3px 9px;font-size:12px}
  body.printfig>#printfig svg{width:100%;height:auto;max-height:260mm}
 }
 .seg button.small{background:#fff;color:#14324f;border:1px solid #9fb3c8}
+/* saved gear profiles (v1.3.0) */
+.dlgov{position:fixed;inset:0;background:rgba(15,23,42,.45);display:flex;align-items:flex-start;justify-content:center;z-index:50;padding-top:8vh}
+.dlg{background:#fff;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.25);padding:16px 20px;min-width:440px;max-width:min(940px,94vw);max-height:84vh;overflow:auto}
+.dlg h2{margin:0 0 10px;font-size:18px}
+.dlg .xf{display:flex;flex-direction:column;gap:3px;margin:8px 0}
+.dlg input[type=text],.dlg select{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:6px}
+.dlg .w{color:var(--hot);font-weight:600;margin:6px 0;min-height:1em}
+.dlg .note{color:var(--mut);font-size:13px}
+.dlgbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px;flex-wrap:wrap}
+.gptab{width:100%;margin:6px 0}.gptab td,.gptab th{padding:4px 8px;text-align:left}
+.gmact{white-space:nowrap}.gmact button{margin-left:4px;padding:3px 8px}
+button.danger{color:#fff;background:var(--hot);border-color:var(--hot)}
+.profline{margin-top:14px}
+#profset .xgrid{grid-template-columns:1fr 1fr}
+#profset .w{color:var(--hot);font-weight:600;margin:4px 0}
+@media print{.dlgov{display:none}}
+#profset{display:block}
+#profset .xgrid{display:grid;gap:14px;margin-bottom:6px}
+#profset .xf .note{display:block;margin-top:3px}
+#profset #mprofBtn{margin-right:8px}
 
 </style>
 </head>
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.2.0</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.0</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.2.0, build 2026-10-09. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.2.0';</script>
+<!-- Web Gear Calc v1.3.0, build 2026-10-10. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.0';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -2455,16 +2475,33 @@ function printText(mod, v) {
 // ------------------------------------------------------------------ rendering
 let CUR = null;           // current module id or null (home)
 const app = () => $('#app');
-function setUnits(u) {
-  if (u === UNITS) return;
+function convertTyped(mod, typed, u) {   // typed values of one screen from the other unit system into u (same rule as the English/Metric toggle)
   const f = u === 'M' ? 25.4 : 1 / 25.4;
-  for (const mod of Object.keys(S)) for (const [k, s] of Object.entries(S[mod].typed)) {
+  for (const [k, s] of Object.entries(typed)) {
     const kind = kindOf(mod, k);
     if (kind !== 'len' && kind !== 'wire' && kind !== 'inv') continue;
     const n = parseNum(s); if (n === null || isNaN(n)) continue;
-    S[mod].typed[k] = String(+(kind === 'inv' ? n / f : n * f).toPrecision(10));
+    typed[k] = String(+(kind === 'inv' ? n / f : n * f).toPrecision(10));
   }
+}
+function setUnits(u) {
+  if (u === UNITS) return;
+  for (const mod of Object.keys(S)) convertTyped(mod, S[mod].typed, u);
   UNITS = u; save(); route();
+}
+// saved gear profiles (gears.js): a screen's whole state is {typed, opts}
+const clone = o => JSON.parse(JSON.stringify(o));
+function getState(mod) { return clone(st(mod)); }
+function loadState(mod, state, units) {      // restore a screen exactly: the profile's units, then its inputs and options
+  if (units !== UNITS) { for (const m of Object.keys(S)) convertTyped(m, S[m].typed, units); UNITS = units; }
+  S[mod] = clone(state); save();
+  if (location.hash.toUpperCase() !== '#' + mod) location.hash = '#' + mod; else route();
+}
+function computeState(mod, state, units) {   // compute a saved state off-screen (the current screen state is left untouched)
+  const keep = S[mod], c = clone(state);
+  if (units !== UNITS) convertTyped(mod, c.typed, UNITS);
+  S[mod] = c;
+  try { return compute(mod); } finally { S[mod] = keep; }
 }
 function header(crumb) {
   const bar = $('#bar'); bar.textContent = '';
@@ -2489,11 +2526,13 @@ function home() {
         h('span', {class: 'tid'}, 'BEVEL (new)'), h('span', {class: 'blurb'}, 'Straight, spiral, Zerol; hypoid geometry (approx.); AGMA 2003-style rating')) : null,
       window.GCP3MESHUI ? h('a', {class: 'tile newmod', href: '#MESH', id: 'tile-MESH'}, h('span', {class: 'key'}, '9'), h('span', {class: 'tname'}, 'Two-Gear Mesh'),
         h('span', {class: 'tid'}, 'MESH (new)'), h('span', {class: 'blurb'}, 'EXT or HELIX pair: tight-mesh center, backlash, clearance, contact ratio, interference, mesh drawing')) : null),
+    window.GCP3GEARS ? h('p', {class: 'profline'}, h('button', {id: 'profilesBtn', onclick: () => window.GCP3GEARS.manager()}, 'Saved gears (profiles)\u2026'),
+      h('span', {class: 'note'}, ' Rename, delete, export or import the gear profiles saved from the EXT and HELIX screens.')) : null,
     X ? h('div', {class: 'idmenu'}, h('h2', {}, 'Measure / Identify (reverse engineering)'),
       h('p', {class: 'lead'}, 'Measure a worn or broken gear and work back to its design: ranked standard pitch and pressure-angle candidates with confidence.'),
       h('div', {class: 'idlinks'}, ORDER.concat(['BEVEL']).map(m => h('a', {class: 'idlink', href: '#' + m + '-ID', id: 'idlink-' + m}, m)))) : null,
     h('p', {class: 'foot'}, 'Keys: 1-9 open a screen from this menu. On a screen: Enter = next field, Esc = clear the field, Ctrl+P = print.'),
-    h('p', {class: 'about', id: 'about'}, `About: Web Gear Calc ${window.WGC_VERSION || ''}, an offline gear calculator based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear & Supply Corp., Novi, MI. Every screen shows a tooth profile drawing; BEVEL adds a dimensioned mesh sketch; MESH checks a pair of EXT or HELIX gears in mesh.`)));
+    h('p', {class: 'about', id: 'about'}, `About: Web Gear Calc ${window.WGC_VERSION || ''}, an offline gear calculator based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear & Supply Corp., Novi, MI. Every screen shows a tooth profile drawing; BEVEL adds a dimensioned mesh sketch; MESH checks a pair of EXT or HELIX gears in mesh; EXT and HELIX gears can be saved as named profiles (Save gear\u2026).`)));
 }
 
 function optField(mod, key, label, title) {
@@ -2580,6 +2619,10 @@ function screen(mod) {
       h('button', {id: 'saveBtn', onclick: () => download(mod), title: 'Save the printout as a text file (GCP3 format)'}, 'Save .TXT'),
       h('button', {id: 'copyBtn', class: 'ghost', onclick: () => copyText(mod)}, 'Copy'),
       h('button', {id: 'printBtn', onclick: () => { update(); window.print(); }, title: 'Print the GCP3-format printout'}, 'Print'),
+      (mod === 'EXT' || mod === 'HELIX') && window.GCP3GEARS ? h('button', {id: 'saveGearBtn', title: 'Save this gear (all inputs and options) as a named profile in this browser',
+        onclick: () => { update(); window.GCP3GEARS.saveDialog(mod, LAST); }}, 'Save gear\u2026') : null,
+      (mod === 'EXT' || mod === 'HELIX') && window.GCP3GEARS ? h('button', {id: 'loadGearBtn', title: 'Load a saved gear profile into this screen',
+        onclick: () => window.GCP3GEARS.loadDialog(mod)}, 'Load gear\u2026') : null,
       (mod === 'EXT' || mod === 'HELIX') && window.GCP3MESHUI ? h('button', {class: 'ghost', id: 'meshBtn', title: 'Open the Two-Gear Mesh screen with this gear as Gear 1',
         onclick: () => { update(); window.GCP3MESHUI.carry(mod, LAST); }}, 'Mesh with mate') : null,
       window.GCP3X ? h('a', {class: 'btn idbtn', id: 'idBtn', href: '#' + mod + '-ID', title: 'Measure a worn gear and identify its design'}, 'Measure / Identify') : null),
@@ -2728,7 +2771,7 @@ document.addEventListener('keydown', e => {
 });
 document.addEventListener('focusout', e => { if (e.target && e.target.tagName === 'INPUT' && CUR) setTimeout(update, 0); });
 window.addEventListener('hashchange', route);
-window.GCP3UI = {compute, printText, MODS, st, setUnits, get last() { return LAST; }, h, save, parseNum, fv, flash, selAll, route,
+window.GCP3UI = {compute, printText, MODS, st, setUnits, getState, loadState, computeState, get last() { return LAST; }, h, save, parseNum, fv, flash, selAll, route,
   get units() { return UNITS; }, LF, ORDER};
 // extra screens (Identify, Bevel) are defined in ui_extra.js, which loads after this file; start routing once the page is ready
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', route); else setTimeout(route, 0);
@@ -3682,6 +3725,7 @@ function compute() {
   if (!(inp.Pn > 0)) return {err: 'Enter the normal ' + ((S.opts.pmode || 'DP') === 'DP' ? 'diametral pitch.' : 'module.')};
   if (!(inp.phin > 0)) return {err: 'Enter the normal pressure angle.'};
   if (helical() && !(inp.beta > 0)) return {err: 'Enter the helix angle (or choose Spur).'};
+  const mm = mismatchMsg({Pn: inp.Pn, pa: inp.phin, ha: inp.beta || 0}); if (mm) return {err: mm, mismatch: true};
   inp.fmtLen = x => (+x * LF()).toFixed(5);
   const r = MS.meshCalc(inp); r.inp = inp; return r;
 }
@@ -3704,7 +3748,8 @@ function screen() {
       h('span', {class: 'grow'}),
       h('button', {class: 'ghost', id: 'exK43', onclick: () => example('k43'), title: 'KHK Table 4.3: m 3, 20 deg, z 12/24, x 0.6/0.36'}, 'Example: KHK 4.3 spur'),
       h('button', {class: 'ghost', id: 'exK49', onclick: () => example('k49'), title: 'KHK Table 4.9: mn 3, 20 deg, beta 30, z 12 L / 60 R, xn 0.09809/0'}, 'KHK 4.9 helical'),
-      h('button', {class: 'ghost', id: 'clearBtn', onclick: () => { S.typed = {}; S.carry = [null, null]; save(); screen(); }}, 'Clear all')),
+      h('button', {class: 'ghost', id: 'clearBtn', onclick: () => { S.typed = {}; S.carry = [null, null]; S.gp = [null, null]; save(); screen(); }}, 'Clear all')),
+    pickers(),
     h('div', {class: 'xgrid three'},
       h('fieldset', {class: 'xset', id: 'pairset'}, h('legend', {}, 'Pair'),
         field('pitch', (S.opts.pmode || 'DP') === 'DP' ? 'Normal diametral pitch' : 'Normal module (mm)', 'num'), field('pa', 'Normal pressure angle (deg)', 'deg'),
@@ -3726,7 +3771,7 @@ function example(w) {                 // KHK worked examples are metric: switch 
     S.typed = {pitch: '3', pa: '20', N1: '12', od1: '44.84', root1: '32.1', tv1: '0.6', N2: '24', od2: '79.4', root2: '66.66', tv2: '0.36', C: '56.6'}; }
   if (w === 'k49') { S.opts.type = 'HELIX'; S.opts.pmode = 'MOD'; S.opts.tk1 = 'x'; S.opts.tk2 = 'x'; S.opts.hand1 = 'L'; S.opts.hand2 = 'R';
     S.typed = {pitch: '3', pa: '20', ha: '30', b: '30', N1: '12', od1: '48.153', root1: '34.657', tv1: '0.09809', N2: '60', od2: '213.842', root2: '200.346', tv2: '0', C: '125.1'}; }
-  S.units = 'M'; S.carry = [null, null]; save();
+  S.units = 'M'; S.carry = [null, null]; S.gp = [null, null]; save();
   if (U.units !== 'M') { U.setUnits('M'); flash('Switched to Metric (mm): the KHK example is in millimetres.'); } else screen();
 }
 
@@ -3874,46 +3919,312 @@ function figDraw(r, keep) {
 }
 
 // ------------------------------------------------------------------ carry the current EXT / HELIX gear into the MESH screen as Gear 1
-function carry(mod, v) {
-  if (!v || v.err || !v.geo) { flash('Enter the gear first (the screen must compute without errors).'); return; }
+// gear parameters of a computed EXT / HELIX screen result: normal DP (1/in), normal PA, helix angle (deg, 0 = spur), N
+function params(mod, v) {
+  if (!v || v.err || !v.geo) return null;
+  if (mod === 'EXT') { const g = v.geo; return {Pn: g.P, pa: g.phi / D2R, ha: 0, N: g.N}; }
+  const rr = v.rowsR || [], gv = n => { const x = rr.find(q => q.n === n); return x ? x.g : null; };
+  return {Pn: +gv(20), pa: +gv(22), ha: +v.geo.HA, N: v.geo.N};
+}
+const ownSig = i => JSON.stringify(['N', 'od', 'root', 'tv', 'pd', 'k', 'tif'].map(f => S.typed[f + i] ?? '').concat([S.opts['tk' + i] || 'tn']));
+// put an EXT / HELIX gear into slot i (1 or 2); the shared pitch / PA / helix fields take this gear's values,
+// and the gear's own values are recorded (S.gp) so a later mismatch with the other gear or the pair fields blocks the calculation
+function carryInto(i, mod, v, meta) {
+  if (!v || v.err || !v.geo) { flash('Enter the gear first (the screen must compute without errors).'); return false; }
   units();
-  const f = LF(), len = x => String(+(x * f).toPrecision(9)), T = S.typed;
-  const keep2 = {}; for (const k of Object.keys(T)) if (/2$/.test(k)) keep2[k] = T[k];
-  const pm = U.units === 'M' ? 'MOD' : 'DP';
-  let gen, tif, U0, root, N;
+  const f = LF(), len = x => String(+(x * f).toPrecision(9)), T = S.typed, o = 3 - i;
+  const keep = {}; for (const k of Object.keys(T)) if (new RegExp(o + '$').test(k)) keep[k] = T[k];
+  const pm = U.units === 'M' ? 'MOD' : 'DP', P = params(mod, v);
+  let gen, tif, U0, root;
   const rowD = (rows, n) => { const x = (rows || []).find(q => q.n === n); return x ? x.d : null; };
+  T.pitch = pm === 'DP' ? String(+P.Pn.toPrecision(12)) : String(+(25.4 / P.Pn).toPrecision(12)); T.pa = String(+P.pa.toPrecision(12));
   if (mod === 'EXT') {
-    const gg = v.geo; N = gg.N; S.opts.type = 'EXT';
-    T.pitch = pm === 'DP' ? String(+gg.P.toPrecision(12)) : String(+(25.4 / gg.P).toPrecision(12)); T.pa = String(+(gg.phi / D2R).toPrecision(12)); delete T.ha;
+    const gg = v.geo; S.opts.type = 'EXT'; delete T.ha;
     root = rowD(v.rows, 9); gen = gg.gen; tif = gg.tif; U0 = gg.U;
-    T.N1 = String(N); T.od1 = len(2 * gg.Rt); T.root1 = len(root); S.opts.tk1 = 'tn'; T.tv1 = len(gg.t);
+    T['N' + i] = String(gg.N); T['od' + i] = len(2 * gg.Rt); T['root' + i] = len(root); S.opts['tk' + i] = 'tn'; T['tv' + i] = len(gg.t);
   } else {
-    const gg = v.geo, tr = gg.tr, rr = v.rowsR || [], gv = n => { const x = rr.find(q => q.n === n); return x ? x.g : null; };
-    N = gg.N; S.opts.type = 'HELIX';
-    const NDP = gv(20), NPA = gv(22);
-    T.pitch = pm === 'DP' ? String(+NDP.toPrecision(12)) : String(+(25.4 / NDP).toPrecision(12)); T.pa = String(+(+NPA).toPrecision(12)); T.ha = String(+(+gg.HA).toPrecision(12));
+    const gg = v.geo, tr = gg.tr; S.opts.type = 'HELIX'; T.ha = String(+P.ha.toPrecision(12));
     root = rowD(v.rows, 10); gen = tr.gen; tif = tr.tif; U0 = tr.U;
-    T.N1 = String(N); T.od1 = len(2 * tr.Rt); T.root1 = len(root); S.opts.tk1 = 'tt'; T.tv1 = len(tr.t);
+    T['N' + i] = String(gg.N); T['od' + i] = len(2 * tr.Rt); T['root' + i] = len(root); S.opts['tk' + i] = 'tt'; T['tv' + i] = len(tr.t);
   }
   S.opts.pmode = pm;
-  for (const k of ['pd1', 'k1']) delete T[k];
-  if (tif > 0) T.tif1 = len(tif); else delete T.tif1;
-  Object.assign(T, keep2);
-  delete T.C;                   // the tight-mesh center changes with the new Gear 1: re-enter the center to check
-  S.carry = [{from: mod, gen, U: !!U0, sig: null}, S.carry[1]];
-  S.carry[0].sig = carrySig(1);
-  save(); location.hash = '#MESH'; flash(`${mod} gear (${N} T) loaded as Gear 1. Enter the mate as Gear 2.`);
+  for (const k of ['pd' + i, 'k' + i]) delete T[k];
+  if (tif > 0) T['tif' + i] = len(tif); else delete T['tif' + i];
+  Object.assign(T, keep);
+  if (meta.hand !== undefined && mod === 'HELIX') S.opts['hand' + i] = meta.hand;
+  if (meta.clearC) delete T.C;   // the tight-mesh center changes with the new gear: re-enter the center to check
+  if (!S.carry) S.carry = [null, null];
+  S.carry[i - 1] = {from: meta.from, gen, U: !!U0, sig: null};
+  S.carry[i - 1].sig = carrySig(i);
+  if (!S.gp) S.gp = [null, null];
+  S.gp[i - 1] = {Pn: P.Pn, pa: P.pa, ha: P.ha, from: meta.from, sig: ownSig(i)};
+  save(); return true;
+}
+function carry(mod, v) {
+  if (!carryInto(1, mod, v, {from: mod, clearC: true})) return;
+  location.hash = '#MESH'; flash(`${mod} gear (${v.geo.N} T) loaded as Gear 1. Enter the mate as Gear 2.`);
+}
+function loadProfile(i, name) {
+  const GP = window.GCP3GEARS, p = GP && GP.get(name); const m = $('#mprofmsg');
+  if (!p) return;
+  const v = U.computeState(p.mod, p.state, p.units);
+  if (!carryInto(i, p.mod, v, {from: `profile "${p.name}"`, hand: p.hand || ''})) { if (m) m.textContent = `Profile "${p.name}" does not compute on its ${p.mod} screen; open it there to fix it.`; return; }
+  screen(); flash(`Profile "${p.name}" loaded as Gear ${i}.`);
+}
+// recorded gear values still valid (the gear's own fields are unchanged since it was loaded)
+const rec = i => (S.gp && S.gp[i - 1] && S.gp[i - 1].sig === ownSig(i)) ? S.gp[i - 1] : null;
+function pitchTxt(Pn) { return (S.opts.pmode || 'DP') === 'DP' ? `${+Pn.toFixed(6)} DP` : `m ${+(25.4 / Pn).toFixed(6)} mm`; }
+const degTxt = (x, hel) => `${(+x).toFixed(3)}\u00b0` + (hel && Math.abs(x) < 1e-12 ? ' (spur)' : '');
+function mismatchMsg(cur) {
+  const GP = window.GCP3GEARS; if (!GP) return null;
+  const r1 = rec(1), r2 = rec(2), out = [];
+  const say = (k, la, a, lb, b) => {
+    if (k === 'pitch') out.push(`Normal pitch doesn't match: ${la} ${pitchTxt(a.Pn)}, ${lb} ${pitchTxt(b.Pn)}.`);
+    if (k === 'pa') out.push(`Pressure angle doesn't match: ${la} ${degTxt(a.pa)}, ${lb} ${degTxt(b.pa)}.`);
+    if (k === 'ha') out.push(`Helix angle doesn't match: ${la} ${degTxt(a.ha, 1)}, ${lb} ${degTxt(b.ha, 1)}.`);
+  };
+  if (r1 && r2) for (const k of GP.mismatch(r1, r2)) say(k, `Gear 1 (${r1.from})`, r1, `Gear 2 (${r2.from})`, r2);
+  if (!out.length) for (const [i, r] of [[1, r1], [2, r2]]) if (r) for (const k of GP.mismatch(r, cur)) say(k, `Gear ${i} (${r.from})`, r, 'the Pair fields', cur);
+  return out.length ? out.join(' ') + ' Gears in mesh must have the same normal pitch, pressure angle and helix angle; the calculation is blocked.' : null;
+}
+function pickers() {
+  const GP = window.GCP3GEARS; if (!GP) return null;
+  const all = GP.list().filter(p => p.mod === 'EXT' || p.mod === 'HELIX');
+  const info = {}; for (const p of all) info[p.name] = GP.params(p);
+  const pick = i => {
+    const other = rec(3 - i);
+    const ok = all.filter(p => {
+      const q = info[p.name]; if (!q) return false;
+      if (!other) return true;
+      if (GP.mismatch(q, other).length) return false;
+      const oh = S.opts['hand' + (3 - i)] || '';
+      return !(q.ha > 0 && p.hand && oh && p.hand === oh);   // helical: opposite hands
+    });
+    const hidden = all.length - ok.length, c = S.carry && S.carry[i - 1], cur = c && c.sig === carrySig(i) ? c.from : '';
+    return h('label', {class: 'xf'}, h('span', {class: 'xl'}, `Load Gear ${i} from profile`),
+      h('select', {id: 'mprof' + i, onchange: e => { if (e.target.value) loadProfile(i, e.target.value); }},
+        [h('option', {value: ''}, ok.length ? '\u2014 choose a saved gear \u2014' : '\u2014 no matching saved gears \u2014')].concat(ok.map(p => h('option', {value: p.name, selected: cur === `profile "${p.name}"`}, `${p.name}: ${p.mod} ${p.summary || ''}${p.hand ? ' ' + p.hand + 'H' : ''}`)))),
+      hidden && other ? h('span', {class: 'note', id: 'mprofhid' + i}, `${hidden} saved gear(s) hidden: different pitch, pressure angle or helix angle from Gear ${3 - i}, or the same hand.`) : null);
+  };
+  return h('fieldset', {class: 'xset', id: 'profset'}, h('legend', {}, 'Saved gears'),
+    h('div', {class: 'xgrid'}, pick(1), pick(2)),
+    h('div', {class: 'w', id: 'mprofmsg'}),
+    h('button', {class: 'ghost', id: 'mprofBtn', onclick: () => GP.manager()}, 'Manage saved gears\u2026'),
+    h('span', {class: 'note'}, ` Only gears with the same normal pitch, pressure angle and helix angle (tolerance 1e-6 relative) can mesh.`));
 }
 
 // ------------------------------------------------------------------ routing: extend GCP3X (ui_extra.js)
 const X0 = window.GCP3X;
-window.GCP3MESHUI = {carry, get last() { return ST.last; }, screen};
+window.GCP3MESHUI = {carry, carryInto, params, loadProfile, get last() { return ST.last; }, screen};
 if (X0) {
   const handles = X0.handles, crumb = X0.crumb, render = X0.render;
   X0.handles = id => id === KEY || handles(id);
   X0.crumb = id => id === KEY ? 'Two-Gear Mesh' : crumb(id);
   X0.render = id => { if (id === KEY) { $('#printdoc').textContent = ''; screen(); } else render(id); };
 }
+})();
+
+</script>
+<script>
+/* Web Gear Calc - saved gear profiles (new in v1.3.0). Plain script, loaded after ui_mesh.js.
+   A profile is the whole EXT or HELIX screen state ({typed, opts}: every entered input, the thickness method and value, hob/cutter,
+   Shaper Ex. and span/pin data, depth system) plus its units, so loading restores the screen exactly.
+   Stored in localStorage key 'gcp3web.gears'. A file:// copy and the website (https://ram-gear.github.io/wgc/) have SEPARATE stores:
+   move gears with Export / Import (JSON). */
+(function () {
+'use strict';
+const U = window.GCP3UI, {h, flash} = U;
+const $ = (s, el) => (el || document).querySelector(s);
+const KEY = 'gcp3web.gears', FORMAT = 'web-gear-calc-gear-profiles', MODS_OK = ['EXT', 'HELIX'];
+const TOL = 1e-6;                      // relative tolerance for "same pitch / pressure angle / helix angle"
+const same = (a, b) => Math.abs(a - b) <= TOL * Math.max(Math.abs(a), Math.abs(b), 1);
+
+function readAll() {
+  try { const o = JSON.parse(window.localStorage.getItem(KEY)); return o && typeof o === 'object' && o.profiles ? o : {v: 1, profiles: {}}; } catch (e) { return {v: 1, profiles: {}}; }
+}
+function writeAll(o) {
+  try { window.localStorage.setItem(KEY, JSON.stringify(o)); return true; } catch (e) { flash('Could not save: browser storage is full or disabled.'); return false; }
+}
+const tfmt = iso => { const d = new Date(iso); if (isNaN(d)) return ''; const z = n => String(n).padStart(2, '0'); return `${d.getFullYear()}-${z(d.getMonth() + 1)}-${z(d.getDate())} ${z(d.getHours())}:${z(d.getMinutes())}`; };
+const list = () => Object.values(readAll().profiles).sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
+const get = name => readAll().profiles[name] || null;
+function put(p) { const o = readAll(); o.profiles[p.name] = p; return writeAll(o); }
+function remove(name) { const o = readAll(); delete o.profiles[name]; return writeAll(o); }
+function rename(from, to) { const o = readAll(); const p = o.profiles[from]; if (!p) return false; delete o.profiles[from]; p.name = to; o.profiles[to] = p; return writeAll(o); }
+
+// gear parameters of a profile (computed off-screen): normal DP (1/in), normal PA, |helix|, N; null when it does not compute
+function params(p) {
+  try {
+    const v = U.computeState(p.mod, p.state, p.units);
+    const g = window.GCP3MESHUI && window.GCP3MESHUI.params(p.mod, v);
+    return g ? Object.assign(g, {hand: p.hand || ''}) : null;
+  } catch (e) { return null; }
+}
+// which of pitch / PA / helix differ (empty = compatible); hands checked separately
+function mismatch(a, b) {
+  const out = [];
+  if (!same(a.Pn, b.Pn)) out.push('pitch');
+  if (!same(a.pa, b.pa)) out.push('pa');
+  if (!same(Math.abs(a.ha), Math.abs(b.ha))) out.push('ha');
+  return out;
+}
+function summary(mod, v) {
+  const g = window.GCP3MESHUI && v && !v.err ? window.GCP3MESHUI.params(mod, v) : null;
+  if (!g) return 'does not compute';
+  const pit = U.units === 'M' ? `m ${+(25.4 / g.Pn).toFixed(5)}` : `${+g.Pn.toFixed(5)} ${mod === 'HELIX' ? 'NDP' : 'DP'}`;
+  return `${g.N} T, ${pit}, ${+g.pa.toFixed(4)}\u00b0` + (mod === 'HELIX' ? `, helix ${+g.ha.toFixed(4)}\u00b0` : '');
+}
+
+// ------------------------------------------------------------------ dialogs
+function dialog(id, title, body, buttons) {
+  close();
+  const box = h('div', {class: 'dlg', id, role: 'dialog', 'aria-modal': 'true', 'aria-label': title},
+    h('h2', {}, title), h('div', {class: 'dlgbody'}, body), h('div', {class: 'dlgbtns'}, buttons));
+  const ov = h('div', {class: 'dlgov', id: 'dlgov', onclick: e => { if (e.target.id === 'dlgov') close(); }}, box);
+  document.body.append(ov);
+  const f = box.querySelector('input,select,button'); if (f) f.focus();
+  return box;
+}
+function close() { const o = $('#dlgov'); if (o) o.remove(); }
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && $('#dlgov')) { e.stopPropagation(); close(); } }, true);
+
+function nextName() { const n = new Set(list().map(p => p.name)); for (const c of 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') if (!n.has('Gear ' + c)) return 'Gear ' + c; return 'Gear ' + (n.size + 1); }
+
+function saveDialog(mod, v) {
+  const existing = list();
+  const name = h('input', {id: 'gp-name', type: 'text', value: nextName(), spellcheck: 'false', maxlength: '60'});
+  const hand = mod === 'HELIX' ? h('select', {id: 'gp-hand'}, [['', 'not given'], ['R', 'Right hand'], ['L', 'Left hand']].map(([k, t]) => h('option', {value: k}, t))) : null;
+  const warn = h('div', {class: 'w', id: 'gp-warn'});
+  const sum = summary(mod, v);
+  const doSave = force => {
+    const nm = name.value.trim();
+    if (!nm) { warn.textContent = 'Enter a name, e.g. Gear A.'; return; }
+    const old = get(nm);
+    if (old && !force) {
+      warn.textContent = `A profile named "${nm}" already exists (${old.mod}, ${old.summary || ''}, saved ${tfmt(old.saved)}). Overwrite it?`;
+      okBtn.textContent = 'Overwrite'; okBtn.id = 'gp-overwrite'; armed = true; return;
+    }
+    const p = {name: nm, mod, units: U.units, hand: hand ? hand.value : '', state: U.getState(mod), summary: sum, saved: new Date().toISOString(), app: window.WGC_VERSION || ''};
+    if (put(p)) { close(); flash(`Saved "${nm}" (${mod}).`); }
+  };
+  let armed = false;
+  const okBtn = h('button', {id: 'gp-save', onclick: () => doSave(armed)}, 'Save');
+  name.addEventListener('input', () => { warn.textContent = ''; okBtn.textContent = 'Save'; okBtn.id = 'gp-save'; armed = false; });
+  name.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); okBtn.click(); } });
+  dialog('gp-savedlg', `Save gear (${mod})`, [
+    h('p', {}, 'Saves every input and option on this screen (thickness method and value, hob / cutter, Shaper Ex., span / pins, depth system) and the units, in this browser.'),
+    h('p', {class: 'note'}, 'This gear: ' + sum + (v && v.err ? ' (the screen has an error; the inputs are saved anyway)' : '')),
+    h('label', {class: 'xf'}, h('span', {class: 'xl'}, 'Name'), name),
+    hand ? h('label', {class: 'xf'}, h('span', {class: 'xl'}, 'Hand of helix (for MESH)'), hand) : null,
+    existing.length ? h('p', {class: 'note'}, 'Existing: ', existing.map(p => h('a', {href: 'javascript:void 0', class: 'gp-ex', onclick: () => { name.value = p.name; name.dispatchEvent(new Event('input')); }}, p.name)).reduce((a, x) => a.concat(a.length ? [', ', x] : [x]), [])) : null,
+    warn], [okBtn, h('button', {class: 'ghost', id: 'gp-cancel', onclick: close}, 'Cancel')]);
+}
+
+function loadDialog(mod) {
+  const all = list(), mine = all.filter(p => p.mod === mod), other = all.length - mine.length;
+  const rows = mine.map(p => h('tr', {}, h('td', {}, h('b', {}, p.name)), h('td', {}, p.summary || ''), h('td', {}, p.units === 'M' ? 'mm' : 'in'),
+    h('td', {}, tfmt(p.saved)),
+    h('td', {}, h('button', {class: 'gp-load', 'data-name': p.name, onclick: () => { close(); U.loadState(p.mod, p.state, p.units); flash(`Loaded "${p.name}".`); }}, 'Load'))));
+  dialog('gp-loaddlg', `Load gear (${mod})`, [
+    mine.length ? h('table', {class: 'gcp gptab'}, h('thead', {}, h('tr', {}, ['Name', 'Gear', 'Units', 'Saved', ''].map(t => h('th', {}, t)))), h('tbody', {}, rows))
+      : h('p', {}, `No ${mod} gears saved in this browser yet. Use "Save gear\u2026", or Import a JSON file in Saved gears on the main menu.`),
+    other ? h('p', {class: 'note'}, `${other} profile(s) of the other type are not shown.`) : null,
+    h('p', {class: 'note'}, 'Loading replaces this screen\u2019s inputs and switches to the profile\u2019s units.')],
+  [h('button', {class: 'ghost', onclick: () => manager()}, 'Manage\u2026'), h('button', {class: 'ghost', id: 'gp-cancel', onclick: close}, 'Close')]);
+}
+
+// ------------------------------------------------------------------ export / import
+function exportObj(names) {
+  const ps = list().filter(p => !names || names.includes(p.name));
+  return {format: FORMAT, version: 1, app: window.WGC_VERSION || '', exported: new Date().toISOString(), profiles: ps};
+}
+function downloadJSON(obj, fname) {
+  const blob = new Blob([JSON.stringify(obj, null, 1)], {type: 'application/json'}), url = URL.createObjectURL(blob);
+  const a = h('a', {href: url, download: fname, style: 'display:none'}); document.body.append(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 1000);
+}
+const safeName = s => s.replace(/[\\/:*?"<>|]+/g, '_');
+function validProfile(p) {
+  return p && typeof p.name === 'string' && p.name.trim() && MODS_OK.includes(p.mod) && (p.units === 'E' || p.units === 'M')
+    && p.state && typeof p.state.typed === 'object' && p.state.typed && typeof p.state.opts === 'object' && p.state.opts
+    && Object.values(p.state.typed).every(x => typeof x === 'string');
+}
+// import: returns {added, replaced, renamed, skipped, bad}; mode for name clashes: 'replace' | 'keep' (keep both, rename) | 'skip'
+function importText(text, mode) {
+  let o; try { o = JSON.parse(text); } catch (e) { return {error: 'Not a JSON file.'}; }
+  const arr = o && o.format === FORMAT && Array.isArray(o.profiles) ? o.profiles : null;
+  if (!arr) return {error: 'Not a Web Gear Calc gear-profile file (format "' + FORMAT + '").'};
+  const all = readAll(), r = {added: 0, replaced: 0, renamed: 0, skipped: 0, bad: 0};
+  for (const p0 of arr) {
+    if (!validProfile(p0)) { r.bad++; continue; }
+    const p = {name: p0.name.trim().slice(0, 60), mod: p0.mod, units: p0.units, hand: ['R', 'L'].includes(p0.hand) ? p0.hand : '', state: {typed: p0.state.typed, opts: p0.state.opts},
+      summary: typeof p0.summary === 'string' ? p0.summary : '', saved: typeof p0.saved === 'string' ? p0.saved : new Date().toISOString(), app: typeof p0.app === 'string' ? p0.app : ''};
+    const old = all.profiles[p.name];
+    if (old && JSON.stringify(old.state) === JSON.stringify(p.state) && old.units === p.units && old.mod === p.mod && old.hand === p.hand) { r.skipped++; continue; }
+    if (old) {
+      if (mode === 'skip') { r.skipped++; continue; }
+      if (mode === 'keep') { let k = 2; while (all.profiles[`${p.name} (${k})`]) k++; p.name = `${p.name} (${k})`; r.renamed++; }
+      else r.replaced++;
+    } else r.added++;
+    all.profiles[p.name] = p;
+  }
+  writeAll(all); return r;
+}
+function clashes(text) {
+  try { const o = JSON.parse(text), all = readAll().profiles; return (o.profiles || []).filter(p => p && all[p.name] && JSON.stringify(all[p.name].state) !== JSON.stringify(p.state)).map(p => p.name); } catch (e) { return []; }
+}
+
+// ------------------------------------------------------------------ manager
+function manager() {
+  const ps = list();
+  const msg = h('div', {class: 'w', id: 'gm-msg'});
+  const file = h('input', {type: 'file', id: 'gm-file', accept: '.json,application/json', style: 'display:none', onchange: () => {
+    const f = file.files && file.files[0]; if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      const text = String(rd.result), cl = clashes(text);
+      const finish = mode => { const r = importText(text, mode); if (r.error) { manager(); $('#gm-msg').textContent = r.error; return; }
+        manager(); $('#gm-msg').textContent = `Imported: ${r.added} new, ${r.replaced} replaced, ${r.renamed} kept both (renamed), ${r.skipped} skipped` + (r.bad ? `, ${r.bad} invalid ignored` : '') + '.'; };
+      if (!cl.length) { finish('replace'); return; }
+      dialog('gm-clash', 'Import: names already used', [h('p', {}, `These names already exist with different gears: ${cl.join(', ')}.`)],
+        [h('button', {id: 'gm-replace', onclick: () => finish('replace')}, 'Replace mine'), h('button', {id: 'gm-keep', onclick: () => finish('keep')}, 'Keep both'),
+         h('button', {class: 'ghost', id: 'gm-skip', onclick: () => finish('skip')}, 'Skip those')]);
+    };
+    rd.readAsText(f);
+  }});
+  const row = p => h('tr', {'data-name': p.name},
+    h('td', {}, h('b', {}, p.name)), h('td', {}, p.mod + (p.hand ? ` (${p.hand})` : '')), h('td', {}, p.summary || ''), h('td', {}, p.units === 'M' ? 'mm' : 'in'),
+    h('td', {}, tfmt(p.saved)),
+    h('td', {class: 'gmact'},
+      h('button', {class: 'ghost gm-open', onclick: () => { close(); U.loadState(p.mod, p.state, p.units); }}, 'Open'),
+      h('button', {class: 'ghost gm-rename', onclick: () => {
+        const td = document.querySelector(`#gm-tab tr[data-name="${CSS.escape(p.name)}"] td`); td.textContent = '';
+        const inp = h('input', {type: 'text', class: 'gm-newname', value: p.name, maxlength: '60'});
+        const ok = h('button', {class: 'gm-renok', onclick: () => {
+          const to = inp.value.trim(); if (!to || to === p.name) { manager(); return; }
+          if (get(to) && !ok.dataset.sure) { msg.textContent = `"${to}" already exists. Click OK again to replace it.`; ok.dataset.sure = '1'; return; }
+          rename(p.name, to); manager(); $('#gm-msg').textContent = `Renamed "${p.name}" to "${to}".`;
+        }}, 'OK');
+        td.append(inp, ok); inp.focus(); inp.select();
+        inp.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); ok.click(); } });
+      }}, 'Rename'),
+      h('button', {class: 'ghost gm-export', onclick: () => downloadJSON(exportObj([p.name]), safeName(p.name) + '.wgc-gear.json')}, 'Export'),
+      h('button', {class: 'ghost gm-delete', onclick: e => {
+        const b = e.target; if (!b.dataset.sure) { b.dataset.sure = '1'; b.textContent = 'Really delete?'; b.classList.add('danger'); return; }
+        remove(p.name); manager(); $('#gm-msg').textContent = `Deleted "${p.name}".`;
+      }}, 'Delete')));
+  dialog('gm-dlg', 'Saved gears (profiles)', [
+    ps.length ? h('table', {class: 'gcp gptab', id: 'gm-tab'}, h('thead', {}, h('tr', {}, ['Name', 'Type', 'Gear', 'Units', 'Saved', ''].map(t => h('th', {}, t)))), h('tbody', {}, ps.map(row)))
+      : h('p', {id: 'gm-empty'}, 'No gears saved in this browser yet. Use "Save gear\u2026" on the EXT or HELIX screen, or Import a file.'),
+    msg,
+    h('p', {class: 'note'}, 'Profiles are kept in this browser\u2019s storage for this location. The downloaded WebGearCalc.html (file://) and the website keep SEPARATE lists, and each browser has its own: use Export all / Import to move gears between them or to back them up.'),
+    file],
+  [h('button', {id: 'gm-exportall', onclick: () => { if (!list().length) { msg.textContent = 'Nothing to export.'; return; } downloadJSON(exportObj(null), 'web-gear-calc-gears-' + new Date().toISOString().slice(0, 10) + '.json'); }}, 'Export all (JSON)'),
+   h('button', {id: 'gm-import', onclick: () => file.click()}, 'Import JSON\u2026'),
+   h('button', {class: 'ghost', id: 'gm-close', onclick: close}, 'Close')]);
+}
+
+window.GCP3GEARS = {list, get, put, remove, rename, params, mismatch, same, TOL, saveDialog, loadDialog, manager, importText, exportObj, close, FORMAT};
 })();
 
 </script>
