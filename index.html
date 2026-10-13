@@ -204,18 +204,22 @@ button.danger{color:#fff;background:var(--hot);border-color:var(--hot)}
 .mbig .lab{font-weight:600;color:#1f3b63;flex-basis:100%}.mbig .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:24px;font-weight:700;color:#1f5a99}
 .mflags{margin-top:8px}.mflags .w,.mflags .note{font-size:13px}
 @media (max-width:900px){.mcols{grid-template-columns:1fr}#mpair{order:-1}}
+/* v1.3.2: Saved gears note and hidden-gear list */
+#profset .mprofnote{margin:2px 0 6px;font-size:13px;color:#4b5563}
+.mhid{font-size:13px;color:var(--mut);margin-top:3px}.mhid summary{cursor:pointer;color:#1f5a99}
+.mhid ul{margin:4px 0 0 18px;padding:0}.mhid li{margin:2px 0}
 
 </style>
 </head>
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.1</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.2</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.1, build 2026-10-10. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.1';</script>
+<!-- Web Gear Calc v1.3.2, build 2026-10-13. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.2';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -4055,6 +4059,7 @@ function mismatchMsg(cur) {
   if (!out.length) for (const [i, r] of [[1, r1], [2, r2]]) if (r) for (const k of GP.mismatch(r, cur)) say(k, `Gear ${i} (${r.from})`, r, 'the Pair fields', cur);
   return out.length ? out.join(' ') + ' Gears in mesh must have the same normal pitch, pressure angle and helix angle; the calculation is blocked.' : null;
 }
+const MPROF_NOTE = 'Only gears with the same pitch, pressure angle and helix angle (opposite hand for helical) can be meshed. If a saved gear doesn\u2019t appear in the list, check it for a mis-entered pitch, pressure angle or helix angle \u2014 open it on EXT/HELIX, fix it and save again.';
 function pickers() {
   const GP = window.GCP3GEARS; if (!GP) return null;
   const all = GP.list().filter(p => p.mod === 'EXT' || p.mod === 'HELIX');
@@ -4068,17 +4073,33 @@ function pickers() {
       const oh = S.opts['hand' + (3 - i)] || '';
       return !(q.ha > 0 && p.hand && oh && p.hand === oh);   // helical: opposite hands
     });
-    const hidden = all.length - ok.length, c = S.carry && S.carry[i - 1], cur = c && c.sig === carrySig(i) ? c.from : '';
-    return h('label', {class: 'xf'}, h('span', {class: 'xl'}, `Load Gear ${i} from profile`),
-      h('select', {id: 'mprof' + i, onchange: e => { if (e.target.value) loadProfile(i, e.target.value); }},
-        [h('option', {value: ''}, ok.length ? '\u2014 choose a saved gear \u2014' : '\u2014 no matching saved gears \u2014')].concat(ok.map(p => h('option', {value: p.name, selected: cur === `profile "${p.name}"`}, `${p.name}: ${p.mod} ${p.summary || ''}${p.hand ? ' ' + p.hand + 'H' : ''}`)))),
-      hidden && other ? h('span', {class: 'note', id: 'mprofhid' + i}, `${hidden} saved gear(s) hidden: different pitch, pressure angle or helix angle from Gear ${3 - i}, or the same hand.`) : null);
+    const hidden = all.filter(p => !ok.includes(p)), c = S.carry && S.carry[i - 1], cur = c && c.sig === carrySig(i) ? c.from : '';
+    // why each hidden gear is hidden: the value that doesn't match, with both values
+    const why = p => {
+      const q = info[p.name]; if (!q) return `does not compute on its ${p.mod} screen (open it there and check the inputs)`;
+      const o = [], ref = `Gear ${3 - i}`;
+      for (const k of GP.mismatch(q, other)) {
+        if (k === 'pitch') o.push(`pitch ${pitchTxt(q.Pn)} (${ref}: ${pitchTxt(other.Pn)})`);
+        if (k === 'pa') o.push(`pressure angle ${degTxt(q.pa)} (${ref}: ${degTxt(other.pa)})`);
+        if (k === 'ha') o.push(`helix angle ${degTxt(q.ha, 1)} (${ref}: ${degTxt(other.ha, 1)})`);
+      }
+      if (!o.length) o.push(`same hand as ${ref} (${p.hand === 'R' ? 'right' : 'left'}); helical gears need opposite hands`);
+      return o.join('; ');
+    };
+    return h('div', {class: 'mpick'},
+      h('label', {class: 'xf'}, h('span', {class: 'xl'}, `Load Gear ${i} from profile`),
+        h('select', {id: 'mprof' + i, onchange: e => { if (e.target.value) loadProfile(i, e.target.value); }},
+          [h('option', {value: ''}, ok.length ? '\u2014 choose a saved gear \u2014' : '\u2014 no matching saved gears \u2014')].concat(ok.map(p => h('option', {value: p.name, selected: cur === `profile "${p.name}"`}, `${p.name}: ${p.mod} ${p.summary || ''}${p.hand ? ' ' + p.hand + 'H' : ''}`))))),
+      hidden.length ? h('details', {class: 'mhid', id: 'mprofhid' + i},
+        h('summary', {}, `${hidden.length} saved gear(s) hidden \u2014 show why`),
+        h('ul', {}, hidden.map(p => h('li', {'data-name': p.name}, h('b', {}, p.name), ': ' + why(p))))) : null);
   };
   return h('fieldset', {class: 'xset', id: 'profset'}, h('legend', {}, 'Saved gears'),
     h('div', {class: 'xgrid'}, pick(1), pick(2)),
+    h('p', {class: 'note mprofnote', id: 'mprofnote'}, MPROF_NOTE),
     h('div', {class: 'w', id: 'mprofmsg'}),
     h('button', {class: 'ghost', id: 'mprofBtn', onclick: () => GP.manager()}, 'Manage saved gears\u2026'),
-    h('span', {class: 'note'}, ` Only gears with the same normal pitch, pressure angle and helix angle (tolerance 1e-6 relative) can mesh.`));
+    h('span', {class: 'note'}, ' Matching tolerance: 1e-6 relative.'));
 }
 
 // ------------------------------------------------------------------ routing: extend GCP3X (ui_extra.js)
