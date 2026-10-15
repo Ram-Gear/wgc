@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Web Gear Calc - Help</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%3E%0A%20%20%3Ctitle%3EWeb%20Gear%20Calc%3C%2Ftitle%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22wgcIconBg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%22512%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232E7386%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23245E6E%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3C!--%20tile%3A%20identical%20on%20every%20icon%20--%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22112%22%20fill%3D%22url(%23wgcIconBg)%22%2F%3E%0A%20%20%3C!--%20gear%20--%3E%0A%20%20%3Cpath%20d%3D%22M243.5%20123.9L247.7%2099.2A115%20115%200%200%201%20264.3%2099.2L268.5%20123.9A91%2091%200%200%201%20279%20125.9L292.3%20104.8A115%20115%200%200%201%20307.5%20111.1L302%20135.5A91%2091%200%200%201%20310.9%20141.4L331.3%20127A115%20115%200%200%201%20343%20138.7L328.6%20159.1A91%2091%200%200%201%20334.5%20168L358.9%20162.5A115%20115%200%200%201%20365.2%20177.7L344.1%20191A91%2091%200%200%201%20346.1%20201.5L370.8%20205.7A115%20115%200%200%201%20370.8%20222.3L346.1%20226.5A91%2091%200%200%201%20344.1%20237L365.2%20250.3A115%20115%200%200%201%20358.9%20265.5L334.5%20260A91%2091%200%200%201%20328.6%20268.9L343%20289.3A115%20115%200%200%201%20331.3%20301L310.9%20286.6A91%2091%200%200%201%20302%20292.5L307.5%20316.9A115%20115%200%200%201%20292.3%20323.2L279%20302.1A91%2091%200%200%201%20268.5%20304.1L264.3%20328.8A115%20115%200%200%201%20247.7%20328.8L243.5%20304.1A91%2091%200%200%201%20233%20302.1L219.7%20323.2A115%20115%200%200%201%20204.5%20316.9L210%20292.5A91%2091%200%200%201%20201.1%20286.6L180.7%20301A115%20115%200%200%201%20169%20289.3L183.4%20268.9A91%2091%200%200%201%20177.5%20260L153.1%20265.5A115%20115%200%200%201%20146.8%20250.3L167.9%20237A91%2091%200%200%201%20165.9%20226.5L141.2%20222.3A115%20115%200%200%201%20141.2%20205.7L165.9%20201.5A91%2091%200%200%201%20167.9%20191L146.8%20177.7A115%20115%200%200%201%20153.1%20162.5L177.5%20168A91%2091%200%200%201%20183.4%20159.1L169%20138.7A115%20115%200%200%201%20180.7%20127L201.1%20141.4A91%2091%200%200%201%20210%20135.5L204.5%20111.1A115%20115%200%200%201%20219.7%20104.8L233%20125.9A91%2091%200%200%201%20243.5%20123.9ZM290%20214A34%2034%200%201%201%20222%20214A34%2034%200%201%201%20290%20214Z%22%20fill%3D%22%23FFFFFF%22%20fill-rule%3D%22evenodd%22%2F%3E%0A%20%20%3C!--%20tip-diameter%20dimension%20--%3E%0A%20%20%3Cpath%20d%3D%22M140.9%20270V424M371.1%20270V424%22%20stroke%3D%22%239FD3E1%22%20stroke-width%3D%2220%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M180.9%20392H331.1%22%20stroke%3D%22%239FD3E1%22%20stroke-width%3D%2222%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M148.9%20392l46-26v52zM363.1%20392l-46-26v52z%22%20fill%3D%22%239FD3E1%22%20stroke%3D%22%239FD3E1%22%20stroke-width%3D%228%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%3C%2Fsvg%3E">
+<style>
+:root{--ink:#1d2430;--mut:#4f5a69;--acc:#0b5cad;--line:#b7d6b7}
+html,body{margin:0;background:#EAF7EA;color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+#bar{display:flex;align-items:center;gap:16px;padding:8px 20px;background:#EAF7EA;border-bottom:1px solid var(--line);position:sticky;top:0}
+#bar a.brand{display:flex;align-items:center;gap:10px;color:var(--ink);text-decoration:none}
+#bar img{width:32px;height:32px;display:block}
+#bar .sub{font-size:13px;color:#3b4654}#bar .crumb{font-size:16px;font-weight:600}
+#bar .grow{flex:1}#bar .open{padding:3px 10px;border:1px solid var(--acc);border-radius:6px;color:var(--acc);background:#fff;font-size:13px;font-weight:600;text-decoration:none}
+main{max-width:900px;margin:0 auto;padding:18px 20px 40px}
+h1{font-size:26px;margin:10px 0}h2{font-size:21px;margin:28px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}h3{font-size:17px;margin:18px 0 6px}
+a{color:var(--acc)}code,kbd{font:14px ui-monospace,Consolas,monospace;background:#fff;border:1px solid #d9dee6;border-radius:4px;padding:0 4px}
+.card{background:#fff;border:1px solid #d9dee6;border-radius:8px;padding:12px 16px;margin:10px 0}
+dt{font-weight:700;margin-top:10px}dd{margin:2px 0 0 18px}
+nav.toc{background:#fff;border:1px solid #d9dee6;border-radius:8px;padding:8px 16px}nav.toc a{margin-right:14px;white-space:nowrap}
+.tryit input{font:15px ui-monospace,Consolas,monospace;padding:5px 7px;border:1px solid #b9c2cf;border-radius:5px;width:11em}
+button{font:600 13px system-ui,sans-serif;padding:6px 12px;border-radius:6px;border:1px solid var(--acc);background:var(--acc);color:#fff;cursor:pointer}button.ghost{background:#fff;color:var(--acc)}
+.tres.good{color:#1b6b2a;font-weight:600}.tres.bad{color:#a12820;font-weight:600}
+a.ask{font-size:12.5px;font-weight:600;margin-left:8px;white-space:nowrap}
+@media print{a.ask,.tryit button{display:none}}
+footer{color:var(--mut);font-size:13px;text-align:center;border-top:1px solid var(--line);padding:14px}
+@media print{#bar .open{display:none}html,body{background:#fff}}
+</style></head><body>
+<header id="bar"><a class="brand" href="https://ram-gear.github.io/wgc/"><img id="wgcBadge" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20512%20512%22%20width%3D%22512%22%20height%3D%22512%22%3E%0A%20%20%3Ctitle%3EWeb%20Gear%20Calc%3C%2Ftitle%3E%0A%20%20%3Cdefs%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22wgcIconBg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%22512%22%20gradientUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%220%22%20stop-color%3D%22%232E7386%22%2F%3E%0A%20%20%20%20%20%20%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23245E6E%22%2F%3E%0A%20%20%20%20%3C%2FlinearGradient%3E%0A%20%20%3C%2Fdefs%3E%0A%20%20%3C!--%20tile%3A%20identical%20on%20every%20icon%20--%3E%0A%20%20%3Crect%20width%3D%22512%22%20height%3D%22512%22%20rx%3D%22112%22%20fill%3D%22url(%23wgcIconBg)%22%2F%3E%0A%20%20%3C!--%20gear%20--%3E%0A%20%20%3Cpath%20d%3D%22M243.5%20123.9L247.7%2099.2A115%20115%200%200%201%20264.3%2099.2L268.5%20123.9A91%2091%200%200%201%20279%20125.9L292.3%20104.8A115%20115%200%200%201%20307.5%20111.1L302%20135.5A91%2091%200%200%201%20310.9%20141.4L331.3%20127A115%20115%200%200%201%20343%20138.7L328.6%20159.1A91%2091%200%200%201%20334.5%20168L358.9%20162.5A115%20115%200%200%201%20365.2%20177.7L344.1%20191A91%2091%200%200%201%20346.1%20201.5L370.8%20205.7A115%20115%200%200%201%20370.8%20222.3L346.1%20226.5A91%2091%200%200%201%20344.1%20237L365.2%20250.3A115%20115%200%200%201%20358.9%20265.5L334.5%20260A91%2091%200%200%201%20328.6%20268.9L343%20289.3A115%20115%200%200%201%20331.3%20301L310.9%20286.6A91%2091%200%200%201%20302%20292.5L307.5%20316.9A115%20115%200%200%201%20292.3%20323.2L279%20302.1A91%2091%200%200%201%20268.5%20304.1L264.3%20328.8A115%20115%200%200%201%20247.7%20328.8L243.5%20304.1A91%2091%200%200%201%20233%20302.1L219.7%20323.2A115%20115%200%200%201%20204.5%20316.9L210%20292.5A91%2091%200%200%201%20201.1%20286.6L180.7%20301A115%20115%200%200%201%20169%20289.3L183.4%20268.9A91%2091%200%200%201%20177.5%20260L153.1%20265.5A115%20115%200%200%201%20146.8%20250.3L167.9%20237A91%2091%200%200%201%20165.9%20226.5L141.2%20222.3A115%20115%200%200%201%20141.2%20205.7L165.9%20201.5A91%2091%200%200%201%20167.9%20191L146.8%20177.7A115%20115%200%200%201%20153.1%20162.5L177.5%20168A91%2091%200%200%201%20183.4%20159.1L169%20138.7A115%20115%200%200%201%20180.7%20127L201.1%20141.4A91%2091%200%200%201%20210%20135.5L204.5%20111.1A115%20115%200%200%201%20219.7%20104.8L233%20125.9A91%2091%200%200%201%20243.5%20123.9ZM290%20214A34%2034%200%201%201%20222%20214A34%2034%200%201%201%20290%20214Z%22%20fill%3D%22%23FFFFFF%22%20fill-rule%3D%22evenodd%22%2F%3E%0A%20%20%3C!--%20tip-diameter%20dimension%20--%3E%0A%20%20%3Cpath%20d%3D%22M140.9%20270V424M371.1%20270V424%22%20stroke%3D%22%239FD3E1%22%20stroke-width%3D%2220%22%20stroke-linecap%3D%22round%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M180.9%20392H331.1%22%20stroke%3D%22%239FD3E1%22%20stroke-width%3D%2222%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M148.9%20392l46-26v52zM363.1%20392l-46-26v52z%22%20fill%3D%22%239FD3E1%22%20stroke%3D%22%239FD3E1%22%20stroke-width%3D%228%22%20stroke-linejoin%3D%22round%22%2F%3E%0A%3C%2Fsvg%3E" alt="" width="32" height="32"><span class="sub">Web Gear Calc</span></a><span class="crumb">Help</span><span class="grow"></span><a class="open" href="https://ram-gear.github.io/wgc/">Open the app</a></header>
+<main>
+<h1>Web Gear Calc help</h1>
+<p>Web Gear Calc is a single-page browser rebuild of <b>GCP3 (Gear Calculation Program)</b> by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. It designs and checks spur, helical, worm, spline, rack and bevel gears, and works backwards from measurements of a worn or broken gear to its likely design. It runs entirely in your browser, either at <a href="https://ram-gear.github.io/wgc/">ram-gear.github.io/wgc</a> or from the offline file <code>WebGearCalc.html</code>. Nothing you enter is sent anywhere.</p>
+<nav class="toc"><a href="#basics">Basics</a><a href="#screens">Screens</a><a href="#tasks">Common tasks</a><a href="#tryit">Try it</a><a href="#trouble">Troubleshooting</a></nav>
+
+<h2 id="basics">Basics <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20the%20Web%20Gear%20Calc%20help%2C%20give%20me%20an%20overview%20of%20the%20'Basics'%20section%20and%20how%20it%20applies%20when%20using%20the%20app." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h2>
+<ul>
+<li>The <b>Main Menu</b> lists the screens. Click a tile or press <kbd>1</kbd>–<kbd>9</kbd>. Click the icon at the top left to come back. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20Basics%20section%20says%3A%20'The%20Main%20Menu%20lists%20the%20screens.%20Click%20a%20tile%20or%20press%201%E2%80%939.%20Click%20the%20icon%20at%20the%20top%20left%20to%20come%20back.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Use <b>English (in)</b> / <b>Metric (mm)</b> at the top right to switch units. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20Basics%20section%20says%3A%20'Use%20English%20(in)%20%2F%20Metric%20(mm)%20at%20the%20top%20right%20to%20switch%20units.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Values recalculate as you type. A blank field shows the computed value. Fields you typed are shown in bold blue. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20Basics%20section%20says%3A%20'Values%20recalculate%20as%20you%20type.%20A%20blank%20field%20shows%20the%20computed%20value.%20Fields%20you%20typed%20are%20shown%20in%20bold%20blue.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Keys on a screen: <kbd>Enter</kbd> moves to the next field, <kbd>Esc</kbd> clears the field and <kbd>Ctrl</kbd>+<kbd>P</kbd> prints. <b>Clear all</b> empties the screen. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20Basics%20section%20says%3A%20'Keys%20on%20a%20screen%3A%20Enter%20moves%20to%20the%20next%20field%2C%20Esc%20clears%20the%20field%20and%20Ctrl%2BP%20prints.%20Clear%20all%20empties%20the%20screen.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Each screen has <b>Print</b>, <b>Save .TXT</b> (a plain-text printout; the file name is in the box beside it) and <b>Copy</b> (copies the printout text). <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20Basics%20section%20says%3A%20'Each%20screen%20has%20Print%2C%20Save%20.TXT%20(a%20plain-text%20printout%3B%20the%20file%20name%20is%20in%20the%20box%20beside%20it)%20and%20Copy%20(copies%20the%20printout%20text).'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+</ul>
+
+<h2 id="screens">Screens <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20the%20Web%20Gear%20Calc%20help%2C%20give%20me%20an%20overview%20of%20the%20'Screens'%20section%20and%20how%20it%20applies%20when%20using%20the%20app." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h2>
+<dl>
+<dt>1 · External Spur Gears (EXT) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'1%20%C2%B7%20External%20Spur%20Gears%20(EXT)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Spur gears and involute splines: pitch (circular, diametral or module), pressure angle, teeth, diameters, depths and tooth thickness. Shows measurement over wires (pins), span, TIF and shaper data, and the "Shaper Ex." exact shaper-cut root. Choose the depth system (for example Hob 2.1571) above the table. The "Diff.Produced Using Std." column shows how your entries differ from standard.</dd>
+<dt>2 · Internal Spur Gears (INT) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'2%20%C2%B7%20Internal%20Spur%20Gears%20(INT)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Internal gears and splines, with measurement under wires (MUW), space width and shaper data.</dd>
+<dt>3 · External Helical Gears (HELIX) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'3%20%C2%B7%20External%20Helical%20Gears%20(HELIX)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Helical gears in the transverse and normal planes, with MOW, span and lead.</dd>
+<dt>4 · Internal Helical Gears (INHEL) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'4%20%C2%B7%20Internal%20Helical%20Gears%20(INHEL)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Internal helical gears, measured under balls.</dd>
+<dt>5 · Worm Gears (WORM) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'5%20%C2%B7%20Worm%20Gears%20(WORM)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>A worm and gear set, with operating values at a given center distance.</dd>
+<dt>6 · Rack / Rackworm (RACK) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'6%20%C2%B7%20Rack%20%2F%20Rackworm%20(RACK)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Racks and rack-type worms: tooth form and measurement over a wire at the addendum.</dd>
+<dt>7 · Straight-Sided Splines (SPL) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'7%20%C2%B7%20Straight-Sided%20Splines%20(SPL)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Parallel-sided splines, including the tool point width.</dd>
+<dt>8 · Bevel Gears (BEVEL) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'8%20%C2%B7%20Bevel%20Gears%20(BEVEL)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Straight, spiral, Zerol and hypoid bevel gears (hypoid geometry is approximate), with a dimensioned mesh sketch and an AGMA 2003-style rating.</dd>
+<dt>9 · Two-Gear Mesh (MESH) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'9%20%C2%B7%20Two-Gear%20Mesh%20(MESH)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Checks an EXT or HELIX pair in mesh. Results are in three columns: Gear 1, the pair, and Gear 2. The center column gives the tight-mesh (zero-backlash) center distance, the change from the center you entered, the operating pressure angle, backlash, and contact, overlap and total ratios. Each gear's column gives its diameters, thickness, TIF, tip clearance, undercut and interference flags. A mesh drawing can be drawn at either the tight or the entered center distance.</dd>
+<dt>Measure / Identify (reverse engineering) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'Measure%20%2F%20Identify%20(reverse%20engineering)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Available for EXT, INT, HELIX, INHEL, WORM, RACK, SPL and BEVEL, from the Main Menu or the green <b>Measure / Identify</b> button on a screen. Enter what you can measure (blank means not measured) and it ranks candidate standard pitches and pressure angles with a confidence. Two spans over different numbers of teeth work best, because their difference gives the base pitch whatever the flank wear. Two pin sizes also work. OD and root are treated as possibly worn. You can limit the pitch families, pressure angles and (where relevant) the standard plane or bevel system, and set your measurement uncertainty.</dd>
+<dt>Saved gears (profiles) <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'Saved%20gears%20(profiles)'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd><b>Save gear...</b> and <b>Load gear...</b> on EXT and HELIX store everything you entered under a name. The <b>Saved gears (profiles)...</b> button on the Main Menu opens the manager: open, rename, delete or export each gear, <b>Export all (JSON)</b>, and import a JSON file.</dd>
+<dt>Drawings <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%20(Screens)%2C%20explain%20'Drawings'%3A%20what%20it%20is%20for%20and%20how%20to%20use%20it%20step%20by%20step." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Every screen draws the tooth profile from the current values. BEVEL adds a dimensioned mesh sketch and MESH adds the two-gear mesh drawing.</dd>
+</dl>
+
+<h2 id="tasks">Common tasks <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20the%20Web%20Gear%20Calc%20help%2C%20give%20me%20an%20overview%20of%20the%20'Common%20tasks'%20section%20and%20how%20it%20applies%20when%20using%20the%20app." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h2>
+<div class="card"><h3>Design a spur gear and check it over pins <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20walk%20me%20through%20the%20task%20'Design%20a%20spur%20gear%20and%20check%20it%20over%20pins'%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><ol>
+<li>Open <b>1 External Spur Gears</b> and choose English or Metric. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Design%20a%20spur%20gear%20and%20check%20it%20over%20pins'%2C%20step%201%20says%3A%20'Open%201%20External%20Spur%20Gears%20and%20choose%20English%20or%20Metric.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Enter one pitch (Circular, Diametral or Module, lines 1–3), the Pressure Angle (line 4) and the Number of teeth (line 5). <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Design%20a%20spur%20gear%20and%20check%20it%20over%20pins'%2C%20step%201%20says%3A%20'Enter%20one%20pitch%20(Circular%2C%20Diametral%20or%20Module%2C%20lines%201%E2%80%933)%2C%20the%20Pressure%20Angle%20(line%204)%20and%20the%20Number%20of%20teeth%20(line%205).'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Set the depth system, and enter any diameters or tooth thickness you need. Leave the rest blank to see standard values. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Design%20a%20spur%20gear%20and%20check%20it%20over%20pins'%2C%20step%201%20says%3A%20'Set%20the%20depth%20system%2C%20and%20enter%20any%20diameters%20or%20tooth%20thickness%20you%20need.%20Leave%20the%20rest%20blank%20to%20see%20standard%20values.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Read the measurement over wire and the wire size from the table, then compare with your pin reading. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Design%20a%20spur%20gear%20and%20check%20it%20over%20pins'%2C%20step%201%20says%3A%20'Read%20the%20measurement%20over%20wire%20and%20the%20wire%20size%20from%20the%20table%2C%20then%20compare%20with%20your%20pin%20reading.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li></ol></div>
+<div class="card"><h3>Identify a worn gear from two spans <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20walk%20me%20through%20the%20task%20'Identify%20a%20worn%20gear%20from%20two%20spans'%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><ol>
+<li>Count the teeth. Measure span over k1 teeth and over a different k2 teeth (for example 3 and 4). <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Identify%20a%20worn%20gear%20from%20two%20spans'%2C%20step%201%20says%3A%20'Count%20the%20teeth.%20Measure%20span%20over%20k1%20teeth%20and%20over%20a%20different%20k2%20teeth%20(for%20example%203%20and%204).'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Open <b>Measure / Identify</b> for the gear type (for example EXT). <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Identify%20a%20worn%20gear%20from%20two%20spans'%2C%20step%201%20says%3A%20'Open%20Measure%20%2F%20Identify%20for%20the%20gear%20type%20(for%20example%20EXT).'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Enter the tooth count, <i>Span 1: teeth k1</i> and its measurement, and <i>Span 2: teeth k2</i> and its measurement. Add OD, root or pins if you have them. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Identify%20a%20worn%20gear%20from%20two%20spans'%2C%20step%201%20says%3A%20'Enter%20the%20tooth%20count%2C%20Span%201%3A%20teeth%20k1%20and%20its%20measurement%2C%20and%20Span%202%3A%20teeth%20k2%20and%20its%20measurement.%20Add%20OD%2C%20root%20or%20pins%20if%20you%20have%20them.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Check the ranked candidates. The top one shows the best-matching standard pitch and pressure angle with its confidence. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Identify%20a%20worn%20gear%20from%20two%20spans'%2C%20step%201%20says%3A%20'Check%20the%20ranked%20candidates.%20The%20top%20one%20shows%20the%20best-matching%20standard%20pitch%20and%20pressure%20angle%20with%20its%20confidence.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li></ol></div>
+<div class="card"><h3>Save two gears and mesh them for center distance <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20walk%20me%20through%20the%20task%20'Save%20two%20gears%20and%20mesh%20them%20for%20center%20distance'%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><ol>
+<li>Enter the first gear on EXT (or HELIX). Click <b>Save gear...</b> and give it a name such as "Gear A". For helical gears, set the hand of helix. You are warned before an existing name is overwritten. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Save%20two%20gears%20and%20mesh%20them%20for%20center%20distance'%2C%20step%201%20says%3A%20'Enter%20the%20first%20gear%20on%20EXT%20(or%20HELIX).%20Click%20Save%20gear...%20and%20give%20it%20a%20name%20such%20as%20%22Gear%20A%22.%20For%20helical%20gears%2C%20set%20the%20hand%20of%20helix.%20You%20are%20warned%20before%20an%20existing%20name%20is%20overwritten.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Enter the mating gear and save it as "Gear B". <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Save%20two%20gears%20and%20mesh%20them%20for%20center%20distance'%2C%20step%201%20says%3A%20'Enter%20the%20mating%20gear%20and%20save%20it%20as%20%22Gear%20B%22.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Open <b>9 Two-Gear Mesh</b>. In the <b>Saved gears</b> box, choose <i>Load Gear 1 from profile</i> and <i>Load Gear 2 from profile</i>. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Save%20two%20gears%20and%20mesh%20them%20for%20center%20distance'%2C%20step%201%20says%3A%20'Open%209%20Two-Gear%20Mesh.%20In%20the%20Saved%20gears%20box%2C%20choose%20Load%20Gear%201%20from%20profile%20and%20Load%20Gear%202%20from%20profile.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Read the tight-mesh center distance at the top of the center column. To see backlash and clearance at your actual center, enter it as the center distance to check. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Save%20two%20gears%20and%20mesh%20them%20for%20center%20distance'%2C%20step%201%20says%3A%20'Read%20the%20tight-mesh%20center%20distance%20at%20the%20top%20of%20the%20center%20column.%20To%20see%20backlash%20and%20clearance%20at%20your%20actual%20center%2C%20enter%20it%20as%20the%20center%20distance%20to%20check.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Alternatively, use <b>Mesh with mate</b> on EXT or HELIX to carry the current gear into MESH, or type both gears in by hand. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Save%20two%20gears%20and%20mesh%20them%20for%20center%20distance'%2C%20step%201%20says%3A%20'Alternatively%2C%20use%20Mesh%20with%20mate%20on%20EXT%20or%20HELIX%20to%20carry%20the%20current%20gear%20into%20MESH%2C%20or%20type%20both%20gears%20in%20by%20hand.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li></ol></div>
+<div class="card"><h3>Print or save a .TXT <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20walk%20me%20through%20the%20task%20'Print%20or%20save%20a%20.TXT'%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><ol>
+<li>On any screen click <b>Print</b> (or press <kbd>Ctrl</kbd>+<kbd>P</kbd>) for a printer-friendly page. The buttons and the colored background are left out. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Print%20or%20save%20a%20.TXT'%2C%20step%201%20says%3A%20'On%20any%20screen%20click%20Print%20(or%20press%20Ctrl%2BP)%20for%20a%20printer-friendly%20page.%20The%20buttons%20and%20the%20colored%20background%20are%20left%20out.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Or edit the file name beside <b>Save .TXT</b> and click it to download the plain-text printout. <b>Copy</b> puts the same text on the clipboard. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Print%20or%20save%20a%20.TXT'%2C%20step%201%20says%3A%20'Or%20edit%20the%20file%20name%20beside%20Save%20.TXT%20and%20click%20it%20to%20download%20the%20plain-text%20printout.%20Copy%20puts%20the%20same%20text%20on%20the%20clipboard.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li></ol></div>
+<div class="card"><h3>Export and import profiles <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20walk%20me%20through%20the%20task%20'Export%20and%20import%20profiles'%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><ol>
+<li>On the Main Menu click <b>Saved gears (profiles)...</b>. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Export%20and%20import%20profiles'%2C%20step%201%20says%3A%20'On%20the%20Main%20Menu%20click%20Saved%20gears%20(profiles)....'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>Click <b>Export all (JSON)</b> (or <b>Export</b> on one gear) to download a .json file. This is your backup. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Export%20and%20import%20profiles'%2C%20step%201%20says%3A%20'Click%20Export%20all%20(JSON)%20(or%20Export%20on%20one%20gear)%20to%20download%20a%20.json%20file.%20This%20is%20your%20backup.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li>
+<li>In the other copy of the app (website or offline file), open the same manager and import the .json file. If a name already exists you can choose <b>Keep both</b>, <b>Replace mine</b> or <b>Skip those</b>. <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20the%20task%20'Export%20and%20import%20profiles'%2C%20step%201%20says%3A%20'In%20the%20other%20copy%20of%20the%20app%20(website%20or%20offline%20file)%2C%20open%20the%20same%20manager%20and%20import%20the%20.json%20file.%20If%20a%20name%20already%20exists%20you%20can%20choose%20Keep%20both%2C%20Replace%20mine%20or%20Skip%20those.'.%20Explain%20this%20step%20in%20more%20detail." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></li></ol></div>
+
+<h2 id="tryit">Try it <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20the%20Web%20Gear%20Calc%20help%2C%20give%20me%20an%20overview%20of%20the%20'Try%20it'%20section%20and%20how%20it%20applies%20when%20using%20the%20app." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h2>
+<p>Practice questions. The answers are worked out by the app's own calculation code, which is built into this page and runs in your browser. Nothing is sent anywhere. Type your answer and press <b>Check</b>, or press <b>New numbers</b> for a fresh problem.</p>
+<div class="card tryit" data-ex="pd" id="try-pd"><h3>Try it: Pitch diameter from DP and teeth <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Pitch%20diameter%20from%20DP%20and%20teeth'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="od" id="try-od"><h3>Try it: Outside diameter of a standard spur gear <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Outside%20diameter%20of%20a%20standard%20spur%20gear'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="bd" id="try-bd"><h3>Try it: Base diameter <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Base%20diameter'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="mow" id="try-mow"><h3>Try it: Measurement over pins <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Measurement%20over%20pins'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="thk" id="try-thk"><h3>Try it: Tooth thickness from a pin measurement <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Tooth%20thickness%20from%20a%20pin%20measurement'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="bp" id="try-bp"><h3>Try it: Base pitch from two spans <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Base%20pitch%20from%20two%20spans'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="id" id="try-id"><h3>Try it: Identify the DP from two spans <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Identify%20the%20DP%20from%20two%20spans'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="center" id="try-center"><h3>Try it: Tight-mesh center distance <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Tight-mesh%20center%20distance'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+<div class="card tryit" data-ex="cone" id="try-cone"><h3>Try it: Bevel pitch cone angle <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20explain%20how%20to%20work%20out%20'Bevel%20pitch%20cone%20angle'%20by%20hand%20and%20where%20the%20app%20shows%20it%2C%20with%20the%20formula." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h3><p class="tq"></p><p><input type="text" inputmode="decimal" aria-label="Your answer" autocomplete="off"> <button type="button" class="tcheck">Check</button> <button type="button" class="tnew ghost">New numbers</button></p><p class="tres" aria-live="polite"></p></div>
+
+<h2 id="trouble">Troubleshooting <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20the%20Web%20Gear%20Calc%20help%2C%20give%20me%20an%20overview%20of%20the%20'Troubleshooting'%20section%20and%20how%20it%20applies%20when%20using%20the%20app." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></h2>
+<dl>
+<dt>A saved gear isn't in the MESH list <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20how%20do%20I%20fix%20this%20problem%3A%20'A%20saved%20gear%20isn't%20in%20the%20MESH%20list'%3F%20Explain%20the%20likely%20causes%20and%20steps." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>MESH only lists gears that can mesh with the gear already chosen: same pitch, same pressure angle, same helix angle, and opposite hand for helical. Click the "hidden" count under the pickers to see each hidden gear and the value that doesn't match. Open that gear on EXT or HELIX, correct it and save it again. Only gears saved from EXT and HELIX can be used in MESH.</dd>
+<dt>A mismatch message blocks the MESH result <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20how%20do%20I%20fix%20this%20problem%3A%20'A%20mismatch%20message%20blocks%20the%20MESH%20result'%3F%20Explain%20the%20likely%20causes%20and%20steps." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>The message names the value that differs and shows both values, for example "Pressure angle doesn't match: Gear 1 20.000°, Gear 2 25.000°". Correct the entry, choose another gear, or (for helical gears) set opposite hands.</dd>
+<dt>My saved gears are missing <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20how%20do%20I%20fix%20this%20problem%3A%20'My%20saved%20gears%20are%20missing'%3F%20Explain%20the%20likely%20causes%20and%20steps." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Gears are saved in your browser's storage. The website and the offline <code>WebGearCalc.html</code> file keep <b>separate</b> stores, and so does each browser and computer. Use Export all (JSON) in one copy and import the file in the other. Clearing your browser data also deletes saved gears, so keep an exported backup.</dd>
+<dt>The printout <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20how%20do%20I%20fix%20this%20problem%3A%20'The%20printout'%3F%20Explain%20the%20likely%20causes%20and%20steps." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Use the app's <b>Print</b> button rather than printing the page another way. If lines wrap, choose portrait and 100% scale in the print dialog, or use <b>Save .TXT</b>, which is 80 columns wide.</dd>
+<dt>Browser <a class="ask" href="https://grok.com/?q=Please%20read%20https%3A%2F%2Fram-gear.github.io%2Fwgc%2Fhelp.html%20first.%20In%20Web%20Gear%20Calc%2C%20how%20do%20I%20fix%20this%20problem%3A%20'Browser'%3F%20Explain%20the%20likely%20causes%20and%20steps." target="_blank" rel="noopener noreferrer">Ask Grok about this</a></dt><dd>Use a current Chrome, Edge or Firefox. If the page looks wrong, reload it (<kbd>Ctrl</kbd>+<kbd>F5</kbd> on the website). The offline file works from a local folder with no internet connection.</dd>
+</dl>
+</main>
+<footer>Web Gear Calc, by Ram-Gear Manufacturing · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
+<script>/* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
+   Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
+(function (root) {
+'use strict';
+const {PI, sin, cos, tan, atan, atan2, acos, asin, sqrt, abs, hypot, max} = Math;
+const pi = PI, D2R = PI / 180;
+const deg = r => r * 180 / PI;
+const inv = a => tan(a) - a;
+function ainv(x) {
+  if (x <= 0) return 0;
+  let a = Math.cbrt(3 * x);
+  for (let i = 0; i < 60; i++) { const f = inv(a) - x; a -= f / (tan(a) ** 2); if (abs(f) < 1e-15) break; }
+  return a;
+}
+const DEPTH = {
+  'Hob 2.1571': [1.0, 1.1571, 0.0], 'Shaper 2.25': [1.0, 1.25, 0.0], 'F.F. 2.335': [1.0, 1.335, 0.0],
+  'FP 2.2+.002': [1.0, 1.2, 0.002], 'AGMA Stub': [0.8, 1.0, 0.0],
+};
+const SPLINE_DEPTH = {A: [1.0, 1.8], B: [1.0, 1.2], C: [1.0, 1.35], D: [1.0, 1.4], E: [1.0, 1.1]};
+const SPLINE_DED_CONST = {B: 0.002};
+const SPLINE_PA = {A: 30, B: 30, C: 30, D: 37.5, E: 45};
+const SPLINE_CTT_EXTRA = {D: 0.1, E: 0.2};
+const SPLINE_NAMES = {A: '30 Full Fillet', B: '30 Flat Root 1950', C: '30 Flat Root 1970', D: '37.5 PA', E: '45 PA'};
+
+function depthAddDed(system, P, combo, custom) {
+  if (system.startsWith('Combo')) { const P2 = combo[1]; return [1.0 / P2, 1.25 / P2]; }
+  if (system.startsWith('Custom')) return [custom.add, custom.ded];
+  const d = DEPTH[system]; if (!d) throw new Error('unknown depth system ' + system);
+  return [d[0] / P, d[1] / P + d[2]];
+}
+const stdWireExt = (P, spline) => (spline ? 1.92 : 1.728) / P;
+const stdWireInt = P => 1.44 / P;
+const isEven = N => Math.round(N) % 2 === 0;
+
+function mowExt(N, PD, BD, phi, t, dw, bb = 0) {
+  const iw = t / PD + inv(phi) + dw / (BD * cos(bb)) - pi / N;
+  const aw = ainv(iw), Dc = BD / cos(aw);
+  return [(isEven(N) ? Dc : Dc * cos(pi / (2 * N))) + dw, aw, Dc];
+}
+function tFromMowExt(N, PD, BD, phi, M, dw, bb = 0) {
+  const Dc = isEven(N) ? (M - dw) : (M - dw) / cos(pi / (2 * N));
+  const aw = acos(BD / Dc);
+  return PD * (inv(aw) - dw / (BD * cos(bb)) + pi / N - inv(phi));
+}
+function muwInt(N, PD, BD, phi, s, dw, bb = 0) {
+  const iw = s / PD + inv(phi) - dw / (BD * cos(bb));
+  const aw = ainv(iw), Dc = BD / cos(aw);
+  return [(isEven(N) ? Dc : Dc * cos(pi / (2 * N))) - dw, aw, Dc];
+}
+function sFromMuwInt(N, PD, BD, phi, M, dw, bb = 0) {
+  const Dc = isEven(N) ? (M + dw) : (M + dw) / cos(pi / (2 * N));
+  const aw = acos(BD / Dc);
+  return PD * (inv(aw) + dw / (BD * cos(bb)) - inv(phi));
+}
+function pinContact(BD, aw, dw, internal = false, bb = 0) {
+  const Rb = BD / 2, dwt = dw * cos(bb);
+  const L = Rb * tan(aw) + (internal ? dwt / 2 : -dwt / 2);
+  return 2 * sqrt(Rb * Rb + L * L);
+}
+function optimumWireExt(N, PD, BD, phi, t, bb = 0) {
+  const Rb = BD / 2; let lo = 1e-6, hi = PD, dw = 0;
+  for (let i = 0; i < 200; i++) {
+    dw = (lo + hi) / 2;
+    const aw = mowExt(N, PD, BD, phi, t, dw, bb)[1];
+    if (Rb * tan(aw) - dw / 2 > Rb * tan(phi)) hi = dw; else lo = dw;
+  }
+  return dw;
+}
+function optimumWireInt(N, PD, BD, phi, s, bb = 0) {   // [G] mirror of the external rule
+  const Rb = BD / 2; let lo = 1e-6, hi = PD / 2, dw = 0;
+  for (let i = 0; i < 200; i++) {
+    dw = (lo + hi) / 2;
+    const aw = muwInt(N, PD, BD, phi, s, dw, bb)[1];
+    if (Rb * tan(aw) + dw / 2 < Rb * tan(phi)) hi = dw; else lo = dw;
+  }
+  return dw;
+}
+const tAt = (D, PD, phi, t, BD) => D * (t / PD + inv(phi) - inv(acos(BD / D)));
+const chordal = (D, tarc) => D * sin(tarc / D);
+const apexExt = (PD, BD, phi, t) => BD / cos(ainv(t / PD + inv(phi)));
+const baseTooth = (PD, BD, phi, t) => BD * (t / PD + inv(phi));
+const span = (k, BP, tb) => (k - 1) * BP + tb;
+const spanContact = (BD, W) => sqrt(BD * BD + W * W);
+const spanRecommendSpur = (N, PAdeg) => Math.trunc(N * PAdeg / 180 + 1.5);
+function spanRecommend(BD, BP, tb, Dmid) {
+  const W = sqrt(max(Dmid * Dmid - BD * BD, 0)); return max(2, Math.round((W - tb) / BP + 1));
+}
+function spanRecommendHelical(N, phit, bb) {   // [RE, best fit 49/70] gaps G-1
+  return max(2, Math.trunc(N / pi * (tan(phit) / cos(bb) ** 2 - inv(phit)) + 1));
+}
+const hobProducedDedendum = (dedStd, tStd, t, phi) => dedStd + (tStd - t) / (2 * tan(phi));
+
+function tifTrochoid(N, P, phi, t, h, step = 2e-6) {
+  const Rp = N / P / 2, Rb = Rp * cos(phi), s = pi / P - t;
+  const xc = s / 2 - h * tan(phi), yc = Rp - h;
+  const eta = r => s / (2 * Rp) - inv(phi) + inv(acos(Rb / r));
+  let best = null, prev = null;
+  for (let th = -0.9; th < 0.9; th += step) {
+    const X = xc - Rp * th;
+    const xg = X * cos(th) + yc * sin(th), yg = -X * sin(th) + yc * cos(th);
+    const r = hypot(xg, yg);
+    if (Rb * 1.0000001 < r && r < Rp) {
+      const d = atan2(xg, yg) - eta(r);
+      if (prev !== null && ((d > 0) !== (prev > 0))) best = max(best || 0, r);
+      prev = d;
+    }
+  }
+  return best ? 2 * best : null;
+}
+function tifRack(N, P, phi, t, h, tipR = 0, fullFilletDed = null, tStd = null) {
+  const Rp = N / P / 2, Rb = Rp * cos(phi);
+  if (fullFilletDed !== null && fullFilletDed !== undefined) {
+    const ts = tStd === null ? pi / P / 2 : tStd;
+    const w = (pi / P - ts) - 2 * fullFilletDed * tan(phi);
+    tipR = (w / 2) * cos(phi) / (1 - sin(phi));
+  }
+  const heff = h - tipR * (1 - sin(phi));
+  const L = Rp * sin(phi) - heff / sin(phi);
+  if (L > 0) return {D: 2 * sqrt(Rb * Rb + L * L), U: false, roll: deg(L / Rb), pa: deg(atan(L / Rb))};
+  const D = tifTrochoid(N, P, phi, t, h);
+  if (D === null) return {D: null, U: true, roll: null, pa: null};
+  const L2 = sqrt(max((D / 2) ** 2 - Rb * Rb, 0));
+  return {D, U: true, roll: deg(L2 / Rb), pa: deg(atan(L2 / Rb))};
+}
+function shaperPsiFromMow(Ns, BDs, M, dw, bb = 0) {
+  const Dc = isEven(Ns) ? (M - dw) : (M - dw) / cos(pi / (2 * Ns));
+  return inv(acos(BDs / Dc)) - dw / (BDs * cos(bb)) + pi / Ns;
+}
+const shaperPsiFromSpan = (Ns, BDs, BP, k, W) => (W - (k - 1) * BP) / BDs;
+function generateExternal(N1, BD1, psi1, N2, BD2, psi2) {
+  const ig = (N1 * psi1 + N2 * psi2 - pi) / (N1 + N2), ag = ainv(ig);
+  return [ag, ig, (BD1 + BD2) / (2 * cos(ag))];
+}
+function tifShaperExt(BD1, BDs, DsMajor, ag, C) {
+  const Rb1 = BD1 / 2, Rbs = BDs / 2;
+  const L = C * sin(ag) - sqrt((DsMajor / 2) ** 2 - Rbs * Rbs);
+  return [2 * sqrt(Rb1 * Rb1 + L * L), L];
+}
+
+// ------------------------------------------------------------------ EXT
+function extSpur(DP, PA, N, o = {}) {
+  let {major = null, minor = null, ctt = null, mow = null, wire = null, depth = 'Hob 2.1571',
+       combo = null, custom = null, spanTeeth = null, spline = null, span: spanMeas = null} = o;
+  const phi = PA * D2R, PD = N / DP, BD = PD * cos(phi), CP = pi / DP;
+  let addS, dedS;
+  if (spline) {
+    const P2 = combo ? combo[1] : 2 * DP, sd = SPLINE_DEPTH[spline];
+    addS = sd[0] / P2; dedS = sd[1] / P2 + (SPLINE_DED_CONST[spline] || 0);
+  } else [addS, dedS] = depthAddDed(depth, DP, combo, custom);
+  let tS = (custom && custom.ctt) ? custom.ctt : CP / 2;
+  if (spline) tS = CP / 2 + (SPLINE_CTT_EXTRA[spline] || 0) / DP;
+  if (wire === 'O' || wire === 'o') wire = optimumWireExt(N, PD, BD, phi, ctt !== null ? ctt : tS);
+  if (wire === null || wire === 'S' || wire === 's') wire = stdWireExt(DP, !!spline);
+  const BP = CP * cos(phi);
+  if (ctt === null && mow !== null) ctt = tFromMowExt(N, PD, BD, phi, mow, wire);
+  if (ctt === null && spanMeas !== null && spanTeeth) ctt = PD * ((spanMeas - (spanTeeth - 1) * BP) / BD - inv(phi));
+  if (ctt === null) ctt = tS;
+  if (major === null) major = PD + 2 * addS;
+  if (minor === null) minor = PD - 2 * dedS;
+  const g = {CP, DP, MOD: 25.4 / DP, PA, N, PD, BP, BD, minor, major, WD: (major - minor) / 2,
+             ADD: (major - PD) / 2, DED: (PD - minor) / 2, CTT: ctt};
+  g.land = major > BD && major < apexExt(PD, BD, phi, ctt) ? chordal(major, tAt(major, PD, phi, ctt, BD)) : null;
+  g.chordal = chordal(PD, ctt);
+  const [M, aw] = mowExt(N, PD, BD, phi, ctt, wire); g.MOW = M; g.wire = wire;
+  const sMajor = PD + 2 * addS, sMinor = PD - 2 * dedS;
+  const s = {minor: sMinor, major: sMajor, WD: addS + dedS, ADD: addS, DED: dedS, CTT: tS,
+             chordal: chordal(PD, tS), land: chordal(sMajor, tAt(sMajor, PD, phi, tS, BD)),
+             MOW: mowExt(N, PD, BD, phi, tS, wire)[0]};
+  const dedP = hobProducedDedendum(dedS, tS, ctt, phi);
+  const d = {minor: PD - 2 * dedP, WD: (major - (PD - 2 * dedP)) / 2, DED: dedP};
+  d.flag = d.WD > s.WD + 1e-9 ? '**' : '';
+  const tb = baseTooth(PD, BD, phi, ctt);
+  const more = {'Pin Contact': pinContact(BD, aw, wire), 'Apex Diam.': apexExt(PD, BD, phi, ctt),
+                'Base Tooth': tb, 'Involute PA': inv(phi),
+                'RollAngMaj': major > BD ? deg(tan(acos(BD / major))) : null};
+  const ff = (depth.startsWith('F.F') || ['A', 'D', 'E'].includes(spline)) ? dedS : null;
+  const tip = custom && custom.tip ? custom.tip : 0;
+  const T = tifRack(N, DP, phi, ctt, dedP, tip, ff, tS);
+  Object.assign(more, {'T.I.F.Diam.': T.D, undercut: T.U, 'Roll AngTIF': T.roll, 'PA at TIF': T.pa});
+  const k = spanTeeth || spanRecommendSpur(N, PA), W = span(k, BP, tb);
+  return {given: g, standard: s, diff: d, more, span: {teeth: k, measure: W, contact_diam: spanContact(BD, W)},
+          warnings: pinWarnings(g, more, false)};
+}
+function pinWarnings(g, more, internal) {      // [G] thresholds, gaps G-12
+  const w = [], pc = more['Pin Contact'];
+  if (!isFinite(pc)) return ['*Error*'];
+  if (!internal) {
+    if (pc > g.major) w.push('*CONTACT ABOVE MAJOR*');
+    if (pc < g.BD) w.push('*CONTACT BELOW BASE*');
+    else if (pc < g.minor) w.push('*CONTACT BELOW MINOR*');
+    if (g.MOW < g.major) w.push('M.O.W. below Major');
+  } else {
+    if (pc < g.minor) w.push('*CONTACT BELOW MINOR*');
+    if (pc > g.major) w.push('*CONTACT ABOVE MAJOR*');
+  }
+  return w;
+}
+function extShaperExact(DP, PA, N, major, minor, ctt, wire, Ns, DsMajor, DsMinor, o = {}) {
+  const {sWire = null, sMow = null, sSpanK = null, sSpan = null} = o;
+  const phi = PA * D2R, PD = N / DP, BD = PD * cos(phi), CP = pi / DP, BP = CP * cos(phi);
+  const BDs = Ns / DP * cos(phi);
+  const psiS = sMow ? shaperPsiFromMow(Ns, BDs, sMow, sWire) : shaperPsiFromSpan(Ns, BDs, BP, sSpanK, sSpan);
+  const psi1 = ctt / PD + inv(phi);
+  const [ag, ig, C] = generateExternal(N, BD, psi1, Ns, BDs, psiS);
+  const minorP = 2 * C - DsMajor;
+  const Cs = (N + Ns) / (2 * DP);
+  const tS = CP - Ns / DP * (psiS - inv(phi));
+  const s = {minor: 2 * Cs - DsMajor, major: 2 * Cs - DsMinor, CTT: tS};
+  Object.assign(s, {ADD: (s.major - PD) / 2, DED: (PD - s.minor) / 2, WD: (s.major - s.minor) / 2});
+  s.MOW = mowExt(N, PD, BD, phi, tS, wire)[0];
+  s.chordal = chordal(PD, tS); s.land = chordal(s.major, tAt(s.major, PD, phi, tS, BD));
+  const d = {minor: minorP, WD: (major - minorP) / 2, DED: (PD - minorP) / 2};
+  d.flag = d.WD > s.WD + 1e-9 ? '**' : '';
+  const [Dtif, L] = tifShaperExt(BD, BDs, DsMajor, ag, C), Rb = BD / 2;
+  const more = {'Gen.P.D.': BDs / cos(ag), 'Gen.D.P.': Ns / (BDs / cos(ag)), 'Gen.P.A.': deg(ag),
+                'Inv.Gen.PA': ig, 'Gen CtrDis': C, 'T.I.F.Diam.': L > 0 ? Dtif : null, undercut: L <= 0,
+                'Roll AngTIF': L > 0 ? deg(L / Rb) : null, 'PA at TIF': L > 0 ? deg(atan(L / Rb)) : null};
+  return {standard: s, diff: d, more};
+}
+
+// ------------------------------------------------------------------ INT
+function intSpur(DP, PA, N, o = {}) {
+  let {major = null, minor = null, csw = null, muw = null, wire = null, depth = 'Shaper 2.25',
+       combo = null, custom = null, spline = null} = o;
+  const phi = PA * D2R, PD = N / DP, BD = PD * cos(phi), CP = pi / DP;
+  let addS, dedS;
+  if (spline) { const P2 = combo ? combo[1] : 2 * DP, sd = SPLINE_DEPTH[spline]; addS = sd[0] / P2; dedS = sd[1] / P2 + (SPLINE_DED_CONST[spline] || 0); }
+  else [addS, dedS] = depthAddDed(depth, DP, combo, custom);
+  const sStd = (custom && custom.ctt) ? custom.ctt : CP / 2;
+  if (wire === 'O' || wire === 'o') wire = optimumWireInt(N, PD, BD, phi, csw !== null ? csw : sStd);
+  if (wire === null || wire === 'S' || wire === 's') wire = stdWireInt(DP);
+  if (csw === null && muw !== null) csw = sFromMuwInt(N, PD, BD, phi, muw, wire);
+  if (csw === null) csw = sStd;
+  const sMinor = max(PD - 2 * addS, BD), sMajor = PD + 2 * dedS;
+  if (minor === null) minor = sMinor;
+  if (major === null) major = sMajor;
+  const g = {CP, DP, MOD: 25.4 / DP, PA, N, PD, BP: CP * cos(phi), BD, minor, major,
+             WD: (major - minor) / 2, ADD: (PD - minor) / 2, DED: (major - PD) / 2, CTW: CP - csw, CSW: csw};
+  const landMin = (D, sp) => D > BD ? chordal(D, D * ((CP - sp) / PD - inv(phi) + inv(acos(BD / D)))) : null;
+  g.land = landMin(minor, csw);
+  const [M, aw] = muwInt(N, PD, BD, phi, csw, wire); g.MUW = M; g.wire = wire;
+  const s = {minor: sMinor, major: sMajor, WD: (sMajor - sMinor) / 2, ADD: (PD - sMinor) / 2, DED: dedS,
+             CTW: CP - sStd, CSW: sStd, land: landMin(sMinor, sStd), MUW: muwInt(N, PD, BD, phi, sStd, wire)[0]};
+  const majP = sMajor + (csw - sStd) / tan(phi);
+  const d = {major: majP, WD: (majP - minor) / 2, DED: (majP - PD) / 2};
+  d.flag = d.WD > s.WD + 1e-9 ? '**' : '';
+  const apex = BD / cos(ainv(csw / PD + inv(phi)));
+  const more = {'Pin Contact': pinContact(BD, aw, wire, true), 'Apex Diam.': apex,
+                'Base Space': BD * (csw / PD + inv(phi)), 'Involute PA': inv(phi),
+                'Roll Ang Min': minor > BD ? deg(tan(acos(BD / minor))) : null};
+  const warnings = pinWarnings(g, more, true);
+  if (majP > apex) warnings.push('*MAJOR ABOVE APEX*');
+  if (minor < BD) warnings.push('Minor below Base Diameter');
+  return {given: g, standard: s, diff: d, more, warnings};
+}
+function genInternal(DP, PA, Ng, csw, Ns, DsMajor, DsMinor, sWire, sMow) {   // [RE]
+  const phi = PA * D2R, PDg = Ng / DP, BDg = PDg * cos(phi), BDs = Ns / DP * cos(phi);
+  const psiS = shaperPsiFromMow(Ns, BDs, sMow, sWire), psiG = csw / PDg + inv(phi);
+  const ig = (Ng * psiG - Ns * psiS) / (Ng - Ns), ag = ainv(ig), C = (BDg - BDs) / (2 * cos(ag));
+  const Cs = (Ng - Ns) / (2 * DP);
+  return {ag, ig, C, genPD: BDg / cos(ag), genDP: Ng / (BDg / cos(ag)), majorP: 2 * C + DsMajor,
+          stdMajor: 2 * Cs + DsMajor, stdMinor: max(2 * Cs + DsMinor, BDg), stdCSW: Ns / DP * (psiS - inv(phi))};
+}
+
+// ------------------------------------------------------------------ HELIX / INHEL
+function helical(NDP, NPA, N, HA, o = {}) {
+  let {major = null, minor = null, ctt_t = null, mow = null, wire = null, depth = 'Hob 2.1571',
+       combo = null, custom = null, internal = false, spanTeeth = null, span: spanMeas = null} = o;
+  const b = HA * D2R, phin = NPA * D2R;
+  const TDP = NDP * cos(b), phit = atan(tan(phin) / cos(b)), PD = N / TDP, BD = PD * cos(phit);
+  const bb = atan(tan(b) * cos(phit)), TCP = pi / TDP, NCP = pi / NDP;
+  const [addS, dedS] = depthAddDed(depth, NDP, combo, custom);
+  const tStd = (custom && custom.ctt) ? custom.ctt / cos(b) : TCP / 2;
+  if (wire === 'O' || wire === 'o') wire = internal ? optimumWireInt(N, PD, BD, phit, ctt_t ?? tStd, bb) : optimumWireExt(N, PD, BD, phit, ctt_t ?? tStd, bb);
+  if (wire === null || wire === 'S' || wire === 's') wire = internal ? stdWireInt(NDP) : stdWireExt(NDP);
+  const NBP = NCP * cos(phin);
+  if (ctt_t === null && mow !== null) ctt_t = (internal ? sFromMuwInt : tFromMowExt)(N, PD, BD, phit, mow, wire, bb);
+  if (ctt_t === null && spanMeas !== null && spanTeeth && !internal) {
+    const nbt = spanMeas - (spanTeeth - 1) * NBP; ctt_t = PD * (nbt / cos(bb) / BD - inv(phit));
+  }
+  if (ctt_t === null) ctt_t = tStd;
+  let sMinor, sMajor;
+  if (internal) { sMinor = max(PD - 2 * addS, BD); sMajor = PD + 2 * dedS; }
+  else { sMajor = PD + 2 * addS; sMinor = PD - 2 * dedS; }
+  if (major === null) major = sMajor;
+  if (minor === null) minor = sMinor;
+  const mk = (t, mj, mn) => ({'1': TCP, '2': TDP, '3': 25.4 / TDP, '4': deg(phit), '5': PD, '6': TCP * cos(phit), '7': BD, '8': t,
+    '9': N, '10': mn, '11': mj, '12': (mj - mn) / 2,
+    '13': internal ? (PD - mn) / 2 : (mj - PD) / 2, '14': internal ? (mj - PD) / 2 : (PD - mn) / 2,
+    '15': HA, '16': b ? pi * PD / tan(b) : null, '18': wire,
+    '19': NCP, '20': NDP, '21': 25.4 / NDP, '22': NPA, '23': N / NDP, '24': NBP, '25': N / NDP * cos(phin), '26': t * cos(b)});
+  const g = mk(ctt_t, major, minor), st = mk(tStd, sMajor, sMinor);
+  const meas = internal ? muwInt : mowExt;
+  const [M, aw] = meas(N, PD, BD, phit, ctt_t, wire, bb); g['17'] = M;
+  st['17'] = meas(N, PD, BD, phit, tStd, wire, bb)[0];
+  const out = {given: g, standard: st, base_helix: deg(bb)};
+  if (!internal) {
+    const tb = baseTooth(PD, BD, phit, ctt_t), nbt = tb * cos(bb);
+    const k = spanTeeth || spanRecommendHelical(N, phit, bb);
+    const W = (k - 1) * NBP + nbt;
+    out.span = {teeth: k, measure: W, contact_diam: sqrt(BD * BD + W * W), min_face: W * sin(bb)};
+    out.more = {'Pin Contact': pinContact(BD, aw, wire, false, bb), 'Apex Diam.': apexExt(PD, BD, phit, ctt_t),
+                'NorBaseTooth': nbt, 'Inv.TransPA': inv(phit), 'Base HA': deg(bb),
+                'RollAngMaj': deg(tan(acos(BD / major))),
+                'Land at Maj': tAt(major, PD, phit, ctt_t, BD) * cos(atan(tan(b) * major / PD))};
+    const dedP = hobProducedDedendum(dedS, NCP / 2, ctt_t * cos(b), phin);
+    out.diff = {'10': PD - 2 * dedP, '12': (major - (PD - 2 * dedP)) / 2, '14': dedP};
+    out.diff.flag = out.diff['12'] > (sMajor - sMinor) / 2 + 1e-9 ? '**' : '';
+    // TIF: rack TIF in the transverse plane (JS addition, [V] 19/19 HELIX hob/combo fixtures)
+    const ff = depth.startsWith('F.F') ? dedS : null, tip = custom && custom.tip ? custom.tip : 0;
+    const T = tifRack(N, TDP, phit, ctt_t, dedP, tip, ff, TCP / 2);
+    Object.assign(out.more, {'T.I.F.Diam.': T.D, undercut: T.U, 'PA at TIF': T.pa, 'RollAngTIF': T.roll});
+    out.warnings = pinWarnings({major, minor, BD, MOW: M}, out.more, false);
+  } else {
+    out.more = {'Ball Contact': pinContact(BD, aw, wire, true, bb), 'Apex Diam.': BD / cos(ainv(ctt_t / PD + inv(phit))),
+                'NorBaseTooth': BD * (ctt_t / PD + inv(phit)) * cos(bb), 'Inv.TransPA': inv(phit),
+                'NorLand@Min': minor > BD ? ((pi / TDP - ctt_t) / PD - inv(phit) + inv(acos(BD / minor))) * minor * cos(atan(tan(b) * minor / PD)) : null,
+                'RollAng.Min': minor > BD ? deg(tan(acos(BD / minor))) : null};
+    const dedP = dedS + (ctt_t * cos(b) - NCP / 2) / (2 * tan(phin));
+    out.diff = {'11': PD + 2 * dedP, '12': (PD + 2 * dedP - minor) / 2, '14': dedP};
+    out.diff.flag = out.diff['12'] > (sMajor - sMinor) / 2 + 1e-9 ? '**' : '';
+    out.warnings = [];
+  }
+  return out;
+}
+function helicalShaperExact(NDP, NPA, N, HA, ctt_t, Ns, DsMajor, DsMinor, sWire, sMow, major) {
+  const b = HA * D2R, phin = NPA * D2R, TDP = NDP * cos(b), phit = atan(tan(phin) / cos(b));
+  const PD = N / TDP, BD = PD * cos(phit), bb = atan(tan(b) * cos(phit)), TCP = pi / TDP;
+  const BDs = Ns / TDP * cos(phit);
+  const psiS = shaperPsiFromMow(Ns, BDs, sMow, sWire, bb), psi1 = ctt_t / PD + inv(phit);
+  const ig = (N * psi1 + Ns * psiS - pi) / (N + Ns), ag = ainv(ig), C = (BD + BDs) / (2 * cos(ag));
+  const minorP = 2 * C - DsMajor, Rsa = DsMajor / 2, L = C * sin(ag) - sqrt(Rsa * Rsa - (BDs / 2) ** 2);
+  const Cs = (N + Ns) / (2 * TDP), ts = Ns / TDP * (psiS - inv(phit)), Rb = BD / 2;
+  return {C, 'Gen.P.D.': BDs / cos(ag), 'Gen.D.P.': Ns / (BDs / cos(ag)), 'Gen.P.A.': deg(ag), 'Inv.Gen.PA': ig,
+          diff: {'10': minorP, '12': (major - minorP) / 2, '14': (PD - minorP) / 2},
+          'T.I.F.Diam.': L > 0 ? 2 * sqrt(Rb * Rb + L * L) : null, 'PA at TIF': L > 0 ? deg(atan(L / Rb)) : null,
+          'RollAngTIF': L > 0 ? deg(L / Rb) : null,
+          std: {'10': 2 * Cs - DsMajor, '11': 2 * Cs - DsMinor, '8': TCP - ts}};
+}
+
+// ------------------------------------------------------------------ WORM / RACK / SPL
+function worm(ADP, NPA, N, threads, WPD, CD = null) {
+  const ACP = pi / ADP, lead = threads * ACP, PDg = N / ADP;
+  const la = atan(lead / (pi * WPD)), NCP = ACP * cos(la), phin = NPA * D2R, BP = NCP * cos(phin);
+  const CDs = (PDg + WPD) / 2;
+  const g = {'1': ACP, '2': ADP, '3': 25.4 / ADP, '4': NCP, '5': pi / NCP, '6': 25.4 * NCP / pi, '7': NPA, '8': N, '9': PDg,
+             '10': BP, '11': PDg + 2 / ADP, '12': 0.6866 * ACP, '13': lead, '14': deg(la), '15': threads,
+             '16': WPD, '17': WPD + 2 / ADP, '18': CD === null ? CDs : CD, '19': N / threads};
+  g.minor_gear = g['11'] - 2 * g['12'];
+  g.std = Object.assign({}, g); g.std['18'] = CDs; delete g.std.std;
+  if (CD !== null && abs(CD - CDs) > 5e-6) {
+    const opPD = 2 * CD - WPD, opWPD = 2 * CD - PDg, opACP = pi * opPD / N;
+    const opNCP = opACP * cos(atan(threads * opACP / (pi * WPD))), c = BP / opNCP;
+    g.op = {'1': opACP, '2': pi / opACP, '3': 25.4 * opACP / pi, '4': opNCP, '5': pi / opNCP, '6': 25.4 * opNCP / pi,
+            '7': c <= 1 ? deg(acos(c)) : 'Error', '9': opPD, '11': opPD + 2 / ADP,
+            '14': deg(atan(lead / (pi * opWPD))), '16': opWPD};
+  }
+  return g;
+}
+function rack(o) {
+  let {CP = null, DP = null, PA = 20, depth = 'Hob 2.1571', combo = null, ctt = null, wire = null, custom = null} = o;
+  if (CP === null) CP = pi / DP;
+  DP = pi / CP; const phi = PA * D2R;
+  const [add, ded] = depthAddDed(depth, DP, combo, custom);
+  if (ctt === null) ctt = CP / 2;
+  if (wire === null || wire === 'S' || wire === 's') wire = 1.728 / DP;
+  const s = CP - ctt, yc = (wire / (2 * cos(phi)) - s / 2) / tan(phi);
+  const r = {'1': CP, '2': DP, '3': 25.4 / DP, '4': PA, '5': add + ded, '6': add, '7': ded, '8': ctt,
+             '9': ctt - 2 * add * tan(phi), '10': s - 2 * ded * tan(phi), '11': yc + wire / 2 - add, '12': wire, '13': CP * cos(phi)};
+  const contactH = yc - (wire / 2) * sin(phi);       // [G] height of pin/flank contact above pitch line
+  r.warnings = [];
+  if (contactH > add) r.warnings.push('*CONTACT ABOVE LAND*');
+  if (contactH < -ded) r.warnings.push('*CONTACT BELOW ROOT*');
+  return r;
+}
+function spline(N, major, minor, width) {
+  const r = minor / 2, half = asin(width / 2 / r), sh = pi / N - half;
+  return {'1': N, '2': major, '3': minor, '4': width, '5': 2 * r * sin(sh), '6': (major - minor) / 2, '7': 360 / N};
+}
+function splineMinorFromPoint(N, width, pw) {   // [V SPL1]
+  const f = D => D * sin(pi / N - asin(width / D)) - pw;
+  let lo = width * 1.0000001, hi = width * 100;
+  for (let i = 0; i < 200; i++) { const m = (lo + hi) / 2; if (f(m) < 0) lo = m; else hi = m; }
+  return (lo + hi) / 2;
+}
+function splineWidthFromPoint(N, minor, pw) {   // [G] by symmetry
+  return minor * sin(pi / N - asin(pw / minor));
+}
+const dpFromBp = (BP, PA) => ({DP: pi * cos(PA * D2R) / BP});
+
+// GCP3 number format: up to 5 decimals, trailing zeros dropped
+function fmt(x) {
+  if (x === null || x === undefined) return '';
+  if (typeof x === 'string') return x;
+  if (!isFinite(x)) return '*Error*';
+  let s = x.toFixed(5);
+  if (s.indexOf('.') >= 0) s = s.replace(/0+$/, '').replace(/\.$/, '');
+  if (s === '-0') s = '0';
+  return s;
+}
+
+const G = {inv, ainv, deg, D2R, DEPTH, SPLINE_DEPTH, SPLINE_DED_CONST, SPLINE_PA, SPLINE_CTT_EXTRA, SPLINE_NAMES,
+  depthAddDed, stdWireExt, stdWireInt, mowExt, tFromMowExt, muwInt, sFromMuwInt, pinContact, optimumWireExt,
+  optimumWireInt, tAt, chordal, apexExt, baseTooth, span, spanContact, spanRecommendSpur, spanRecommend,
+  spanRecommendHelical, hobProducedDedendum, tifRack, tifTrochoid, shaperPsiFromMow, shaperPsiFromSpan,
+  generateExternal, tifShaperExt, extSpur, extShaperExact, intSpur, genInternal, helical, helicalShaperExact,
+  worm, rack, spline, splineMinorFromPoint, splineWidthFromPoint, dpFromBp, fmt};
+if (typeof module !== 'undefined' && module.exports) module.exports = G; else root.GCP3 = G;
+})(typeof window !== 'undefined' ? window : this);
+
+/* Web Gear Calc - two-gear mesh (new in v1.2.0): external spur / external helical pair on parallel axes.
+   Plain script: global GCP3MESH in the browser, module.exports in node. Lengths in inches, angles in degrees at the API.
+   Method (all in the transverse plane for helical gears):
+     tight mesh (zero backlash):  inv a_w = (N1 psi1 + N2 psi2 - pi) / (N1 + N2),  psi = s_t / d + inv a_t
+       (GCP3 generateExternal; equal to KHK eq. inv a_w = 2 tan a (x1+x2)/(z1+z2) + inv a when s is written with x)
+     center:  a_w = (db1 + db2) / (2 cos a_w)
+     backlash at a center a >= a_w:  a' = acos((rb1+rb2)/a),  jt (operating pitch circle) = dw1' (N1+N2)/N1 (inv a' - inv a_w)
+       jbt = jt cos a' (along the line of action),  jn = jbt cos(beta_b),  jt(ref) = jbt / cos a_t  (KHK Table 6.1 convention)
+     contact ratio:  e_a = (sqrt(ra1^2-rb1^2) + sqrt(ra2^2-rb2^2) - a sin a') / (pi m_t cos a_t)  (KHK eq. 10.9),
+                     e_b = b sin(beta) / (pi m_n)  (KHK eq. 10.21a),  e_g = e_a + e_b
+     start of active profile on gear 1 (mate tip on the line of action): L1 = a sin a' - sqrt(ra2^2 - rb2^2), r_SAP1 = sqrt(rb1^2 + L1^2);
+       L1 <= 0: the mate tip passes the interference point (involute interference); r_SAP1 < r_TIF1: tip-to-fillet interference. */
+(function (root) {
+'use strict';
+const G = (typeof module !== 'undefined' && module.exports) ? require('./gcp3.js') : root.GCP3;
+const {PI, sin, cos, tan, atan, acos, sqrt, abs, max, min} = Math;
+const D2R = PI / 180, R2D = 180 / PI;
+const inv = a => tan(a) - a;
+function ainv(x) { if (!(x > 0)) return NaN; let a = Math.cbrt(3 * x); for (let i = 0; i < 80; i++) { const f = inv(a) - x; a -= f / tan(a) ** 2; if (abs(f) < 1e-16) break; } return a; }
+
+const THK = {tn: 'Normal circular thickness (at the reference diameter)', tt: 'Transverse circular thickness', mow: 'Measurement over pins / balls',
+  span: 'Span over k teeth (normal)', x: 'Profile shift coefficient x (normal)'};
+
+// one gear: {N, od, root, thk: {kind, v, d (pin/ball size), k (span teeth)}, tif (optional, overrides), gen (optional)}
+function gearSetup(g, B, i) {
+  const {Pt, mn, phin, phit, beta, bb} = B, N = g.N, d = N / Pt, db = d * cos(phit), errs = [];
+  const t = g.thk || {}, v = t.v;
+  let st = null;
+  if (!(N >= 3)) errs.push(`Gear ${i}: enter the number of teeth.`);
+  else if (!(v > -1e9 && isFinite(v))) errs.push(`Gear ${i}: enter the tooth thickness (any one way).`);
+  else if (t.kind === 'tn') st = v / cos(beta);
+  else if (t.kind === 'tt') st = v;
+  else if (t.kind === 'x') st = (PI / 2 + 2 * v * tan(phin)) * mn / cos(beta);
+  else if (t.kind === 'mow') { if (!(t.d > 0)) errs.push(`Gear ${i}: enter the pin / ball size.`); else st = G.tFromMowExt(N, d, db, phit, v, t.d, bb); }
+  else if (t.kind === 'span') {
+    if (!(t.k >= 2)) errs.push(`Gear ${i}: enter the number of teeth spanned (k).`);
+    else { const pbn = PI * mn * cos(phin), nbt = v - (t.k - 1) * pbn; st = d * (nbt / cos(bb) / db - inv(phit)); }
+  } else errs.push(`Gear ${i}: choose how the tooth thickness is given.`);
+  if (st !== null && !(st > 0 && isFinite(st))) { errs.push(`Gear ${i}: the tooth thickness works out non-positive; check the thickness input.`); st = null; }
+  const out = {i, N, d, db, rb: db / 2, st, errs};
+  if (st === null || errs.length) return out;
+  out.sn = st * cos(beta);
+  out.x = (out.sn / mn - PI / 2) / (2 * tan(phin));             // equivalent normal profile shift coefficient
+  out.psi = st / d + inv(phit);
+  if (!(g.od > 0)) errs.push(`Gear ${i}: enter the outside diameter.`);
+  if (!(g.root > 0)) errs.push(`Gear ${i}: enter the root diameter.`);
+  if (errs.length) return out;
+  out.od = g.od; out.root = g.root; out.ra = g.od / 2; out.rf = g.root / 2;
+  if (out.ra <= out.rb) errs.push(`Gear ${i}: the outside diameter is not above the base circle (D ${fx(2 * out.rb)}).`);
+  if (out.rf >= out.ra) errs.push(`Gear ${i}: the root diameter must be smaller than the outside diameter.`);
+  // tooth thickness at the tip (transverse arc) and normal
+  if (out.ra > out.rb) {
+    const aa = acos(out.rb / out.ra); out.sat = g.od * (out.psi - inv(aa));
+    const ba = atan(tan(beta) * g.od / d); out.san = out.sat * cos(ba);
+    out.apex = out.psi > 0 ? out.db / cos(ainv(out.psi)) : null;
+  }
+  // TIF: given (e.g. carried from the EXT / HELIX screen) or the rack (hob) TIF with the produced dedendum, sharp tip, transverse plane
+  out.dedP = (d - g.root) / 2;
+  if (g.tif > 0) { out.tif = g.tif; out.tifSrc = 'given'; out.undercut = !!g.U; }
+  else if (out.dedP > 0) {
+    const T = G.tifRack(N, Pt, phit, st, out.dedP);
+    out.undercut = T.U; out.tif = T.D; out.tifSrc = 'hob';
+    if (out.tif === null) out.tif = out.db;                   // fully undercut / no crossing found: use the base circle
+  } else { out.tif = out.db; out.tifSrc = 'base'; out.undercut = false; }
+  out.rtif = out.tif / 2;
+  return out;
+}
+const FX0 = x => (+x).toFixed(5);
+let FX = FX0;                 // length formatter for messages (the UI passes inp.fmtLen to show mm when metric)
+const fx = x => FX(x);
+
+function atCenter(B, g1, g2, a, a0, aw0) {
+  const rbs = g1.rb + g2.rb, r = {a};
+  if (!(a > rbs)) { r.err = `Center distance must exceed the sum of the base radii (${fx(rbs)}).`; return r; }
+  const aw = acos(rbs / a); r.aw = aw * R2D; r.invaw = inv(aw);
+  r.dw1 = g1.db / cos(aw); r.dw2 = g2.db / cos(aw);
+  r.jt = r.dw1 * (g1.N + g2.N) / g1.N * (inv(aw) - inv(aw0));      // circumferential backlash on the operating pitch circle
+  r.jbt = r.jt * cos(aw); r.jn = r.jbt * cos(B.bb); r.jtRef = r.jbt / cos(B.phit);
+  r.jth1 = r.jt / (r.dw1 / 2) * R2D; r.jth2 = r.jt / (r.dw2 / 2) * R2D;   // angular backlash (deg) of each gear with the other held
+  r.da = a - a0;
+  r.c12 = a - g1.ra - g2.rf; r.c21 = a - g2.ra - g1.rf;              // tip of 1 to root of 2, tip of 2 to root of 1
+  const ga1 = sqrt(g1.ra ** 2 - g1.rb ** 2), ga2 = sqrt(g2.ra ** 2 - g2.rb ** 2), Lt = a * sin(aw);
+  r.Lt = Lt; r.path = ga1 + ga2 - Lt; r.ea = r.path / B.pbt;
+  r.L1 = Lt - ga2; r.L2 = Lt - ga1;                                    // SAP positions from the tangent points T1, T2
+  r.sap1 = r.L1 > 0 ? 2 * sqrt(g1.rb ** 2 + r.L1 ** 2) : null; r.sap2 = r.L2 > 0 ? 2 * sqrt(g2.rb ** 2 + r.L2 ** 2) : null;
+  r.invol1 = r.L1 <= 0; r.invol2 = r.L2 <= 0;
+  r.t2f1 = !r.invol1 && r.sap1 < g1.tif - 1e-9; r.t2f2 = !r.invol2 && r.sap2 < g2.tif - 1e-9;
+  r.eb = B.b > 0 ? B.b * sin(B.beta) / (PI * B.mn) : null; r.eg = r.eb !== null ? r.ea + r.eb : null;
+  return r;
+}
+
+function meshCalc(inp) {
+  FX = typeof inp.fmtLen === 'function' ? inp.fmtLen : FX0;
+  const errs = [], warn = [], notes = [];
+  const Pn = inp.Pn, phin = (inp.phin ?? 20) * D2R, beta = (inp.beta || 0) * D2R;
+  if (!(Pn > 0)) return {err: 'Enter the normal diametral pitch or module.'};
+  if (!(phin > 0 && phin < 60 * D2R)) return {err: 'Enter the normal pressure angle (deg).'};
+  if (!(beta >= 0 && beta < 60 * D2R)) return {err: 'Helix angle must be 0 (spur) to below 60 deg.'};
+  const Pt = Pn * cos(beta), mn = 1 / Pn, mt = mn / cos(beta), phit = atan(tan(phin) / cos(beta)), bb = atan(tan(beta) * cos(phit));
+  const B = {Pn, Pt, mn, mt, phin, phit, beta, bb, pt: PI / Pt, pbt: PI / Pt * cos(phit), pbn: PI * mn * cos(phin), b: inp.b > 0 ? inp.b : null};
+  if (beta > 0) {
+    const h1 = inp.hand1, h2 = inp.hand2;
+    if (h1 && h2 && h1 === h2) errs.push(`Hands: both gears are ${h1 === 'R' ? 'right' : 'left'}-hand. External helical gears on parallel axes must have opposite hands (one right, one left).`);
+    else if (!(h1 && h2)) notes.push('Hands not given: external helical gears on parallel axes must be of opposite hand.');
+  }
+  const g1 = gearSetup(inp.gears[0] || {}, B, 1), g2 = gearSetup(inp.gears[1] || {}, B, 2);
+  errs.push(...g1.errs, ...g2.errs);
+  const out = {B: {Pn, Pt, mn, mt, phin: phin * R2D, phit: phit * R2D, beta: beta * R2D, bb: bb * R2D, pt: B.pt, pbt: B.pbt, pbn: B.pbn, b: B.b}, g: [g1, g2], warn, notes};
+  if (errs.length) { out.err = errs.join(' '); return out; }
+  const invw = (g1.N * g1.psi + g2.N * g2.psi - PI) / (g1.N + g2.N);
+  if (!(invw > 0)) { out.err = 'The teeth are too thin to mesh at a positive operating pressure angle (inv a_w <= 0); check the thicknesses.'; return out; }
+  const aw0 = ainv(invw), a0 = (g1.db + g2.db) / (2 * cos(aw0));
+  out.tight = Object.assign(atCenter(B, g1, g2, a0, a0, aw0), {invaw: invw});
+  out.tight.jt = 0; out.tight.jbt = 0; out.tight.jn = 0; out.tight.jtRef = 0; out.tight.jth1 = 0; out.tight.jth2 = 0;
+  out.std = (g1.N + g2.N) / (2 * Pt);                               // standard center distance
+  out.y = (a0 - out.std) / mn;                                      // center distance modification coefficient (normal module units)
+  if (inp.C > 0) {
+    out.entered = atCenter(B, g1, g2, inp.C, a0, aw0);
+    if (out.entered.err) errs.push(out.entered.err);
+    else if (out.entered.jt < -1e-9) errs.push(`The entered center distance is ${fx(-out.entered.da)} below the tight-mesh center: the teeth would interfere (negative backlash ${fx(out.entered.jn)} normal).`);
+  }
+  // checks at both centers (tight mesh is the worst case for interference; the entered center for clearance and contact ratio)
+  const cMin = inp.cMin > 0 ? inp.cMin : 0.1 * mn;
+  out.cMin = cMin;
+  for (const [nm, r] of [['tight mesh', out.tight], ['entered center', out.entered]]) {
+    if (!r || r.err) continue;
+    for (const [c, lab] of [[r.c12, 'gear 1 tip to gear 2 root'], [r.c21, 'gear 2 tip to gear 1 root']]) {
+      if (c < -1e-9) errs.push(`Clearance ${lab} is negative at the ${nm} (${fx(c)}): the tip hits the mate's root.`);
+      else if (c < cMin) warn.push(`Clearance ${lab} is small at the ${nm}: ${fx(c)} (warning level ${fx(cMin)}).`);
+    }
+    if (r.invol1) errs.push(`Involute interference at the ${nm}: gear 2's tip passes the interference point of gear 1 (contact would start below gear 1's base circle).`);
+    if (r.invol2) errs.push(`Involute interference at the ${nm}: gear 1's tip passes the interference point of gear 2 (contact would start below gear 2's base circle).`);
+    if (r.t2f1) errs.push(`Tip-to-fillet interference at the ${nm}: gear 2's tip reaches gear 1 at D ${fx(r.sap1)}, below gear 1's TIF ${fx(g1.tif)}.`);
+    if (r.t2f2) errs.push(`Tip-to-fillet interference at the ${nm}: gear 1's tip reaches gear 2 at D ${fx(r.sap2)}, below gear 2's TIF ${fx(g2.tif)}.`);
+    if (r.ea < 1) errs.push(`Transverse contact ratio below 1 at the ${nm} (${r.ea.toFixed(3)}): the mesh will not run continuously (KHK: keep it at 1 or greater).`);
+  }
+  for (const g of [g1, g2]) {
+    if (g.undercut) warn.push(`Gear ${g.i} is undercut (${g.tifSrc === 'hob' ? 'rack / hob TIF rule, as GCP3' : 'as given'}); TIF ${fx(g.tif)}.`);
+    if (g.sat !== undefined && g.sat <= 0) errs.push(`Gear ${g.i}: the tooth is pointed below the outside diameter (apex D ${g.apex ? fx(g.apex) : '-'}).`);
+    if (g.tifSrc === 'hob') notes.push(`Gear ${g.i} TIF: rack (hob) generation with the produced dedendum ${fx(g.dedP)}, sharp tip, transverse plane (as GCP3's EXT / HELIX TIF). Type the TIF if the gear was cut otherwise.`);
+  }
+  if (errs.length) out.err = errs.join(' ');
+  out.ok = !errs.length;
+  return out;
+}
+
+// tight-mesh partner: the tooth thickness of gear 2 that meshes tight at center a (inverse use), for convenience/tests
+function thicknessForCenter(inp, a) {
+  const r = meshCalc(inp); if (!r.tight) return null;
+  const B = r.B, g1 = r.g[0], g2 = r.g[1], aw = acos((g1.rb + g2.rb) / a);
+  const psi2 = ((g1.N + g2.N) * inv(aw) + PI - g1.N * g1.psi) / g2.N, phit = B.phit * D2R;
+  return (psi2 - inv(phit)) * g2.d;    // transverse thickness
+}
+
+// drawing layout at center a (transverse plane, exact) or the normal-plane virtual pair (approximate).
+// Gear 1 centre (0,0), gear 2 centre (0,a); profile.js frames have a tooth space centred on +y and rotate clockwise.
+// rot1 puts a gear-1 tooth on the line of centres; rot2 = pi turns gear 2 toward gear 1 with a space on the line,
+// plus half the angular backlash so the flanks touch on one side (the gap on the other side is the backlash).
+function layout(res, a, plane, carry) {
+  const B = res.B, g = res.g, normal = plane === 'N' && B.beta > 0;
+  const beta = B.beta * D2R, cb = cos(beta);
+  const spec = (gi, k) => {
+    const c = carry && carry[k];
+    if (!normal) return {N: gi.N, P: B.Pt, phi: B.phit * D2R, t: gi.st, Rt: gi.ra, gen: (c && c.gen) || {type: 'rack', h: gi.dedP, rho: 0}, minorGiven: gi.root, tif: gi.tif};
+    const Nv = gi.N / cb ** 3, dv = Nv / B.Pn;
+    return {N: Nv, P: B.Pn, phi: B.phin * D2R, t: gi.sn, Rt: dv / 2 + (gi.ra - gi.d / 2), gen: {type: 'rack', h: gi.dedP, rho: 0}};
+  };
+  const s1 = spec(g[0], 0), s2 = spec(g[1], 1);
+  // tight centre and backlash of the pair that is drawn (transverse: exact; normal: virtual spur pair, approximate)
+  const psi = s => s.t / (s.N / s.P) + inv(s.phi);
+  const iw = (s1.N * psi(s1) + s2.N * psi(s2) - PI) / (s1.N + s2.N), aw0 = ainv(iw);
+  const db1 = s1.N / s1.P * cos(s1.phi), db2 = s2.N / s2.P * cos(s2.phi), a0 = (db1 + db2) / (2 * cos(aw0));
+  const A = normal ? a0 + (a - res.tight.a) : a;
+  const aw = acos(min(1, (db1 + db2) / (2 * A))), dw2 = db2 / cos(aw);
+  const jt = db1 / cos(aw) * (s1.N + s2.N) / s1.N * (inv(aw) - inv(aw0));
+  const jth2 = jt / (dw2 / 2);
+  return {a: A, s1, s2, rot1: PI / s1.N, rot2: PI + jth2 / 2, jth2, jt, normal};
+}
+
+const API = {layout, meshCalc, gearSetup, thicknessForCenter, ainv, inv, THK};
+if (typeof module !== 'undefined' && module.exports) module.exports = API; else root.GCP3MESH = API;
+})(typeof window !== 'undefined' ? window : this);
+
+/* Web Gear Calc - BEVEL module (new; not in GCP3). Straight / spiral / Zerol bevel gears, hypoid geometry (approximate).
+   Sources (see spec/bevel.md):
+   [KHK]  KHK Gear Technical Reference, "Calculation of Gear Dimensions", Tables 4.16 (Gleason straight) and 4.20 (Gleason spiral).
+   [SH]   Budynas & Nisbett, Shigley's MED 10e, Ch.15 (AGMA 2003 approach), Eqs 15-1..15-23, US and SI forms.
+   [AGMA] ANSI/AGMA 2003 spiral lengthwise curvature factor Kx as reproduced publicly.
+   J and I are APPROXIMATIONS (AGMA charts are copyrighted) - see bevelJI().
+   Plain script: defines global GCP3BEVEL in the browser, module.exports in node. Lengths are in any unit (m = d/z). */
+(function (root) {
+'use strict';
+const {PI, sin, cos, tan, atan, atan2, acos, asin, sqrt, abs, hypot, max, min, log10} = Math;
+const D2R = PI / 180, deg = r => r / D2R, inv = a => tan(a) - a;
+const TYPES = ['Gleason straight', 'Gleason spiral', 'Zerol', 'Standard straight', 'Hypoid'];
+const APPROX = {
+  zerol: 'Zerol uses the Gleason straight-bevel proportions with spiral angle 0 (approximation; Gleason Zerol tables are not public).',
+  hypoid: 'HYPOID: geometry is APPROXIMATE (pinion spiral angle = gear spiral angle + asin(E/(d2/2)); pinion size from cos-ratio; Gleason spiral proportions). Not a Gleason hypoid design; no rating.',
+  thick: 'Tooth thickness is approximate: balanced long-addendum shift only; Gleason thickness factor K (copyrighted chart) taken as 0.',
+  ji: 'J and I are APPROXIMATE (AGMA 2003 charts are copyrighted): fitted Lewis/Dolan-Broghamer J and virtual-spur I, calibrated to 10 J and 5 I published chart readings (straight 20 deg, 90 deg shaft). Enter chart/AGMA values to override.',
+  jiSpiral: 'Spiral/Zerol J and I are NOT calibrated against any published reading - indicative only. Enter AGMA values for a real rating.',
+};
+
+// ---------------------------------------------------------------- geometry [KHK 4.16 / 4.20]
+function proportions(type, m, z1, z2, d1r, d2r) {
+  const r = (z2 * cos(d1r)) / (z1 * cos(d2r));
+  if (type === 'Gleason spiral' || type === 'Hypoid') {
+    const ha2 = 0.46 * m + 0.39 * m / r, ha1 = 1.7 * m - ha2;
+    return {ha1, ha2, hf1: 1.888 * m - ha1, hf2: 1.888 * m - ha2, uniform: true};
+  }
+  if (type === 'Standard straight') return {ha1: m, ha2: m, hf1: 1.25 * m, hf2: 1.25 * m, uniform: false};
+  const ha2 = 0.54 * m + 0.46 * m / r, ha1 = 2 * m - ha2;          // Gleason straight, Zerol
+  return {ha1, ha2, hf1: 2.188 * m - ha1, hf2: 2.188 * m - ha2, uniform: true};
+}
+function pitchAngles(z1, z2, sigma, d1, d2) {
+  const S = sigma * D2R, q = (d1 && d2) ? d2 / d1 : z2 / z1;
+  let d1r = atan(sin(S) / (q + cos(S))); if (d1r < 0) d1r += PI;
+  return [d1r, S - d1r];
+}
+function bevelGeom(o) {
+  let {m, z1, z2, sigma = 90, alpha = 20, beta = null, b = null, type = 'Gleason straight', E = 0, MD1 = null, MD2 = null} = o;
+  const w = [], notes = [];
+  const spiral = type === 'Gleason spiral' || type === 'Hypoid';
+  if (beta === null) beta = spiral ? 35 : 0;
+  if (!spiral) beta = type === 'Zerol' ? 0 : (type === 'Standard straight' || type === 'Gleason straight' ? 0 : beta);
+  let d2 = m * z2, d1 = m * z1, betaP = beta, eps = 0, m1 = m;
+  if (type === 'Hypoid') {
+    eps = deg(asin(min(0.95, abs(E) / (d2 / 2))));
+    betaP = beta + eps;
+    d1 = d2 * (z1 / z2) * cos(beta * D2R) / cos(betaP * D2R); m1 = d1 / z1;
+    notes.push(APPROX.hypoid);
+  }
+  if (type === 'Zerol') notes.push(APPROX.zerol);
+  const [d1r, d2r] = pitchAngles(z1, z2, sigma, d1, d2);
+  const R = d2 / (2 * sin(d2r));
+  const bLim = spiral ? min(0.3 * R, 10 * m) : min(R / 3, 10 * m);
+  if (b === null || !(b > 0)) b = bLim;
+  if (b > bLim * 1.0000001) w.push(`*FACE WIDTH ${spiral ? '> 0.3R or 10m' : '> R/3 or 10m'}* (limit ${bLim.toPrecision(5)})`);
+  const P = proportions(type, m, z1, z2, d1r, d2r);
+  if (P.ha1 < 0 || P.ha2 < 0) w.push('*NEGATIVE ADDENDUM*');
+  const thf1 = atan(P.hf1 / R), thf2 = atan(P.hf2 / R);
+  const tha1 = P.uniform ? thf2 : atan(P.ha1 / R), tha2 = P.uniform ? thf1 : atan(P.ha2 / R);
+  const da1 = d1r + tha1, da2 = d2r + tha2, df1 = d1r - thf1, df2 = d2r - thf2;
+  const od1 = d1 + 2 * P.ha1 * cos(d1r), od2 = d2 + 2 * P.ha2 * cos(d2r);
+  const X1 = R * cos(d1r) - P.ha1 * sin(d1r), X2 = R * cos(d2r) - P.ha2 * sin(d2r);
+  const Xb1 = b * cos(da1) / cos(tha1), Xb2 = b * cos(da2) / cos(tha2);
+  const di1 = od1 - 2 * b * sin(da1) / cos(tha1), di2 = od2 - 2 * b * sin(da2) / cos(tha2);
+  const br = beta * D2R, an = alpha * D2R, at = atan(tan(an) / cos(br));
+  const zv1 = z1 / (cos(d1r) * cos(br) ** 3), zv2 = z2 / (cos(d2r) * cos(br) ** 3);
+  // approximate transverse contact ratio of the Tredgold virtual spur pair at the heel (transverse plane)
+  const rv1 = d1 / (2 * cos(d1r)), rv2 = d2 / (2 * cos(d2r));
+  const ea = (sqrt((rv1 + P.ha1) ** 2 - (rv1 * cos(at)) ** 2) + sqrt((rv2 + P.ha2) ** 2 - (rv2 * cos(at)) ** 2) - (rv1 + rv2) * sin(at)) / (PI * m * cos(at));
+  const s1 = PI * m / 2 + (P.ha1 - P.ha2) * tan(at), s2 = PI * m - s1;
+  notes.push(APPROX.thick);
+  const Rm = R - b / 2;
+  const faceContact = spiral ? b * tan(br) / (PI * m) : 0;   // face (overlap) contact ratio, approximate (outer pitch)
+  if (spiral && faceContact < 1.25) w.push('*FACE CONTACT RATIO < 1.25*');
+  if (b > 0 && Rm <= 0) w.push('*FACE WIDTH TOO LARGE*');
+  const r = {type, m, m1, z1, z2, sigma, alpha, beta, betaP, eps, at: deg(at), b, bLim, d1, d2, delta1: deg(d1r), delta2: deg(d2r), R, Rm,
+    ha1: P.ha1, ha2: P.ha2, hf1: P.hf1, hf2: P.hf2, h1: P.ha1 + P.hf1, h2: P.ha2 + P.hf2, c: P.hf1 + P.hf2 - P.ha1 - P.ha2 > 0 ? (P.hf2 - P.ha1) : null,
+    thetaA1: deg(tha1), thetaA2: deg(tha2), thetaF1: deg(thf1), thetaF2: deg(thf2), faceA1: deg(da1), faceA2: deg(da2),
+    rootA1: deg(df1), rootA2: deg(df2), od1, od2, X1, X2, Xb1, Xb2, di1, di2, zv1, zv2, eps_a: ea, eps_b: faceContact, s1, s2,
+    warnings: w, notes};
+  if (MD1 !== null && MD1 !== undefined && MD1 !== '') r.CB1 = MD1 - X1;
+  if (MD2 !== null && MD2 !== undefined && MD2 !== '') r.CB2 = MD2 - X2;
+  return r;
+}
+
+// ---------------------------------------------------------------- J and I APPROXIMATIONS (labelled)
+function ainv(x) { let a = Math.cbrt(3 * x); for (let i = 0; i < 60; i++) { const f = inv(a) - x; a -= f / tan(a) ** 2; if (abs(f) < 1e-15) break; } return a; }
+// Lewis-type section of a rack-generated tooth, module 1: z teeth, shift x, addendum ka, dedendum hf, cutter edge radius rho, PA a [rad], extra thickness ds
+function lewisJ(z, x, ka, hf, rho, a, ds = 0) {
+  const rp = z / 2, rb = rp * cos(a), ra = rp + ka, s = PI / 2 + 2 * x * tan(a) + ds;
+  const Yc = -hf + rho, Xc = (PI - s) / 2 + Yc * tan(a) - rho / cos(a);
+  const pts = [];
+  for (let th = -1.2; th <= 1.2; th += 0.001) { const X = Xc + rp * th, Y = rp + Yc, c = cos(th), sn = sin(th); pts.push([X * c - Y * sn, X * sn + Y * c]); }
+  const phiT = PI / z, thA = s / (2 * rp) + inv(a) - inv(acos(rb / ra)), aA = acos(rb / ra), phiL = aA - thA;
+  const yL = ra * cos(thA) - ra * sin(thA) * tan(phiL);
+  let best = null;
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [x0, y0] = pts[i - 1], [x1, y1] = pts[i + 1]; let tx = x1 - x0, ty = y1 - y0; const L = hypot(tx, ty); tx /= L; ty /= L;
+    let nx = -ty, ny = tx; const [px, py] = pts[i]; if (nx * px + ny * py > 0) { nx = -nx; ny = -ny; }
+    const fx = px + rho * nx, fy = py + rho * ny, r = hypot(fx, fy); if (r > rp) continue;
+    const rel = phiT - atan2(fx, fy); if (rel <= 0 || rel > phiT) continue;
+    const u = r * sin(rel), y = r * cos(rel), h = yL - y; if (h <= 0) continue;
+    const Y = (2 * u) ** 2 / (6 * h); if (!best || Y < best.Y) best = {Y, u, h};
+  }
+  if (!best) return null;
+  const rf = rho + (hf - rho) ** 2 / (rp + hf - rho);
+  const H = 0.34 - 0.4583662 * a, Lx = 0.316 - 0.4583662 * a, M = 0.290 + 0.4583662 * a;
+  const Kf = H + (2 * best.u / rf) ** Lx * (2 * best.u / best.h) ** M;
+  return best.Y * cos(phiL) / cos(a) / Kf;
+}
+const JI_FIT = {kJ: 1.216, Kthk: 0.25, kI: 0.653, rho: 0.2};   // fitted constants (test/bevel_check.js reports the in-sample fit)
+function bevelJI(g) {
+  const {z1, z2, alpha} = g, a = alpha * D2R, br = g.beta * D2R, d1r = g.delta1 * D2R, d2r = g.delta2 * D2R;
+  const RmR = g.Rm / g.R, ka1 = g.ha1 / g.m, ka2 = g.ha2 / g.m, hf1 = g.hf1 / g.m, hf2 = g.hf2 / g.m;
+  const zv1 = z1 / (cos(d1r) * cos(br) ** 3), zv2 = z2 / (cos(d2r) * cos(br) ** 3), dlt = JI_FIT.Kthk * (ka1 - ka2);
+  const j1 = lewisJ(zv1, ka1 - 1, ka1, hf1, JI_FIT.rho, a, dlt), j2 = lewisJ(zv2, ka2 - 1, ka2, hf2, JI_FIT.rho, a, -dlt);
+  const mv = (z2 * cos(d1r)) / (z1 * cos(d2r));
+  const I = JI_FIT.kI * (cos(a) * sin(a) / 2) * (mv / (mv + 1)) * RmR / cos(d1r);
+  const calibrated = g.beta === 0 && abs(g.alpha - 20) < 1e-9;
+  return {J1: j1 === null ? null : JI_FIT.kJ * j1 * RmR, J2: j2 === null ? null : JI_FIT.kJ * j2 * RmR, I, calibrated,
+          note: calibrated ? APPROX.ji : APPROX.ji + ' ' + APPROX.jiSpiral};
+}
+
+// ---------------------------------------------------------------- rating, AGMA 2003 approach as in [SH] 15-1..15-23
+function KxSpiral(rc, Am, psiDeg) {   // [AGMA 2003 via public summaries]; Kx = 1 for straight/Zerol
+  if (!(psiDeg > 0) || !(rc > 0) || !(Am > 0)) return 1;
+  const q = 0.279 / log10(sin(psiDeg * D2R)), k = 0.211 * (rc / Am) ** q + 0.789;
+  return min(1.15, max(1.0, k));
+}
+function bevelRate(o) {
+  const SI = o.units === 'SI';
+  const {N1, N2, F, Qv = 6, n1, cycles = 1e9, R = 0.99, Ko = 1, SF = 1, SH = 1, KT = 1, mount = 'one', crowned = false,
+         KL: KLc = 'critical', chMode = 'agma'} = o;
+  const mG = N2 / N1, B = 0.25 * (12 - Qv) ** (2 / 3), A = 50 + 56 * (1 - B);
+  const Kmb = mount === 'both' ? 1.0 : mount === 'neither' ? 1.25 : 1.10;
+  const NP = cycles, NG = cycles / mG;
+  const KLf = N => KLc === 'general' ? 1.3558 * N ** -0.0178 : 1.6831 * N ** -0.0323;
+  const CLf = N => 3.4822 * N ** -0.0602;
+  const KR = R >= 0.99 ? 0.50 - 0.25 * log10(1 - R) : 0.70 - 0.15 * log10(1 - R), CR = sqrt(KR);
+  const ratio = (o.HB1 && o.HB2) ? o.HB1 / o.HB2 : 1;
+  let B1 = 0.00898 * ratio - 0.00829;
+  if (chMode === 'agma') B1 = ratio < 1.2 ? 0 : 0.00898 * min(ratio, 1.7) - 0.00829;
+  const CHG = o.CH2 != null ? o.CH2 : 1 + B1 * (mG - 1);
+  const Cxc = crowned ? 1.5 : 2.0, Kx = o.Kx != null ? o.Kx : 1;
+  const {J1, J2, I} = o;
+  const w = [], r = {B, A, Kmb, KR, CR, CH1: 1, CH2: CHG, Cxc, Kx, KL1: KLf(NP), KL2: KLf(NG), CL1: CLf(NP), CL2: CLf(NG), NP, NG, warnings: w};
+  if (!SI) {
+    const Pd = o.Pd, dP = N1 / Pd, vt = PI * dP * n1 / 12;
+    const Kv = ((A + sqrt(vt)) / A) ** B, vmax = (A + Qv - 3) ** 2;
+    if (vt > vmax) w.push(`*PITCH LINE VELOCITY ${vt.toFixed(0)} > ${vmax.toFixed(0)} ft/min (Qv)*`);
+    const Ks = 0.4867 + 0.2132 / Pd, Km = Kmb + 0.0036 * F * F, Cs = 0.125 * F + 0.4375, Cp = o.Cp || 2290;
+    const sat1 = o.sat1 || 44 * o.HB1 + 2100, sat2 = o.sat2 || 44 * o.HB2 + 2100;
+    const sac1 = o.sac1 || 341 * o.HB1 + 23620, sac2 = o.sac2 || 341 * o.HB2 + 23620;
+    const swt1 = sat1 * r.KL1 / (SF * KT * KR), swt2 = sat2 * r.KL2 / (SF * KT * KR);
+    const sc1 = sac1 * r.CL1 * 1 / (SH * KT * CR), sc2 = sac2 * r.CL2 * CHG / (SH * KT * CR);
+    const Wb1 = swt1 * F * Kx * J1 / (Pd * Ko * Kv * Ks * Km), Wb2 = swt2 * F * Kx * J2 / (Pd * Ko * Kv * Ks * Km);
+    const Wc1 = (sc1 / Cp) ** 2 * F * dP * I / (Ko * Kv * Km * Cs * Cxc), Wc2 = (sc2 / Cp) ** 2 * F * dP * I / (Ko * Kv * Km * Cs * Cxc);
+    const hp = W => W * vt / 33000;
+    Object.assign(r, {dP, vt, vmax, Kv, Ks, Km, Cs, Cp, sat1, sat2, sac1, sac2, swt1, swt2, sc1, sc2, Wb1, Wb2, Wc1, Wc2,
+      H1: hp(Wb1), H2: hp(Wb2), H3: hp(Wc1), H4: hp(Wc2), unitW: 'lbf', unitP: 'hp', unitS: 'psi'});
+  } else {
+    const met = o.met, de1 = met * N1, vet = 5.236e-5 * de1 * n1;
+    const Kv = ((A + sqrt(200 * vet)) / A) ** B, vmax = (A + Qv - 3) ** 2 / 200;
+    if (vet > vmax) w.push(`*PITCH LINE VELOCITY ${vet.toFixed(2)} > ${vmax.toFixed(2)} m/s (Qv)*`);
+    const Ks = 0.4867 + 0.008339 * met, Km = Kmb + 5.6e-6 * F * F, Cs = 0.00492 * F + 0.4375, Cp = o.Cp || 190;
+    const sat1 = o.sat1 || 0.30 * o.HB1 + 14.48, sat2 = o.sat2 || 0.30 * o.HB2 + 14.48;
+    const sac1 = o.sac1 || 2.35 * o.HB1 + 162.89, sac2 = o.sac2 || 2.35 * o.HB2 + 162.89;
+    const swt1 = sat1 * r.KL1 / (SF * KT * KR), swt2 = sat2 * r.KL2 / (SF * KT * KR);
+    const sc1 = sac1 * r.CL1 / (SH * KT * CR), sc2 = sac2 * r.CL2 * CHG / (SH * KT * CR);
+    const Wb1 = swt1 * F * met * Kx * J1 / (1000 * Ko * Kv * Ks * Km), Wb2 = swt2 * F * met * Kx * J2 / (1000 * Ko * Kv * Ks * Km);
+    const Wc1 = (sc1 / Cp) ** 2 * F * de1 * I / (1000 * Ko * Kv * Km * Cs * Cxc), Wc2 = (sc2 / Cp) ** 2 * F * de1 * I / (1000 * Ko * Kv * Km * Cs * Cxc);
+    const kW = W => PI * de1 * n1 * W / 60000;
+    Object.assign(r, {dP: de1, vt: vet, vmax, Kv, Ks, Km, Cs, Cp, sat1, sat2, sac1, sac2, swt1, swt2, sc1, sc2, Wb1, Wb2, Wc1, Wc2,
+      H1: kW(Wb1), H2: kW(Wb2), H3: kW(Wc1), H4: kW(Wc2), unitW: 'kN', unitP: 'kW', unitS: 'MPa'});
+  }
+  const list = [['Pinion bending', r.H1], ['Gear bending', r.H2], ['Pinion contact', r.H3], ['Gear contact', r.H4]];
+  list.sort((a, b) => a[1] - b[1]); r.rating = list[0][1]; r.controls = list[0][0];
+  if (NP < 3e6 || NP > 1e10) w.push('*CYCLES OUTSIDE 3e6..1e10 (life factor equations)*');
+  return r;
+}
+
+// ---------------------------------------------------------------- reverse engineering (Measure / Identify)
+const DP_PREF = [1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 64, 72, 80, 96, 120];
+const DP_OTHER = [2.25, 2.75, 3.5, 4.5, 7, 9, 11, 14, 18, 22, 28, 36, 44, 56];
+const MOD_PREF = [0.5, 0.6, 0.8, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 16, 20, 25, 32, 40, 50];
+const MOD_OTHER = [0.7, 0.9, 1.125, 1.375, 1.75, 2.25, 2.75, 3.5, 4.5, 5.5, 7, 9, 11, 14, 18, 22, 28, 36, 45];
+/* meas (inch, deg): {z1, z2, sigma, od1, od2, fa1, fa2, R, X1, X2, h1, h2, beta}; opt: {u, w, ua (deg), fams, systems} */
+function bevelIdentify(meas, opt = {}) {
+  const u = opt.u ?? 0.001, wear = opt.w ?? 0.005, ua = opt.ua ?? 0.25;
+  const fams = opt.fams || ['DP', 'module'];
+  const sigma = meas.sigma ?? 90, z1 = meas.z1, z2 = meas.z2;
+  if (!(z1 > 0 && z2 > 0)) return {err: 'Enter both tooth counts.'};
+  let systems = opt.systems || ['Gleason straight', 'Gleason spiral', 'Standard straight'];
+  const warn = [];
+  if (meas.beta != null && meas.beta > 3) { systems = systems.filter(s => s === 'Gleason spiral'); if (!systems.length) systems = ['Gleason spiral']; }
+  else if (meas.beta != null) systems = systems.filter(s => s !== 'Gleason spiral');
+  const keys = ['od1', 'od2', 'fa1', 'fa2', 'R', 'X1', 'X2', 'h1', 'h2'].filter(k => meas[k] != null && meas[k] !== '' && !isNaN(meas[k]));
+  if (!keys.length) return {err: 'Enter at least one size measurement (OD, cone distance, crown-to-apex or whole depth).'};
+  const chi = (g) => {
+    let c = 0; const res = {};
+    for (const k of keys) {
+      const p = {od1: g.od1, od2: g.od2, fa1: g.faceA1, fa2: g.faceA2, R: g.R, X1: g.X1, X2: g.X2, h1: g.h1, h2: g.h2}[k], v = meas[k];
+      let s;
+      if (k[0] === 'f') s = ua;
+      else {
+        const slack = 0.05 * g.m, worn = (k === 'od1' || k === 'od2' || k === 'h1' || k === 'h2') ? v < p : (k === 'X1' || k === 'X2') ? v > p : false;
+        s = sqrt(u * u + slack * slack + (worn ? wear * wear : 0));
+        if (k === 'R') s = sqrt(u * u + (0.02 * g.m) ** 2 + (0.002 * g.R) ** 2);
+      }
+      res[k] = {meas: v, pred: p, sig: s}; c += ((p - v) / s) ** 2;
+    }
+    return [c, res];
+  };
+  const cands = [];
+  const pitches = [];
+  if (fams.includes('DP')) { for (const v of DP_PREF) pitches.push({label: v + ' DP', m: 1 / v, pref: true}); for (const v of DP_OTHER) pitches.push({label: v + ' DP', m: 1 / v, pref: false}); }
+  if (fams.includes('module')) { for (const v of MOD_PREF) pitches.push({label: 'm ' + v, m: v / 25.4, pref: true}); for (const v of MOD_OTHER) pitches.push({label: 'm ' + v, m: v / 25.4, pref: false}); }
+  for (const p of pitches) for (const sys of systems) {
+    const g = bevelGeom({m: p.m, z1, z2, sigma, type: sys, beta: meas.beta ?? (sys === 'Gleason spiral' ? 35 : 0)});
+    const [c, res] = chi(g); const prior = (p.pref ? 0 : 1) + (sys === 'Standard straight' ? 0.5 : 0);
+    cands.push({pitch: p.label, m: p.m, system: sys, chi2: c, score: c + prior, res, g});
+  }
+  cands.sort((a, b) => a.score - b.score);
+  const s0 = cands[0].score; let Z = 0; for (const c of cands) { c.P = Math.exp(-(c.score - s0) / 2); Z += c.P; } for (const c of cands) c.P /= Z;
+  // pitch-family probabilities (sum over systems): what matters most for re-making a part
+  const top = cands[0], dof = keys.length;
+  let conf = top.P >= 0.9 ? 'High' : top.P >= 0.6 ? 'Medium' : 'Low';
+  if (top.chi2 / max(1, dof) > 4) { conf = 'Low'; warn.push('Best standard candidate does not fit well (chi2/n = ' + (top.chi2 / dof).toFixed(1) + '): non-standard design, worn beyond allowance, or a typing error.'); }
+  // non-standard best fit: continuous m for the best system (golden section on chi2)
+  let lo = top.m * 0.8, hi = top.m * 1.25; const f = m => chi(bevelGeom({m, z1, z2, sigma, type: top.system, beta: meas.beta ?? (top.system === 'Gleason spiral' ? 35 : 0)}))[0];
+  for (let i = 0; i < 80; i++) { const a = lo + (hi - lo) * 0.382, b = lo + (hi - lo) * 0.618; if (f(a) < f(b)) hi = b; else lo = a; }
+  const mNS = (lo + hi) / 2;
+  warn.push('Pressure angle is not identifiable from blank dimensions (OD, angles, cone distance); confirm by tooth gauge or chordal tooth measurement.');
+  return {cands, top, conf, dof, keys, nonstd: {m: mNS, DP: 1 / mNS, module: mNS * 25.4, system: top.system, chi2: f(mNS)}, warnings: warn};
+}
+
+const B = {TYPES, APPROX, bevelGeom, bevelJI, bevelRate, KxSpiral, bevelIdentify, lewisJ, JI_FIT, proportions};
+if (typeof module !== 'undefined' && module.exports) module.exports = B; else root.GCP3BEVEL = B;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+/* Web Gear Calc - Measure / Identify (reverse engineering). New scope, not in GCP3. See spec/identify.md.
+   Rank standard pitch x pressure-angle (x depth system) candidates by weighted least squares against measurements
+   of a (possibly worn) gear, with a continuous non-standard best fit. Inch and degrees internally.
+   Plain script: global GCP3ID in the browser, module.exports in node. */
+(function (root) {
+'use strict';
+const G = (typeof module !== 'undefined' && module.exports) ? require('./gcp3.js') : root.GCP3;
+const {PI, sin, cos, tan, atan, acos, asin, sqrt, abs, max, min, exp, round} = Math;
+const D2R = PI / 180, deg = r => r / D2R, inv = G.inv;
+
+// ---------------------------------------------------------------- candidate lists (spec/identify.md)
+const LISTS = {
+  DP: {pref: [1, 1.25, 1.5, 1.75, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 32, 40, 48, 64, 72, 80, 96, 120],
+       other: [2.25, 2.75, 3.5, 4.5, 7, 9, 11, 14, 18, 22, 28, 36, 44, 56]},
+  module: {pref: [0.5, 0.6, 0.8, 1, 1.25, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10, 12, 16, 20, 25, 32, 40, 50],
+           other: [0.7, 0.9, 1.125, 1.375, 1.75, 2.25, 2.75, 3.5, 4.5, 5.5, 7, 9, 11, 14, 18, 22, 28, 36, 45]},
+  CP: {pref: [0.125, 0.1875, 0.25, 0.3125, 0.375, 0.4375, 0.5, 0.625, 0.75, 0.875, 1, 1.25, 1.5, 1.75, 2], other: []},
+};
+const PA_STD = [14.5, 20, 22.5, 25, 30], PA_SPLINE = [37.5, 45];
+const PA_PRIOR = {14.5: 0.5, 20: 0, 22.5: 1, 25: 0.5, 30: 0.5, 37.5: 1, 45: 1};
+const fmtP = v => String(+v.toPrecision(6));
+function pitchList(fams) {
+  const out = [];
+  for (const f of fams) {
+    const L = LISTS[f]; if (!L) continue;
+    for (const [arr, pref] of [[L.pref, true], [L.other, false]]) for (const v of arr) {
+      const DP = f === 'DP' ? v : f === 'module' ? 25.4 / v : PI / v;
+      out.push({fam: f, v, DP, pref, label: f === 'DP' ? fmtP(v) + ' DP' : f === 'module' ? 'm ' + fmtP(v) : 'CP ' + fmtP(v) + '"'});
+    }
+  }
+  return out;
+}
+// depth systems: add/ded in inches for a (normal) DP
+function systems(PA, internal) {
+  const s = Object.entries(G.DEPTH).map(([name, d]) => ({name, add: P => d[0] / P, ded: P => d[1] / P + d[2], tx: 0}));
+  for (const [L, pa] of Object.entries(G.SPLINE_PA)) if (abs(pa - PA) < 1e-9) {
+    const sd = G.SPLINE_DEPTH[L];
+    s.push({name: 'Spline ' + L, add: P => sd[0] / (2 * P), ded: P => sd[1] / (2 * P) + (G.SPLINE_DED_CONST[L] || 0), tx: (G.SPLINE_CTT_EXTRA[L] || 0) * (internal ? -1 : 1)});
+  }
+  return s;
+}
+
+// ---------------------------------------------------------------- Nelder-Mead
+function nm(f, x0, step, it = 400) {
+  const n = x0.length; let P = [x0.slice()];
+  for (let i = 0; i < n; i++) { const x = x0.slice(); x[i] += step[i]; P.push(x); }
+  let F = P.map(f);
+  for (let k = 0; k < it; k++) {
+    const ix = F.map((v, i) => i).sort((a, b) => F[a] - F[b]); P = ix.map(i => P[i]); F = ix.map(i => F[i]);
+    if (abs(F[n] - F[0]) < 1e-10 * (1 + abs(F[0])) && k > 20) break;
+    const c = new Array(n).fill(0); for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) c[j] += P[i][j] / n;
+    const xr = c.map((v, j) => v + (v - P[n][j])), fr = f(xr);
+    if (fr < F[0]) { const xe = c.map((v, j) => v + 2 * (v - P[n][j])), fe = f(xe); if (fe < fr) { P[n] = xe; F[n] = fe; } else { P[n] = xr; F[n] = fr; } }
+    else if (fr < F[n - 1]) { P[n] = xr; F[n] = fr; }
+    else {
+      const xc = c.map((v, j) => v + 0.5 * (P[n][j] - v)), fc = f(xc);
+      if (fc < F[n]) { P[n] = xc; F[n] = fc; }
+      else for (let i = 1; i <= n; i++) { P[i] = P[i].map((v, j) => P[0][j] + 0.5 * (v - P[0][j])); F[i] = f(P[i]); }
+    }
+  }
+  let b = 0; for (let i = 1; i <= n; i++) if (F[i] < F[b]) b = i;
+  return {x: P[b], f: F[b]};
+}
+
+// ---------------------------------------------------------------- shared helpers
+const has = v => typeof v === 'number' && isFinite(v);
+const sq = v => v * v;
+function sigBlank(o, m, wornDir, slack = 0.05) { return sqrt(sq(o.u) + sq(slack * m) + (wornDir ? sq(o.w) : 0)); }
+// roots / internal majors depend on hob tip and depth practice: weaker evidence (slack 0.1 m)
+// meas: {N, spans:[{k,W}], bp, pins:[{d,M}], od, root, minor, major, lead, ha, haAt:'od'|'pitch', ...}
+function tFromSpanSpur(g, k, W) { return g.PD * ((W - (k - 1) * g.BP) / g.BD - inv(g.phi)); }
+
+// ---------------------------------------------------------------- module models
+// Each model: cands(opt) -> [{pitch, PA, basis}], geo(c, p) -> g, terms(c, g, p, meas, opt) -> [[name, pred, meas, sig]], init(c, meas) -> {p, step}
+const spurGeo = (c, N) => { const phi = c.PA * D2R, PD = N / c.pitch.DP; return {phi, PD, BD: PD * cos(phi), BP: PI / c.pitch.DP * cos(phi), CP: PI / c.pitch.DP, m: 1 / c.pitch.DP, DP: c.pitch.DP}; };
+function blankTerms(T, o, g, meas, sys, xs, internal) {   // OD/root (ext) or minor/major (int), x = shift in inches
+  const add = sys.add(g.DPn || g.DP), ded = sys.ded(g.DPn || g.DP);
+  if (!internal) {
+    if (has(meas.od)) { const p = g.PD + 2 * (add + xs); T.push(['OD', p, meas.od, sigBlank(o, g.m, meas.od < p), 1]); }
+    if (has(meas.root)) { const p = g.PD - 2 * (ded - xs); T.push(['Root', p, meas.root, sigBlank(o, g.m, false, 0.1), 1]); }
+  } else {
+    if (has(meas.minor)) { const p = max(g.PD - 2 * add, g.BD); T.push(['Minor', p, meas.minor, sigBlank(o, g.m, meas.minor > p), 1]); }
+    if (has(meas.major)) { const p = g.PD + 2 * (ded + xs); T.push(['Major', p, meas.major, sigBlank(o, g.m, false, 0.1), 1]); }
+  }
+}
+const MODELS = {};
+MODELS.EXT = {
+  np: 1,
+  cands: o => { const r = []; const pas = o.pas.concat(o.splinePA ? PA_SPLINE : []); for (const p of pitchList(o.fams)) for (const PA of pas) r.push({pitch: p, PA}); return r; },
+  init(c, m) {
+    const g = spurGeo(c, m.N); let t = g.CP / 2;
+    if (m.spans && m.spans.length) t = tFromSpanSpur(g, m.spans[0].k, m.spans[0].W);
+    else if (m.pins && m.pins.length) { try { t = G.tFromMowExt(m.N, g.PD, g.BD, g.phi, m.pins[0].M, m.pins[0].d); } catch (e) { /* keep */ } }
+    if (!isFinite(t) || t <= 0 || t > g.CP) t = g.CP / 2;
+    return {p: [t], step: [g.CP * 0.02]};
+  },
+  terms(c, p, m, o, sys) {
+    const g = spurGeo(c, m.N), t = p[0], T = [];
+    for (const s of m.spans || []) T.push([`Span k=${s.k}`, (s.k - 1) * g.BP + g.BD * (t / g.PD + inv(g.phi)), s.W, o.u]);
+    if (has(m.bp)) T.push(['Base pitch', g.BP, m.bp, o.u]);
+    for (const q of m.pins || []) T.push([`MOW d=${q.d.toFixed(4)}`, G.mowExt(m.N, g.PD, g.BD, g.phi, t, q.d)[0], q.M, o.u]);
+    const tstd = g.CP / 2 + sys.tx / g.DP, xs = (t - tstd) / (2 * tan(g.phi));
+    blankTerms(T, o, g, m, sys, xs, false);
+    return {T, g, out: {t, xs, x: xs * g.DP, tstd, add: sys.add(g.DP) + xs, ded: sys.ded(g.DP) - xs, ODd: g.PD + 2 * (sys.add(g.DP) + xs), rootD: g.PD - 2 * (sys.ded(g.DP) - xs),
+      haMeas: has(m.od) ? (m.od - g.PD) / 2 : null, hfMeas: has(m.root) ? (g.PD - m.root) / 2 : null, PD: g.PD, BP: g.BP}};
+  },
+  bound: (c, p) => p[0] > 0 && p[0] < PI / c.pitch.DP,
+};
+MODELS.INT = {
+  np: 1,
+  cands: MODELS.EXT.cands,
+  init(c, m) {
+    const g = spurGeo(c, m.N); let s = g.CP / 2;
+    if (m.pins && m.pins.length) { try { s = G.sFromMuwInt(m.N, g.PD, g.BD, g.phi, m.pins[0].M, m.pins[0].d); } catch (e) { /* keep */ } }
+    if (!isFinite(s) || s <= 0 || s > g.CP) s = g.CP / 2;
+    return {p: [s], step: [g.CP * 0.02]};
+  },
+  terms(c, p, m, o, sys) {
+    const g = spurGeo(c, m.N), s = p[0], T = [];
+    if (has(m.bp)) T.push(['Base pitch', g.BP, m.bp, o.u]);
+    for (const q of m.pins || []) T.push([`MUW d=${q.d.toFixed(4)}`, G.muwInt(m.N, g.PD, g.BD, g.phi, s, q.d)[0], q.M, o.u]);
+    const sstd = g.CP / 2 - sys.tx / g.DP, xs = (s - sstd) / (2 * tan(g.phi));
+    blankTerms(T, o, g, m, sys, xs, true);
+    return {T, g, out: {t: s, xs, x: xs * g.DP, tstd: sstd, add: sys.add(g.DP), ded: sys.ded(g.DP) + xs, minorD: max(g.PD - 2 * sys.add(g.DP), g.BD), majorD: g.PD + 2 * (sys.ded(g.DP) + xs),
+      haMeas: has(m.minor) ? (g.PD - m.minor) / 2 : null, hfMeas: has(m.major) ? (m.major - g.PD) / 2 : null, PD: g.PD, BP: g.BP}};
+  },
+  bound: (c, p) => p[0] > 0 && p[0] < PI / c.pitch.DP,
+};
+// helical geometry for a candidate and helix angle beta (deg); basis 'n' (normal standard) or 't' (transverse standard)
+function helGeo(c, N, bdeg) {
+  const b = bdeg * D2R; let NDP, phin;
+  if (c.basis === 't') { const TDP = c.pitch.DP; NDP = TDP / cos(b); phin = atan(tan(c.PA * D2R) * cos(b)); }
+  else { NDP = c.pitch.DP; phin = c.PA * D2R; }
+  const TDP = NDP * cos(b), phit = atan(tan(phin) / cos(b)), PD = N / TDP, BD = PD * cos(phit), bb = atan(tan(b) * cos(phit));
+  return {b, NDP, DPn: NDP, DP: NDP, phin, phi: phit, phit, TDP, PD, BD, bb, NCP: PI / NDP, NBP: PI / NDP * cos(phin), m: 1 / NDP};
+}
+function helInitBeta(c, m) {
+  const P = c.pitch.DP;
+  if (has(m.ha) && m.haAt === 'pitch') return m.ha;
+  if (has(m.lead)) { const v = c.basis === 't' ? atan(PI * m.N / (P * m.lead)) : asin(min(0.999, PI * m.N / (P * m.lead))); return deg(v); }
+  const od = has(m.od) ? m.od : has(m.minor) ? m.minor : null;
+  if (has(m.ha) && od) return deg(atan(tan(m.ha * D2R) * (od - 2 / P) / od));
+  if (od) { const cb = m.N / (P * (od - 2 / P)); if (cb > 0 && cb < 1) return deg(acos(cb)); }
+  return 15;
+}
+function helTerms(c, p, m, o, sys, internal) {
+  const t = p[0], bdeg = p[1], g = helGeo(c, m.N, bdeg), T = [];
+  if (!internal) for (const s of m.spans || []) T.push([`Span k=${s.k}`, (s.k - 1) * g.NBP + g.BD * (t / g.PD + inv(g.phit)) * cos(g.bb), s.W, o.u]);
+  if (has(m.bp)) T.push(['Norm. base pitch', g.NBP, m.bp, o.u]);
+  for (const q of m.pins || []) T.push([`${internal ? 'MUB' : 'MOW'} d=${q.d.toFixed(4)}`, (internal ? G.muwInt : G.mowExt)(m.N, g.PD, g.BD, g.phit, t, q.d, g.bb)[0], q.M, o.u]);
+  const lead = bdeg > 1e-6 ? PI * g.PD / tan(g.b) : 1e9;
+  if (has(m.lead)) T.push(['Lead', lead, m.lead, sqrt(sq(o.u) + sq(0.001 * m.lead))]);
+  if (has(m.ha)) {
+    let p2 = bdeg;
+    if (m.haAt !== 'pitch') { const D = internal ? (has(m.minor) ? m.minor : g.PD) : (has(m.od) ? m.od : g.PD); p2 = deg(atan(tan(g.b) * D / g.PD)); }
+    T.push([m.haAt === 'pitch' ? 'Helix angle @PD' : (internal ? 'Helix angle @minor' : 'Helix angle @OD'), p2, m.ha, o.ua]);
+  }
+  const tn = t * cos(g.b), tstd = g.NCP / 2 + (internal ? -1 : 1) * sys.tx / g.NDP, xs = (internal ? 1 : 1) * (tn - tstd) / (2 * tan(g.phin));
+  blankTerms(T, o, g, m, sys, xs, internal);
+  const add = sys.add(g.NDP), ded = sys.ded(g.NDP);
+  return {T, g, out: {t, tn, xs, x: xs * g.NDP, tstd, beta: bdeg, lead, bb: deg(g.bb), bbN: deg(asin(sin(g.b) * cos(g.phin))), PD: g.PD, BP: g.NBP, TDP: g.TDP, NDP: g.NDP, NPA: deg(g.phin), TPA: deg(g.phit),
+    add: internal ? add : add + xs, ded: internal ? ded + xs : ded - xs,
+    ODd: internal ? null : g.PD + 2 * (add + xs), rootD: internal ? null : g.PD - 2 * (ded - xs),
+    minorD: internal ? max(g.PD - 2 * add, g.BD) : null, majorD: internal ? g.PD + 2 * (ded + xs) : null}};
+}
+function helCands(o) {
+  const r = []; const bases = o.bases || ['n'];
+  for (const basis of bases) for (const p of pitchList(o.fams)) for (const PA of o.pas) r.push({pitch: p, PA, basis});
+  return r;
+}
+MODELS.HELIX = {
+  np: 2, cands: helCands,
+  init(c, m) {
+    const b = helInitBeta(c, m), g = helGeo(c, m.N, b); let t = PI / g.TDP / 2;
+    if (m.spans && m.spans.length) t = g.PD * ((m.spans[0].W - (m.spans[0].k - 1) * g.NBP) / cos(g.bb) / g.BD - inv(g.phit));
+    else if (m.pins && m.pins.length) { try { t = G.tFromMowExt(m.N, g.PD, g.BD, g.phit, m.pins[0].M, m.pins[0].d, g.bb); } catch (e) { /* keep */ } }
+    if (!isFinite(t) || t <= 0) t = PI / g.TDP / 2;
+    return {p: [t, b], step: [PI / g.TDP * 0.02, 1.0]};
+  },
+  terms: (c, p, m, o, sys) => helTerms(c, p, m, o, sys, false),
+  bound: (c, p) => p[0] > 0 && p[1] >= 0 && p[1] < 60,
+};
+MODELS.INHEL = {
+  np: 2, cands: helCands,
+  init(c, m) {
+    const b = helInitBeta(c, m), g = helGeo(c, m.N, b); let s = PI / g.TDP / 2;
+    if (m.pins && m.pins.length) { try { s = G.sFromMuwInt(m.N, g.PD, g.BD, g.phit, m.pins[0].M, m.pins[0].d, g.bb); } catch (e) { /* keep */ } }
+    if (!isFinite(s) || s <= 0) s = PI / g.TDP / 2;
+    return {p: [s, b], step: [PI / g.TDP * 0.02, 1.0]};
+  },
+  terms: (c, p, m, o, sys) => helTerms(c, p, m, o, sys, true),
+  bound: (c, p) => p[0] > 0 && p[1] >= 0 && p[1] < 60,
+};
+// worm: c = {pitch (axial or normal), PA (normal), basis 'a'|'n'}; p = [WPD, tx]; meas: {N (gear teeth), threads, acp:{v,n}, lead, cd, wormod, throat, la, wire:{d,M}}
+function wormGeo(c, m, WPD) {
+  const P = c.pitch.DP, nt = m.threads || 1; let ACP = PI / P;
+  if (c.basis === 'n') { const NCP = PI / P; for (let i = 0; i < 30; i++) ACP = NCP / cos(atan(nt * ACP / (PI * WPD))); }
+  const la = atan(nt * ACP / (PI * WPD)), ax = atan(tan(c.PA * D2R) / cos(la));
+  return {ACP, ADP: PI / ACP, la, ax, lead: nt * ACP, PDg: m.N * ACP / PI, m: ACP / PI, DP: PI / ACP};
+}
+MODELS.WORM = {
+  np: 2,
+  cands: o => { const r = []; for (const basis of (o.bases || ['a'])) for (const p of pitchList(o.fams)) for (const PA of o.pas) r.push({pitch: p, PA, basis}); return r; },
+  init(c, m) {
+    const g0 = wormGeo(c, m, 1); let W = null;
+    if (has(m.cd)) W = 2 * m.cd - m.N * g0.ACP / PI;
+    if (!(W > 0) && has(m.wormod)) W = m.wormod - 2 / g0.ADP;
+    if (!(W > 0) && has(m.la)) W = (m.threads || 1) * g0.ACP / (PI * tan(m.la * D2R));
+    if (!(W > 0)) W = 10 * g0.ACP / PI;
+    const g = wormGeo(c, m, W);
+    return {p: [W, g.ACP / 2], step: [g.ACP * 0.05, g.ACP * 0.02]};
+  },
+  terms(c, p, m, o) {
+    const [W, tx] = p, g = wormGeo(c, m, W), T = [];
+    if (m.acp && has(m.acp.v)) T.push([`Axial pitch (over ${m.acp.n || 1})`, g.ACP, m.acp.v, o.u / (m.acp.n || 1)]);
+    if (has(m.lead)) T.push(['Lead', g.lead, m.lead, sqrt(sq(o.u) + sq(0.001 * m.lead))]);
+    if (has(m.cd)) T.push(['Center distance', (g.PDg + W) / 2, m.cd, sqrt(sq(o.u) + sq(0.0005 * m.cd))]);
+    if (has(m.wormod)) { const pr = W + 2 / g.ADP; T.push(['Worm OD', pr, m.wormod, sigBlank(o, g.m, m.wormod < pr), 1]); }
+    if (has(m.throat)) { const pr = g.PDg + 2 / g.ADP; T.push(['Gear throat', pr, m.throat, sigBlank(o, g.m, m.throat < pr), 1]); }
+    if (has(m.la)) T.push(['Lead angle', deg(g.la), m.la, o.ua]);
+    for (const q of wormWires(m)) T.push([`3-wire d=${q.d.toFixed(4)}`, W - (g.ACP - tx) / tan(g.ax) + q.d * (1 + 1 / sin(g.ax)), q.M, o.u]);
+    return {T, g, out: {WPD: W, tx, ACP: g.ACP, ADP: g.ADP, lead: g.lead, la: deg(g.la), PDg: g.PDg, CD: (g.PDg + W) / 2, wormOD: W + 2 / g.ADP, throat: g.PDg + 2 / g.ADP, NCP: g.ACP * cos(g.la)}};
+  },
+  bound: (c, p) => p[0] > 0 && p[1] > 0 && p[1] < PI / c.pitch.DP * 1.2,
+  nosys: true,
+};
+const wormWires = m => (m.wires || []).concat(m.wire && has(m.wire.M) ? [m.wire] : []).filter(q => has(q.d) && has(q.M));
+// rack: p = [t, a]; meas: {cp:{v,n}, bp, wd, land, ctt, wires:[{d,M}]}
+MODELS.RACK = {
+  np: 2,
+  cands: o => { const r = []; for (const p of pitchList(o.fams)) for (const PA of o.pas) r.push({pitch: p, PA}); return r; },
+  init(c, m) { const CP = PI / c.pitch.DP; return {p: [has(m.ctt) ? m.ctt : CP / 2, 1 / c.pitch.DP], step: [CP * 0.02, 0.05 / c.pitch.DP]}; },
+  terms(c, p, m, o, sys) {
+    const [t, a] = p, P = c.pitch.DP, CP = PI / P, phi = c.PA * D2R, add = sys.add(P), ded = sys.ded(P), T = [], mm = 1 / P;
+    if (m.cp && has(m.cp.v)) T.push([`Pitch (over ${m.cp.n || 1})`, CP, m.cp.v, o.u / (m.cp.n || 1)]);
+    if (has(m.bp)) T.push(['Base pitch', CP * cos(phi), m.bp, o.u]);
+    if (has(m.ctt)) T.push(['Tooth thick @PL', t, m.ctt, o.u]);
+    if (has(m.wd)) T.push(['Whole depth', a + ded, m.wd, sigBlank(o, mm, false, 0.1), 1]);
+    if (has(m.land)) T.push(['Top land', t - 2 * a * tan(phi), m.land, sqrt(sq(o.u) + sq(o.w))]);
+    for (const q of m.wires || []) { const s = CP - t, yc = (q.d / (2 * cos(phi)) - s / 2) / tan(phi); T.push([`Wire d=${q.d.toFixed(4)}`, yc + q.d / 2 - a, q.M, o.u]); }
+    // tip height prior: worn tips lower the land (a < add)
+    const prior = sq((a - add) / sigBlank(o, mm, a < add));
+    return {T, prior, g: {m: mm}, out: {t, a, add, ded, CP, BP: CP * cos(phi), xs: a - add, x: (a - add) * P}};
+  },
+  bound: (c, p) => p[0] > 0 && p[0] < PI / c.pitch.DP && p[1] > 0,
+};
+
+// ---------------------------------------------------------------- generic engine
+// blank terms (OD, root, tips, whole depth) use a heavy-tailed Cauchy loss (c = 3 sigma): a topped, custom or shaper-cut blank
+// cannot override precise flank measurements (spans, pins, wires, pitch), which stay quadratic.
+const RC = 3;
+const termCost = (pr, v, s, blank) => { const z2 = sq((pr - v) / s); return blank ? RC * RC * Math.log(1 + z2 / (RC * RC)) : z2; };
+function evalCand(model, c, p, meas, o) {
+  const syss = model.nosys ? [null] : systems(c.PA, model === MODELS.INT || model === MODELS.INHEL);
+  let best = null;
+  for (const sys of syss) {
+    const r = model.terms(c, p, meas, o, sys);
+    let chi = 0, chiB = 0;
+    for (const [, pr, v, s, bl] of r.T) chi += termCost(pr, v, s, bl);
+    if (r.prior) chiB += r.prior;
+    if (!best || chi + chiB < best.chi + best.chiB) best = {chi, chiB, sys, r};
+  }
+  return best;
+}
+function prior(c, o) {
+  let pr = (c.pitch.pref ? 0 : 1) + (PA_PRIOR[c.PA] ?? 1);
+  if (c.basis === 't' || c.basis === 'n' && o.mod === 'WORM') pr += 1;
+  return pr;
+}
+function identify(mod, meas, opt = {}) {
+  const model = MODELS[mod]; if (!model) return {err: 'No identify model for ' + mod};
+  const o = Object.assign({u: 0.0005, w: 0.006, ua: 0.25, fams: ['DP', 'module'], pas: PA_STD.slice(), splinePA: mod === 'EXT' || mod === 'INT', top: 12}, opt, {mod});
+  if (mod === 'WORM' && !opt.fams) o.fams = ['DP', 'module', 'CP'];
+  if (mod === 'RACK' && !opt.fams) o.fams = ['DP', 'module', 'CP'];
+  if (mod === 'HELIX' || mod === 'INHEL') o.bases = opt.bases || ['n', 't'];
+  if (mod === 'WORM') o.bases = opt.bases || ['a', 'n'];
+  const err = validate(mod, meas); if (err) return {err};
+  const cands = model.cands(o);
+  // stage 1: quick score at the analytic initial guess; stage 2: full fit for the best few
+  const quick = cands.map(c => { const ini = model.init(c, meas); const e = evalCand(model, c, ini.p, meas, o); return {c, ini, q: e.chi + e.chiB + prior(c, o)}; });
+  quick.sort((a, b) => a.q - b.q);
+  const keep = quick.slice(0, opt.keep || (model.np > 1 ? 80 : 60));
+  const res = [];
+  for (const k of keep) {
+    const f = p => model.bound(k.c, p) ? (() => { const e = evalCand(model, k.c, p, meas, o); return e.chi + e.chiB; })() : 1e12;
+    let r = nm(f, k.ini.p, k.ini.step); r = nm(f, r.x, k.ini.step.map(s => s * 0.1));
+    const e = evalCand(model, k.c, r.x, meas, o);
+    res.push({c: k.c, p: r.x, chi2: e.chi, chiPrior: e.chiB, prior: prior(k.c, o), score: e.chi + e.chiB + prior(k.c, o), sys: e.sys, terms: e.r.T, out: e.r.out});
+  }
+  res.sort((a, b) => a.score - b.score);
+  const s0 = res[0].score; let Z = 0;
+  for (const r of res) { r.P = exp(-(r.score - s0) / 2); Z += r.P; }
+  for (const r of res) r.P /= Z;
+  const nT = res[0].terms.length, dof = max(0, nT - model.np);
+  const top = res[0], warn = [];
+  let conf = top.P >= 0.9 ? 'High' : top.P >= 0.6 ? 'Medium' : 'Low';
+  if (dof > 0 && top.chi2 / dof > 4) { conf = 'Low'; warn.push(`Best standard candidate fits poorly (chi2/dof = ${(top.chi2 / dof).toFixed(1)}): non-standard design, wear beyond the allowance, or a typing error. See the non-standard fit.`); }
+  if (dof === 0) warn.push('No redundancy (measurements = unknowns): the fit cannot be checked; add a measurement for a confidence estimate.');
+  // identifiability notes
+  const thickN = (meas.spans || []).length + (meas.pins || []).length + (meas.wires || []).length + (meas.wire && has(meas.wire.M) ? 1 : 0) + (has(meas.ctt) ? 1 : 0);
+  const paEv = has(meas.bp) || (meas.spans || []).length >= 2 || thickN >= 2 || (mod === 'RACK' && (meas.wires || []).length >= 2);
+  if (mod === 'WORM' && wormWires(meas).length < 2) warn.push(wormWires(meas).length ? 'One 3-wire size fixes the thread thickness but not the pressure angle: measure over a second wire size (PA from the difference). PA ranking below is priors only.' : 'Pressure angle is not identifiable without 3-wire measurements over two wire sizes; PA ranking below is priors only.');
+  else if (mod !== 'WORM' && !paEv) warn.push('Pressure angle is weakly determined: add two spans (base pitch, preferred) or a second pin size.');
+  // involute-equivalent group: candidates with the same base pitch (and base helix / lead) as the top one make the same
+  // tooth form and mesh identically; only the cutter standard and blank proportions tell them apart.
+  const eqv = r => equivKey(mod, r), k0 = eqv(top);
+  const equiv = res.filter(r => r !== top && sameInvolute(mod, eqv(r), k0));
+  const Peq = top.P + equiv.reduce((a, r) => a + r.P, 0);
+  if (equiv.length && equiv.some(r => r.P > 0.02)) warn.push(`Involute-equivalent alternatives: ${equiv.filter(r => r.P > 0.005).slice(0, 4).map(r => label(r)).join('; ')} - same base pitch${mod === 'HELIX' || mod === 'INHEL' ? ' and lead' : ''} within 0.1%, so they make the same tooth and mesh identically. Choose by the hob/cutter on hand or the blank proportions. Involute confidence ${(100 * Peq).toFixed(0)}%.`);
+  const confInv = Peq >= 0.9 ? 'High' : Peq >= 0.6 ? 'Medium' : 'Low';
+  o._all = res;
+  const ns = nonStandard(mod, model, top, meas, o);
+  delete o._all;
+  return {mod, cands: res.slice(0, o.top), all: res, top, conf, confInv, Peq, equiv, dof, nT, warnings: warn, nonstd: ns, opt: o, bpSpan: spanBP(meas, o)};
+}
+function label(r) { return `${r.c.pitch.label}${r.c.basis === 't' ? ' (trans.)' : r.c.basis === 'n' && r.out.WPD ? ' (normal)' : ''} / ${r.c.PA} deg${r.out.beta != null ? ' / HA ' + r.out.beta.toFixed(3) : ''}`; }
+function equivKey(mod, r) {
+  const o = r.out;
+  if (mod === 'HELIX' || mod === 'INHEL') return [o.BP, o.lead, o.bbN];
+  if (mod === 'WORM') return [o.ACP, o.lead, r.c.PA];
+  if (mod === 'RACK') return [o.CP, r.c.PA];
+  return [o.BP];
+}
+function sameInvolute(mod, a, b, tol = 1e-3) {
+  const rel = (x, y) => abs(x / y - 1);
+  if (mod === 'HELIX' || mod === 'INHEL') return rel(a[0], b[0]) < tol && (a[1] > 1e8 || rel(a[1], b[1]) < 2e-3);
+  if (mod === 'WORM') return rel(a[0], b[0]) < 1e-3 && rel(a[1], b[1]) < 1e-3 && abs(a[2] - b[2]) < 0.6;
+  if (mod === 'RACK') return rel(a[0], b[0]) < 1e-3 && abs(a[1] - b[1]) < 0.6;
+  return rel(a[0], b[0]) < tol;
+}
+function spanBP(m, o) {
+  if (!m.spans || m.spans.length < 2) return null;
+  const [a, b] = m.spans; if (a.k === b.k) return null;
+  return {bp: (b.W - a.W) / (b.k - a.k), sig: sqrt(2) * o.u / abs(b.k - a.k)};
+}
+function validate(mod, m) {
+  if (mod === 'WORM') { if (!(m.N > 0)) return 'Enter the gear tooth count.'; if (!(m.threads > 0)) return 'Enter the number of threads.'; return null; }
+  if (mod === 'RACK') return null;
+  if (!(m.N > 0)) return 'Enter the number of teeth.';
+  return null;
+}
+// continuous best fit: pitch (DP) and PA free, seeded by the best standard candidate, same system/basis
+function nonStandard(mod, model, top, meas, o) {
+  // involute modules are parametrised by base pitch and PA (the base pitch is what flank measurements fix, so the
+  // DP-PA trade-off valley is axis-aligned); worms and racks by pitch and PA. Several seeds, best kept.
+  const c0 = top.c, sys = top.sys, inv = !['WORM', 'RACK'].includes(mod);
+  const bpOf = (DP, PA) => PI * cos(PA * D2R) / DP;
+  const mk = (x0, PA) => { const DP = inv ? PI * cos(PA * D2R) / x0 : x0; return {pitch: {fam: 'DP', v: DP, DP, pref: true, label: 'DP ' + DP.toPrecision(6)}, PA, basis: c0.basis}; };
+  const cost = (c, p) => { if (!model.bound(c, p)) return 1e12; const r = model.terms(c, p, meas, o, sys); let s = r.prior || 0; for (const [, pr, v, sg, bl] of r.T) s += termCost(pr, v, sg, bl); return s; };
+  let best = null;
+  const seeds = [top].concat((o._all || []).filter(r => r !== top && r.sys === sys && r.c.basis === c0.basis).slice(0, 3));
+  for (const sd of seeds) {
+    const base = inv ? bpOf(sd.c.pitch.DP, sd.c.PA) : sd.c.pitch.DP;
+    const f = x => { const PA = x[1]; if (PA < 5 || PA > 50) return 1e12; return cost(mk(base * exp(x[0]), PA), x.slice(2)); };
+    let r = nm(f, [0, sd.c.PA, ...sd.p], [0.002, 1, ...sd.p.map(v => abs(v) * 0.01 + 1e-4)], 1200);
+    for (let k = 0; k < 3; k++) r = nm(f, r.x, [0.0005, 0.3, ...sd.p.map(v => abs(v) * 0.002 + 1e-5)], 1200);
+    if (!best || r.f < best.f) best = {f: r.f, x: r.x, base};
+  }
+  const PA = best.x[1], c = mk(best.base * exp(best.x[0]), PA), DP = c.pitch.DP, rr = model.terms(c, best.x.slice(2), meas, o, sys);
+  return {DP, module: 25.4 / DP, CP: PI / DP, PA, p: best.x.slice(2), chi2: best.f, sys, out: rr.out, basis: c0.basis};
+}
+
+// ---------------------------------------------------------------- straight-sided splines (SAE J499 Table 1, as published)
+const J499 = {
+  sizes: [0.75, 0.875, 1, 1.125, 1.25, 1.375, 1.5, 1.625, 1.75, 2, 2.25, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6],
+  W: {4: 0.241, 6: 0.250, 10: 0.156, 16: 0.098},
+  d: {4: {A: 0.850, B: 0.750}, 6: {A: 0.900, B: 0.850, C: 0.800}, 10: {A: 0.910, B: 0.860, C: 0.810}, 16: {A: 0.910, B: 0.860, C: 0.810}},
+  range: {4: [0.75, 3], 6: [0.75, 3], 10: [0.75, 6], 16: [2, 6]},
+  fit: {A: 'A permanent fit', B: 'B slide, not under load', C: 'C slide under load'},
+};
+function identifySpl(meas, opt = {}) {
+  const o = Object.assign({u: 0.0005, w: 0.002}, opt), N = meas.N;
+  if (!J499.W[N]) return {err: 'SAE J499 covers 4, 6, 10 and 16 splines; for ' + N + ' splines only the measured values apply (no standard table).', nonstd: meas};
+  const res = [];
+  for (const D of J499.sizes) {
+    if (D < J499.range[N][0] - 1e-9 || D > J499.range[N][1] + 1e-9) continue;
+    for (const [L, kd] of Object.entries(J499.d[N])) {
+      const pr = {major: D, minor: kd * D, width: J499.W[N] * D}, T = [];
+      const sg = (k, worn) => sqrt(sq(o.u) + sq(0.002 * D) + (worn ? sq(o.w) : 0));
+      if (has(meas.major)) T.push(['Major', pr.major, meas.major, sg('major', meas.major < pr.major)]);
+      if (has(meas.minor)) T.push(['Minor', pr.minor, meas.minor, sg('minor', false)]);
+      if (has(meas.width)) T.push(['Width', pr.width, meas.width, sg('width', meas.width < pr.width)]);
+      let chi = 0; for (const [, p, v, s] of T) chi += sq((p - v) / s);
+      res.push({c: {pitch: {label: `SAE J499 ${N}${L}`}, PA: null}, D, L, fit: J499.fit[L], chi2: chi, score: chi, terms: T, out: pr, P: 0});
+    }
+  }
+  if (!res.length) return {err: 'No SAE J499 size for these splines.'};
+  res.sort((a, b) => a.score - b.score);
+  let Z = 0; for (const r of res) { r.P = exp(-(r.score - res[0].score) / 2); Z += r.P; } for (const r of res) r.P /= Z;
+  const top = res[0], nT = top.terms.length, warn = [];
+  let conf = top.P >= 0.9 ? 'High' : top.P >= 0.6 ? 'Medium' : 'Low';
+  if (nT && top.chi2 / nT > 4) { conf = 'Low'; warn.push('No SAE J499 size fits well: probably non-standard (or metric ISO 14, not tabulated here); use the measured values.'); }
+  return {mod: 'SPL', cands: res.slice(0, 10), all: res, top, conf, dof: nT, nT, warnings: warn, nonstd: {major: meas.major, minor: meas.minor, width: meas.width}};
+}
+
+const ID = {label, equivKey, sameInvolute, identify, identifySpl, MODELS, LISTS, PA_STD, PA_SPLINE, PA_PRIOR, systems, pitchList, nm, helGeo, wormGeo, spurGeo, J499, termCost};
+if (typeof module !== 'undefined' && module.exports) module.exports = ID; else root.GCP3ID = ID;
+})(typeof window !== 'undefined' ? window : globalThis);
+
+// Web Gear Calc help: "Try it" practice boxes. Answers come from the app's own engines
+// (GCP3, GCP3MESH, GCP3ID, GCP3BEVEL), embedded in this page. No network calls.
+(function () {
+'use strict';
+const G = window.GCP3, M = window.GCP3MESH, ID = window.GCP3ID, B = window.GCP3BEVEL, D2R = Math.PI / 180;
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const ri = (lo, hi) => lo + Math.floor(Math.random() * (hi - lo + 1));
+const f = (x, d = 4) => (+x).toFixed(d);
+const DPS = [4, 5, 6, 8, 10, 12, 16, 20], PAS = [14.5, 20, 25];
+const spur = (DP, PA, N) => G.extSpur(DP, PA, N);
+// Each exercise: gen() -> inputs; solve(inp) -> {ans, unit, tol, dec, why}
+const EX = {
+  pd: {gen: () => ({DP: pick(DPS), PA: pick(PAS), N: ri(14, 80)}),
+    show: i => `A spur gear has <b>${i.DP} DP</b>, <b>${i.PA}°</b> pressure angle and <b>${i.N} teeth</b>. What is its pitch diameter (in)?`,
+    solve: i => ({ans: spur(i.DP, i.PA, i.N).given.PD, tol: 0.0005, dec: 4, unit: 'in', why: 'Pitch diameter PD = N / DP (pressure angle does not change it).'})},
+  od: {gen: () => ({DP: pick(DPS), PA: pick(PAS), N: ri(14, 80)}),
+    show: i => `Standard full-depth spur gear: <b>${i.DP} DP</b>, <b>${i.PA}°</b>, <b>${i.N} teeth</b>. What is the outside diameter (in)?`,
+    solve: i => ({ans: spur(i.DP, i.PA, i.N).given.major, tol: 0.0005, dec: 4, unit: 'in', why: 'Standard addendum is 1/DP, so OD = (N + 2) / DP.'})},
+  bd: {gen: () => ({DP: pick(DPS), PA: pick(PAS), N: ri(14, 80)}),
+    show: i => `Spur gear: <b>${i.DP} DP</b>, <b>${i.PA}°</b>, <b>${i.N} teeth</b>. What is the base diameter (in)?`,
+    solve: i => ({ans: spur(i.DP, i.PA, i.N).given.BD, tol: 0.0005, dec: 4, unit: 'in', why: 'Base diameter BD = PD × cos(PA) = (N / DP) × cos(PA).'})},
+  mow: {gen: () => ({DP: pick(DPS), PA: pick([14.5, 20]), N: ri(14, 80)}),
+    show: i => { const g = spur(i.DP, i.PA, i.N).given; return `Standard spur gear: <b>${i.DP} DP</b>, <b>${i.PA}°</b>, <b>${i.N} teeth</b>, standard tooth thickness, measured over two <b>${f(g.wire)} in</b> pins. What should the measurement over pins be (in)?`; },
+    solve: i => ({ans: spur(i.DP, i.PA, i.N).given.MOW, tol: 0.0005, dec: 4, unit: 'in', why: 'Pin center angle: inv φ = t/PD + dw/BD − π/N + inv PA. Pin-center circle Dc = BD / cos φ. MOW = Dc + dw for an even tooth count, or Dc·cos(90°/N) + dw for an odd one.'})},
+  thk: {gen: () => { const i = {DP: pick(DPS), PA: pick([14.5, 20]), N: ri(14, 80)}; const g = spur(i.DP, i.PA, i.N).given; i.thin = pick([0.002, 0.003, 0.004, 0.005]) * 10 / i.DP; i.wire = g.wire; i.M = G.mowExt(i.N, g.PD, g.BD, i.PA * D2R, g.CTT - i.thin, g.wire)[0]; return i; },
+    show: i => `A <b>${i.DP} DP</b>, <b>${i.PA}°</b>, <b>${i.N}-tooth</b> spur gear measures <b>${f(i.M, 5)} in</b> over two <b>${f(i.wire)} in</b> pins. What is its circular tooth thickness at the pitch diameter (in)?`,
+    solve: i => { const g = spur(i.DP, i.PA, i.N).given; return {ans: G.tFromMowExt(i.N, g.PD, g.BD, i.PA * D2R, i.M, i.wire), tol: 0.0003, dec: 5, unit: 'in', why: 'Work the pins formula backwards: find the pin-center angle φ from MOW, then t = PD × (inv φ − dw/BD + π/N − inv PA).'}; }},
+  bp: {gen: () => { const i = {DP: pick(DPS), PA: pick(PAS), N: ri(20, 80)}; const g = spur(i.DP, i.PA, i.N); const tb = g.more['Base Tooth']; i.k1 = Math.max(2, G.spanRecommendSpur(i.N, i.PA) - 1); i.k2 = i.k1 + 1; i.W1 = G.span(i.k1, g.given.BP, tb); i.W2 = G.span(i.k2, g.given.BP, tb); return i; },
+    show: i => `A worn ${i.N}-tooth spur gear measures <b>${f(i.W1, 5)} in</b> over ${i.k1} teeth and <b>${f(i.W2, 5)} in</b> over ${i.k2} teeth. What is its base pitch (in)?`,
+    solve: i => ({ans: i.W2 - i.W1, tol: 0.0002, dec: 5, unit: 'in', why: 'Each extra tooth in a span adds exactly one base pitch, so BP = W2 − W1. Flank wear cancels out.'})},
+  id: {gen: () => EX.bp.gen(),
+    show: i => `The same kind of measurement: ${i.N} teeth, <b>${f(i.W1, 5)} in</b> over ${i.k1} teeth and <b>${f(i.W2, 5)} in</b> over ${i.k2} teeth. Which standard diametral pitch (DP) is it? (Measure / Identify on EXT gives the answer.)`,
+    solve: i => { const r = ID.identify('EXT', {N: i.N, spans: [{k: i.k1, W: i.W1}, {k: i.k2, W: i.W2}]}); return {ans: r.top.c.pitch.DP, pa: r.top.c.PA, tol: 1e-9, dec: 0, unit: 'DP', why: `BP = W2 − W1 = π·cos(PA)/DP. The only standard pair that fits is ${r.top.c.pitch.DP} DP at ${r.top.c.PA}°. Measure / Identify ranks all the candidates.`}; }},
+  center: {gen: () => ({DP: pick(DPS), N1: ri(12, 30), N2: ri(30, 90), x1: pick([0, 0.1, 0.2, 0.3]), x2: pick([0, 0, 0.1])}),
+    show: i => `Two 20° spur gears, <b>${i.DP} DP</b>: Gear 1 has <b>${i.N1}</b> teeth with profile shift x1 = <b>${i.x1}</b>, and Gear 2 has <b>${i.N2}</b> teeth with x2 = <b>${i.x2}</b>. What is the tight-mesh (zero-backlash) center distance (in)?`,
+    solve: i => { const a = spur(i.DP, 20, i.N1).given, b = spur(i.DP, 20, i.N2).given;
+      const r = M.meshCalc({Pn: i.DP, phin: 20, gears: [{N: i.N1, od: a.major + 2 * i.x1 / i.DP, root: a.minor + 2 * i.x1 / i.DP, thk: {kind: 'x', v: i.x1}}, {N: i.N2, od: b.major + 2 * i.x2 / i.DP, root: b.minor + 2 * i.x2 / i.DP, thk: {kind: 'x', v: i.x2}}]});
+      return {ans: r.tight.a, tol: 0.0005, dec: 4, unit: 'in', why: 'Standard center = (N1 + N2)/(2·DP). With shift: inv αw = 2·tan20°·(x1 + x2)/(N1 + N2) + inv 20°, then a = standard center × cos20°/cos αw. MESH shows this at the top of the center column.'}; }},
+  cone: {gen: () => ({m: pick([2, 3, 4, 5, 6]), z1: ri(12, 30), z2: ri(30, 60)}),
+    show: i => `A straight bevel pair at 90° shaft angle has <b>${i.z1}</b> and <b>${i.z2}</b> teeth (module ${i.m}). What is the pinion pitch cone angle (degrees)?`,
+    solve: i => ({ans: B.bevelGeom({m: i.m, z1: i.z1, z2: i.z2}).delta1, tol: 0.01, dec: 3, unit: '°', why: 'At 90° shaft angle, δ1 = atan(z1 / z2), and the gear cone is δ2 = 90° − δ1.'})},
+};
+window.WGC_TRYIT = EX;
+function mount(box) {
+  const ex = EX[box.dataset.ex]; let inp;
+  const q = box.querySelector('.tq'), inpEl = box.querySelector('input'), out = box.querySelector('.tres');
+  const fresh = () => { inp = ex.gen(); box.dataset.inputs = JSON.stringify(inp); q.innerHTML = ex.show(inp); inpEl.value = ''; out.textContent = ''; out.className = 'tres'; };
+  box.querySelector('.tcheck').onclick = () => {
+    const s = ex.solve(inp), v = parseFloat(inpEl.value.replace(',', '.'));
+    if (!isFinite(v)) { out.className = 'tres bad'; out.textContent = 'Enter a number first.'; return; }
+    const okv = Math.abs(v - s.ans) <= s.tol;
+    out.className = 'tres ' + (okv ? 'good' : 'bad');
+    out.textContent = (okv ? 'Correct' : 'Incorrect') + `: ${f(s.ans, s.dec)} ${s.unit}${s.pa ? ' at ' + s.pa + '°' : ''}. ${s.why}`;
+  };
+  inpEl.addEventListener('keydown', e => { if (e.key === 'Enter') box.querySelector('.tcheck').click(); });
+  box.querySelector('.tnew').onclick = fresh;
+  box.wgcAnswer = () => ex.solve(inp);
+  fresh();
+}
+document.querySelectorAll('.tryit').forEach(mount);
+})();
+</script>
+</body></html>
