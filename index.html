@@ -6,7 +6,7 @@
 <title>Web Gear Calc</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2210%22%20fill%3D%22%2314324f%22%2F%3E%3Ctext%20x%3D%2232%22%20y%3D%2241%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2CHelvetica%2Csans-serif%22%20font-weight%3D%22700%22%20font-size%3D%2224%22%20fill%3D%22%23fff%22%3EWGC%3C%2Ftext%3E%3C%2Fsvg%3E">
 <style>
-:root{--ink:#1d2430;--mut:#5d6878;--line:#d9dee6;--bg:#f4f6f9;--card:#fff;--acc:#0b5cad;--acc2:#e8f1fb;--typed:#0a3d7a;--hot:#b3261e;--diff:#7a4b00;
+:root{--ink:#1d2430;--mut:#5d6878;--line:#d9dee6;--bg:#EAF7EA;--card:#fff;--acc:#0b5cad;--acc2:#e8f1fb;--typed:#0a3d7a;--hot:#b3261e;--diff:#7a4b00;
  --mono:"Cascadia Mono","Consolas","DejaVu Sans Mono","Liberation Mono","Courier New",monospace;
  --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Liberation Sans",sans-serif}
 *{box-sizing:border-box}
@@ -208,18 +208,24 @@ button.danger{color:#fff;background:var(--hot);border-color:var(--hot)}
 #profset .mprofnote{margin:2px 0 6px;font-size:13px;color:#4b5563}
 .mhid{font-size:13px;color:var(--mut);margin-top:3px}.mhid summary{cursor:pointer;color:#1f5a99}
 .mhid ul{margin:4px 0 0 18px;padding:0}.mhid li{margin:2px 0}
+/* v1.3.3: Help link in the header */
+#bar .helpbtn{margin-left:10px;padding:3px 10px;border:1px solid rgba(255,255,255,.55);border-radius:6px;color:#fff;font-size:13px;font-weight:600;text-decoration:none}
+#bar .helpbtn:hover{background:rgba(255,255,255,.15)}
+@media print{#helpBtn,.helpbtn{display:none!important}}
+/* v1.3.3: Ram-Gear app background on screen; print stays white */
+@media print{html,body{background:#fff!important}}
 
 </style>
 </head>
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.2</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.3</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI.</footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.2, build 2026-10-13. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.2';</script>
+<!-- Web Gear Calc v1.3.3, build 2026-10-15. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.3';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -2520,10 +2526,14 @@ function computeState(mod, state, units) {   // compute a saved state off-screen
   S[mod] = c;
   try { return compute(mod); } finally { S[mod] = keep; }
 }
+// Help: a fixed question only (never user data, gear values or the current screen)
+const HELP_Q = "I'm using Ram-Gear's Web Gear Calc, a browser rebuild of the GCP3 gear design and reverse-engineering suite for spur, helical, worm, spline, rack and bevel gears. Can you give me pointers on how to use it?";
+const HELP_URL = 'https://grok.com/?q=' + encodeURIComponent(HELP_Q);
 function header(crumb) {
   const bar = $('#bar'); bar.textContent = '';
   bar.append(
     h('a', {href: '#', class: 'brand', title: 'Home'}, h('span', {class: 'logo', id: 'wgcBadge', 'aria-hidden': 'true'}, 'WGC'), h('span', {class: 'sub'}, 'Web Gear Calc')),
+    h('a', {class: 'helpbtn', id: 'helpBtn', href: HELP_URL, target: '_blank', rel: 'noopener noreferrer', title: 'Get pointers on using Web Gear Calc (opens Grok in a new tab; no gear data is sent)'}, 'Help'),
     h('span', {class: 'crumb', id: 'crumb'}, crumb || (CUR ? MODS[CUR].name : 'Main Menu')),
     h('span', {class: 'grow'}),
     h('div', {class: 'seg', role: 'group', 'aria-label': 'Units'},
