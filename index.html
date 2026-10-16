@@ -11,15 +11,18 @@
  --sans:"Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,"Liberation Sans",sans-serif}
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.4 var(--sans)}
-#bar{display:flex;align-items:center;gap:16px;padding:8px 20px;background:#EAF7EA;color:#1d2430;border-bottom:1px solid #b7d6b7;position:sticky;top:0;z-index:5}
-#bar a.brand{color:#1d2430;text-decoration:none;display:flex;align-items:center;gap:10px}
-.logo{display:block;width:32px;height:32px}
-.sub{font-size:13px;color:#3b4654}
-.crumb{font-size:16px;font-weight:600}
+#bar{display:flex;align-items:center;gap:16px;box-sizing:border-box;height:72px;padding:10px 20px;background:linear-gradient(#2b3d47,#1d2b33);color:#fff;border-bottom:6px solid #2e7386;position:sticky;top:0;z-index:5}
+#bar a.brand{color:#fff;text-decoration:none;display:flex;align-items:center;gap:12px}
+.logo{display:block;width:46px;height:46px;border-radius:8px;background:#3a4350}
+#bar .sub{font-size:14px;color:#fff}
+.crumb{font-size:16px;font-weight:600;color:#fff}
 .grow{flex:1}
 .seg{display:inline-flex;border:1px solid #5d6878;border-radius:6px;overflow:hidden}
 .seg button{background:transparent;color:#1d2430;border:0;padding:6px 12px;font:600 13px var(--sans);cursor:pointer}
 .seg button.on{background:#14324f;color:#fff}
+#bar .seg{display:inline-flex;border:1px solid #8a96a3;border-radius:5px;overflow:hidden}
+#bar .seg button{background:transparent;color:#fff;border:0;padding:6px 12px;font:600 13px var(--sans);cursor:pointer}
+#bar .seg button.on{background:#fff;color:#1d2b33}
 #app{max-width:1180px;margin:0 auto;padding:18px 20px 40px}
 h1{font-size:22px;margin:4px 0 6px}
 .lead{color:var(--mut);margin:0 0 16px}
@@ -209,8 +212,8 @@ button.danger{color:#fff;background:var(--hot);border-color:var(--hot)}
 .mhid{font-size:13px;color:var(--mut);margin-top:3px}.mhid summary{cursor:pointer;color:#1f5a99}
 .mhid ul{margin:4px 0 0 18px;padding:0}.mhid li{margin:2px 0}
 /* v1.3.3: Help link in the header */
-#bar .helpbtn{margin-left:10px;padding:3px 10px;border:1px solid #0b5cad;border-radius:6px;color:#0b5cad;background:#fff;font-size:13px;font-weight:600;text-decoration:none}
-#bar .helpbtn:hover{background:#e8f1fb}
+#bar .helpbtn{margin-left:10px;padding:5px 12px;border:1px solid #8a96a3;border-radius:5px;color:#fff;background:transparent;font-size:13px;font-weight:600;text-decoration:none}
+#bar .helpbtn:hover{background:rgba(255,255,255,.12)}
 #bar #helpPage{margin-left:-8px}
 @media print{#helpBtn,#helpPage,#helpPageFoot,.helpbtn{display:none!important}}
 /* v1.3.3: Ram-Gear app background on screen; print stays white */
@@ -221,12 +224,12 @@ button.danger{color:#fff;background:var(--hot);border-color:var(--hot)}
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.4</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.5</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.4, build 2026-10-15. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.4';</script>
+<!-- Web Gear Calc v1.3.5, build 2026-10-16. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.5';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -2534,7 +2537,7 @@ const HELP_URL = 'https://grok.com/?q=' + encodeURIComponent(HELP_Q);
 function header(crumb) {
   const bar = $('#bar'); bar.textContent = '';
   bar.append(
-    h('a', {href: '#', class: 'brand', title: 'Home', 'aria-label': 'Web Gear Calc home'}, h('img', {class: 'logo', id: 'wgcBadge', src: (document.querySelector('link[rel=icon]') || {}).href || '', alt: '', width: 32, height: 32}), h('span', {class: 'sub'}, 'Web Gear Calc')),
+    h('a', {href: '#', class: 'brand', title: 'Home', 'aria-label': 'Web Gear Calc home'}, h('img', {class: 'logo', id: 'wgcBadge', src: (document.querySelector('link[rel=icon]') || {}).href || '', alt: '', width: 46, height: 46}), h('span', {class: 'sub'}, 'Web Gear Calc')),
     h('a', {class: 'helpbtn', id: 'helpBtn', href: HELP_URL, target: '_blank', rel: 'noopener noreferrer', title: 'Get pointers on using Web Gear Calc (opens Grok in a new tab; no gear data is sent)'}, 'Help'),
     h('a', {class: 'helpbtn', id: 'helpPage', href: HELP_PAGE, target: '_blank', rel: 'noopener noreferrer', title: 'Web Gear Calc help page (opens in a new tab)'}, 'Help page'),
     h('span', {class: 'crumb', id: 'crumb'}, crumb || (CUR ? MODS[CUR].name : 'Main Menu')),
