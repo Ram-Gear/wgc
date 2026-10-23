@@ -5,11 +5,11 @@
 <style>
 :root{--ink:#1d2430;--mut:#4f5a69;--acc:#2E7386;--acch:#245E6E;--focus:#9FD3E1;--line:#b7d6b7}
 html,body{margin:0;background:#EAF7EA;color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
-/* v1.3.7 slate-green header: solid #3F5B4F, all text #fff (Durability HP reference header is blue-gray #2b3d47->#1d2b33, so Gary's fallback slate green is used) */
-#bar{display:flex;align-items:center;gap:16px;box-sizing:border-box;height:72px;padding:10px 20px;background:#3F5B4F;color:#fff;border-bottom:6px solid #2e7386;position:sticky;top:0;z-index:5}
+/* v1.3.8 App Hub slate header: linear-gradient(180deg,#2b3d47,#1d2b33), name #9FD3E1 (App Hub subtitle), other header text #fff */
+#bar{display:flex;align-items:center;gap:16px;box-sizing:border-box;height:72px;padding:10px 20px;background:linear-gradient(180deg,#2b3d47,#1d2b33);color:#fff;border-bottom:6px solid #2e7386;position:sticky;top:0;z-index:5}
 #bar a.brand{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none}
 #bar img{width:46px;height:46px;display:block;border-radius:8px;background:#3a4350}
-#bar .sub{font-size:14px;color:#fff}#bar .crumb{font-size:16px;font-weight:600;color:#fff}
+#bar .sub{font-size:14px;color:#9FD3E1}#bar .crumb{font-size:16px;font-weight:600;color:#fff}
 #bar .grow{flex:1}#bar .open{padding:5px 12px;border:1px solid #8a96a3;border-radius:5px;color:#fff;background:transparent;font-size:13px;font-weight:600;text-decoration:none}
 main{max-width:900px;margin:0 auto;padding:18px 20px 40px}
 h1{font-size:26px;margin:10px 0}h2{font-size:21px;margin:28px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}h3{font-size:17px;margin:18px 0 6px}
