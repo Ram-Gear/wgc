@@ -224,18 +224,24 @@ button.danger{color:#fff;background:var(--hot);border-color:var(--hot)}
 a.idlink:hover,a.btn:hover{color:var(--acch)}
 :focus-visible{outline:3px solid var(--focus);outline-offset:1px;box-shadow:0 0 0 1px var(--acch)}
 #bar :focus-visible{box-shadow:none}
+/* v1.3.9 Combo Stub: assembled combination pitch and the gear depth math beside P2 */
+.combotext{display:flex;flex-direction:column;gap:2px;font-size:13px;line-height:1.35;color:var(--ink);max-width:640px}
+.combotext:empty{display:none}
+.combotext .cpair{font:700 15px var(--mono);color:var(--acch)}
+.combotext .cmath{font-family:var(--mono)}
+.combotext .cnote{font-size:12px;color:#5a6472}
 
 </style>
 </head>
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.8</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.9</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.8, build 2026-10-23. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.8';</script>
+<!-- Web Gear Calc v1.3.9, build 2026-10-28. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.9';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -2081,7 +2087,7 @@ const RACK_L = [[1, 'Circular Pitch', 'len', 'p'], [2, 'Diametral Pitch', 'num',
 const SPL_L = [[1, 'Number of Splines', 'int', 1], [2, 'Major Diameter', 'len', 1], [3, 'Minor Diameter', 'len', 'mn'], [4, 'Spline Width', 'len', 1],
   [5, 'Tool Point Width', 'len', 1], [6, 'Whole Depth', 'len', 'mn'], [7, 'Incl.Space Angle', 'num', 0]];
 // option fields (outside the table) and their kinds / groups
-const OPT_KIND = {p2: 'num', cAdd: 'len', cDed: 'len', cCtt: 'len', cTip: 'len', shN: 'int', shMaj: 'len', shMin: 'len', shWire: 'len',
+const OPT_KIND = {p2: 'num', cp2: 'num', cAdd: 'len', cDed: 'len', cCtt: 'len', cTip: 'len', shN: 'int', shMaj: 'len', shMin: 'len', shWire: 'len',
   shMow: 'len', shK: 'int', shSpan: 'len', spanK: 'int', spanW: 'len'};
 const OPT_GROUP = {spanW: 't', shMow: 'shm', shSpan: 'shm'};
 
@@ -2131,7 +2137,24 @@ function inputs(mod) {
     if (typeof v === 'number' && (isNaN(v) || !isFinite(v))) { bad.push(k); continue; }
     P[k] = v;
   }
+  if (mod === 'EXT') {                 // combination pitch typed as "P1/P2" on line 2 or in the P2 box: P1 = pitch, P2 = depth (not a fraction)
+    const T = st(mod).typed, pr = comboPair(T['2']) || comboPair(T.cp2);
+    if (pr) {
+      P[2] = pr[0]; P[pr[2]] = pr[1]; P._pair = pr;
+      for (const k of ['2', 'cp2', 'p2']) { const i = bad.indexOf(k); if (i >= 0) bad.splice(i, 1); }
+    }
+  }
   return {P, bad};
+}
+// "6/8", "6 / 8", "6 over 8" -> [6, 8, key]; only for P1, P2 >= 1 (a pitch pair, never a fraction such as 1/2)
+function comboPair(s) {
+  if (s === undefined || s === null) return null;
+  const m = String(s).trim().replace(/,/g, '.').match(/^(\d*\.?\d+)\s*(?:\/|over)\s*(\d*\.?\d+)$/i);
+  if (!m) return null;
+  const a = +m[1], b = +m[2];
+  if (!(a >= 1 && b >= 1)) return null;
+  const spl = st('EXT').opts.depth === 'Inv Spline';
+  return [a, b, spl ? 'p2' : 'cp2', spl];
 }
 const isNum = v => typeof v === 'number' && isFinite(v);
 function fv(v, kind) {             // display/print string for a value
@@ -2148,8 +2171,9 @@ const rhoFF = (P, phi, tS, ded) => { const w = (Math.PI / P - tS) - 2 * ded * Ma
 function depthSel(mod, o, P, DP, normal) {
   const d = o.depth;
   if (d === 'Combo Stub') {
-    const P2 = P.p2; if (!(P2 > 0)) return {err: 'Combo Stub: enter P2 (the depth pitch, e.g. 16 for 12/16).'};
-    return {depth: 'Combo', combo: [DP, P2], hdr: `Combo Stub   ${fmt(DP)} / ${fmt(P2)}`};
+    const P2 = P.cp2; if (!(P2 > 0)) return {err: 'Combo Stub: enter P2, the second number of the combination pitch (it sets the depth), e.g. 8 for 6/8. You can also type 6/8 on line 2.'};
+    return {depth: 'Combo', combo: [DP, P2], hdr: `Combo Stub   ${fmt(DP)} / ${fmt(P2)}`,
+      cmath: {P1: DP, P2, add: 1 / P2, ded: 1.25 / P2, wd: 2.25 / P2}};
   }
   if (d === 'Custom Std.') {
     if (!isNum(P.cAdd) || !isNum(P.cDed)) return {err: `Custom Std.: enter ${normal ? 'Norm. ' : ''}ADD and DED.`};
@@ -2180,7 +2204,8 @@ function cExt(P, o) {
   if (!(N > 0) || !isNum(PA)) return need('Enter Pressure Angle (line 4) and Number of teeth (line 5).');
   const DP = pitchDP(P, [[2, 'DP'], [3, 'MOD'], [1, 'CP'], [6, 'PD'], [7, 'BP']], PA, N);
   if (!DP) return need('Enter a pitch: line 1, 2, 3, 6 or 7.');
-  const ds = depthSel('EXT', o, P, DP); if (ds.err) return need(ds.err);
+  const oE = P._pair && !P._pair[3] && o.depth !== 'Combo Stub' ? Object.assign({}, o, {depth: 'Combo Stub'}) : o;   // "6/8" means Combo Stub
+  const ds = depthSel('EXT', oE, P, DP); if (ds.err) return need(ds.err);
   const PD = N / DP, notes = [];
   const kw = {major: P[10] ?? (isNum(P[12]) ? PD + 2 * P[12] : null), minor: P[9] ?? (isNum(P[13]) ? PD - 2 * P[13] : null),
     ctt: P[16] ?? null, mow: P[17] ?? null, wire: P[18] ?? null, spanTeeth: P.spanK > 0 ? Math.round(P.spanK) : null, span: P.spanW ?? null,
@@ -2226,8 +2251,9 @@ function cExt(P, o) {
     const ff = (ds.depth.startsWith('F.F') || ['A', 'D', 'E'].includes(ds.spline)), tip = ds.custom && ds.custom.tip ? ds.custom.tip : 0;
     gen = {type: 'rack', h: r.diff.DED, rho: ff ? rhoFF(DP, phiR, r.standard.CTT, r.standard.DED) : tip};
   }
-  const geo = {kind: 'spur', N, P: DP, phi: phiR, t: g.CTT, Rt: g.major / 2, minorGiven: g.minor, tif: tm['T.I.F.Diam.'], U: !!tm.undercut, gen, PD, BD: g.BD};
-  return {geo, hdr: ds.hdr, rows, more, warnings: r.warnings, notes,
+  const geo = {kind: 'spur', N, P: DP, phi: phiR, t: g.CTT, Rt: g.major / 2, minorGiven: g.minor, tif: tm['T.I.F.Diam.'], U: !!tm.undercut, gen, PD, BD: g.BD,
+    combo: ds.cmath || null};
+  return {geo, hdr: ds.hdr, cmath: ds.cmath || null, rows, more, warnings: r.warnings, notes,
     span: {k: sp.teeth, text: `Span of ${sp.teeth} teeth measures ${fv(sp.measure, 'len')} Contact Diam. ${fv(sp.contact_diam, 'len')}`,
       W: sp.measure, Dc: sp.contact_diam, rec: G.spanRecommendSpur(N, PA)}};
 }
@@ -2527,7 +2553,10 @@ const clone = o => JSON.parse(JSON.stringify(o));
 function getState(mod) { return clone(st(mod)); }
 function loadState(mod, state, units) {      // restore a screen exactly: the profile's units, then its inputs and options
   if (units !== UNITS) { for (const m of Object.keys(S)) convertTyped(m, S[m].typed, units); UNITS = units; }
-  S[mod] = clone(state); save();
+  S[mod] = clone(state);
+  const so = S[mod];   // profiles saved before v1.3.9 kept the Combo Stub P2 under the shared key p2
+  if (so.opts && so.opts.depth === 'Combo Stub' && so.typed && so.typed.p2 !== undefined && so.typed.cp2 === undefined) { so.typed.cp2 = so.typed.p2; delete so.typed.p2; }
+  save();
   if (location.hash.toUpperCase() !== '#' + mod) location.hash = '#' + mod; else route();
 }
 function computeState(mod, state, units) {   // compute a saved state off-screen (the current screen state is left untouched)
@@ -2588,7 +2617,9 @@ function optsBar(mod) {
       h('select', {id: 'depth', onchange: e => { o.depth = e.target.value; save(); screen(mod); }},
         M.depths.map(d => h('option', {value: d, selected: d === o.depth}, d)))));
     const nrm = M.helical ? 'Norm. ' : '';
-    if (o.depth === 'Combo Stub') bar.append(optField(mod, 'p2', 'P2 (depth pitch)', 'Combo stub: P1 is the pitch (line 2), P2 sets the depth: ADD = 1/P2, DED = 1.25/P2'));
+    if (o.depth === 'Combo Stub') bar.append(optField(mod, 'cp2', 'P2: 2nd number of the combination pitch P1/P2 (sets depth)',
+        'Combination pitch P1/P2, e.g. 6/8: P1 (line 2) sets the pitch, PD = N / P1; P2 (this box) sets the depth: ADD = 1 / P2, DED = 1.25 / P2, WD = 2.25 / P2. You can type 6/8 here or on line 2.'),
+      h('span', {class: 'combotext', id: 'combotext'}));
     if (o.depth === 'Custom Std.') bar.append(optField(mod, 'cAdd', `${nrm}ADD (${u})`), optField(mod, 'cDed', `${nrm}DED (${u})`),
       optField(mod, 'cCtt', `${nrm}${mod === 'INT' || mod === 'INHEL' ? 'CSW' : 'CTT'} (${u}, opt.)`), optField(mod, 'cTip', `Tip radius (${u}, opt.)`));
     if (o.depth === 'Inv Spline') {
@@ -2698,12 +2729,31 @@ function onInput(e) {
   }
   save(); update();
 }
+// on leaving line 2 or the P2 box, split a typed combination pitch "6/8" into line 2 = 6 and P2 = 8 (and select Combo Stub)
+document.addEventListener('change', e => {
+  const el = e.target, key = el && el.getAttribute && el.getAttribute('data-key');
+  if (CUR !== 'EXT' || (key !== '2' && key !== 'cp2' && key !== 'p2')) return;
+  const pr = comboPair(el.value); if (!pr) return;
+  const s = st('EXT'), T = s.typed;
+  for (const k of Object.keys(T)) if (groupOf('EXT', k) === 'p') delete T[k];
+  T['2'] = fmt(pr[0]); T[pr[2]] = fmt(pr[1]);
+  if (!pr[3]) s.opts.depth = 'Combo Stub';
+  save(); screen('EXT');
+}, true);
 let LAST = null;
 function update() {
   const mod = CUR; if (!mod) return;
   const v = compute(mod), M = MODS[mod], T = st(mod).typed;
   LAST = v;
   $('#hdr').textContent = v.hdr || '';
+  const ct = $('#combotext');
+  if (ct) {
+    const c = v.err ? null : v.cmath, f5 = x => (x * LF()).toFixed(UNITS === 'M' ? 4 : 5), u = UNITS === 'M' ? ' mm' : '', k = UNITS === 'M' ? '25.4 \u00d7 ' : '';
+    ct.textContent = '';
+    if (c) ct.append(h('b', {class: 'cpair'}, `${fmt(c.P1)} over ${fmt(c.P2)}`),
+      h('span', {class: 'cmath'}, `Gear: Addendum = ${k}1 / ${fmt(c.P2)} = ${f5(c.add)}${u}, Dedendum = ${k}1.25 / ${fmt(c.P2)} = ${f5(c.ded)}${u}, Whole depth = ${k}2.25 / ${fmt(c.P2)} = ${f5(c.wd)}${u}; PD = N / ${fmt(c.P1)}`),
+      h('span', {class: 'cnote'}, `(Cutter is the inverse: cutter ADD 1.25 / ${fmt(c.P2)} cuts the gear dedendum, cutter DED 1 / ${fmt(c.P2)} forms the gear addendum.)`));
+  }
   const msg = $('#msg');
   msg.textContent = v.err || ''; msg.className = 'msg' + (v.err ? ' on' : '');
   const rows = (v.rows || []).concat(v.rowsR || []);
@@ -3422,7 +3472,7 @@ function gearFigure(spec, o) {
   if (!T.exact) notes.push(`APPROXIMATE: the cutter is not known, so the root is a simple fillet of radius ${L(T.rho)} ${uN()} tangent to the involute flank and the root circle. Enter Shaper Ex. data for an exactly generated fillet.`);
   if (T.undercut) notes.push(`Undercut: the cutter tip removes involute between D ${L(2 * T.undercut[0])} and D ${L(2 * T.undercut[1])} (shown in red).`);
   if (o.notes) notes.push(...o.notes);
-  const key = [n, N, spec.P, spec.phi, internal, PREF.cutter, o.plane || ''].join('|');
+  const key = [n, N, spec.P, spec.phi, internal, PREF.cutter, o.plane || '', spec.combo ? spec.combo.P2 : ''].join('|');
   // undercut segments
   const ucSeg = [];
   if (T.undercut) {
@@ -3456,7 +3506,29 @@ function gearFigure(spec, o) {
       const p = S(cu.pts[Math.floor(cu.pts.length * 0.15)]);
       s += V.text([p[0], p[1] - 8 * sc], cu.label, 11 * sc, `fill="${C.cut}" text-anchor="start"`);
     }
-    return {svg: s, box: [box[0] - (box[2] - box[0]) * 0.28, box[1], box[2] + (box[2] - box[0]) * 0.28, box[3]]};
+    const W0 = box[2] - box[0];
+    if (spec.combo && !internal) s += comboDims(sc, W0, box[0] - W0 * 0.28);
+    return {svg: s, box: [box[0] - W0 * (spec.combo && !internal ? 1.15 : 0.28), box[1], box[2] + W0 * 0.28, box[3]]};
+  };
+  // Combo Stub: dimension the gear addendum, dedendum and whole depth (radial, at the left end of the drawn arc), each with its formula
+  const comboDims = (sc, W0, xEdge) => {
+    const c = spec.combo, f = v => `${c.P2 === Math.round(c.P2) ? c.P2 : (+c.P2.toFixed(5))}`, a = -range;
+    const y = r => r * cos(a), xs = r => r * sin(a), col = C.dim;
+    const Ro = T.Rp + c.add, Rr = T.Rp - c.ded;       // the combo-stub standard (= OD and root when no other value is typed)
+    const xWD = xEdge - 0.05 * W0, xAD = xWD - 0.09 * W0;
+    let o = '';
+    const ext = (r, x) => { const p = S([xs(r), y(r)]), q = S([x, y(r)]); o += V.line([p[0] - 3 * sc, p[1]], [q[0] - 6 * sc, q[1]], `stroke="${col}" stroke-width="0.6" stroke-dasharray="3 2"`); };
+    ext(Ro, xAD); ext(T.Rp, xAD); ext(Rr, xAD);
+    const vdim = (x, r1, r2, cls) => { const p1 = S([x, y(r1)]), p2 = S([x, y(r2)]);
+      o += `<g class="${cls}">` + V.dimLinear(p1, p2, 0, '', sc, {color: col}).replace(/<text[^]*$/, '') + '</g>'; };
+    vdim(xWD, Rr, Ro, 'cdim cdim-wd'); vdim(xAD, T.Rp, Ro, 'cdim cdim-add'); vdim(xAD, Rr, T.Rp, 'cdim cdim-ded');
+    const lab = (r, txt, cls, dy) => { const p = S([xAD, r]); o += V.text([p[0] - 8 * sc, p[1] + (dy || 0) * sc], txt, 11.5 * sc, `fill="${col}" text-anchor="end" dominant-baseline="middle" class="dimtxt ${cls}"`); };
+    lab(y((T.Rp + Ro) / 2), `Addendum = 1 / ${f()} = ${L(c.add)}`, 'cl-add');
+    lab(y((T.Rp + Rr) / 2), `Dedendum = 1.25 / ${f()} = ${L(c.ded)}`, 'cl-ded');
+    const pw = S([xWD, y(Rr)]);
+    o += V.text([pw[0], pw[1] + 16 * sc], `Whole depth = 2.25 / ${f()} = ${L(c.wd)}`, 11.5 * sc, `fill="${col}" text-anchor="middle" dominant-baseline="hanging" class="dimtxt cl-wd"`);
+    o += V.text([pw[0], pw[1] + 32 * sc], `gear values, combination pitch ${+c.P1.toFixed(5)}/${f()} (${uN()})`, 10.5 * sc, `fill="#5a6472" text-anchor="middle" dominant-baseline="hanging" class="dimtxt cl-note"`);
+    return o;
   };
   const readout = (x, y, sc) => {
     const r = hypot(x, y), m = [x, -y]; const rr = hypot(m[0], m[1]);
