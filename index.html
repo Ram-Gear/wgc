@@ -236,12 +236,12 @@ a.idlink:hover,a.btn:hover{color:var(--acch)}
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.9</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.10</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.9, build 2026-10-28. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.9';</script>
+<!-- Web Gear Calc v1.3.10, build 2026-11-02. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.10';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -2089,7 +2089,9 @@ const SPL_L = [[1, 'Number of Splines', 'int', 1], [2, 'Major Diameter', 'len', 
 // option fields (outside the table) and their kinds / groups
 const OPT_KIND = {p2: 'num', cp2: 'num', cAdd: 'len', cDed: 'len', cCtt: 'len', cTip: 'len', shN: 'int', shMaj: 'len', shMin: 'len', shWire: 'len',
   shMow: 'len', shK: 'int', shSpan: 'len', spanK: 'int', spanW: 'len'};
-const OPT_GROUP = {spanW: 't', shMow: 'shm', shSpan: 'shm'};
+const OPT_GROUP = {shMow: 'shm', shSpan: 'shm'};
+// span: the tooth count only picks which span is reported; a typed span measure back-solves CTT once, on Enter (spanSolve), then is dropped
+let SPAN_SOLVE = false;
 
 const STD_DEPTHS = ['Hob 2.1571', 'Shaper 2.25', 'F.F. 2.335', 'FP 2.2+.002', 'AGMA Stub', 'Combo Stub', 'Custom Std.'];
 const MODS = {
@@ -2208,7 +2210,7 @@ function cExt(P, o) {
   const ds = depthSel('EXT', oE, P, DP); if (ds.err) return need(ds.err);
   const PD = N / DP, notes = [];
   const kw = {major: P[10] ?? (isNum(P[12]) ? PD + 2 * P[12] : null), minor: P[9] ?? (isNum(P[13]) ? PD - 2 * P[13] : null),
-    ctt: P[16] ?? null, mow: P[17] ?? null, wire: P[18] ?? null, spanTeeth: P.spanK > 0 ? Math.round(P.spanK) : null, span: P.spanW ?? null,
+    ctt: P[16] ?? null, mow: P[17] ?? null, wire: P[18] ?? null, spanTeeth: P.spanK > 0 ? Math.round(P.spanK) : null, span: SPAN_SOLVE ? (P.spanW ?? null) : null,
     depth: ds.depth, combo: ds.combo || null, custom: ds.custom || null, spline: ds.spline || null};
   const run = () => { let r = G.extSpur(DP, PA, N, kw); if (isNum(P[11])) { kw.minor = r.given.major - 2 * P[11]; r = G.extSpur(DP, PA, N, kw); } return r; };
   let r = run(), rs = null, sh = null;
@@ -2337,7 +2339,7 @@ function cHel(P, o, internal) {
   const TDP = NDP * Math.cos(b), PD = N / TDP, notes = [];
   const kw = {internal, wire: P[18] ?? null, depth: ds.depth, combo: ds.combo || null, custom: ds.custom || null,
     ctt_t: P[8] ?? (isNum(P[26]) ? P[26] / Math.cos(b) : null), mow: P[17] ?? null,
-    spanTeeth: !internal && P.spanK > 0 ? Math.round(P.spanK) : null, span: !internal ? (P.spanW ?? null) : null};
+    spanTeeth: !internal && P.spanK > 0 ? Math.round(P.spanK) : null, span: !internal && SPAN_SOLVE ? (P.spanW ?? null) : null};
   if (!internal) { kw.minor = P[10] ?? (isNum(P[14]) ? PD - 2 * P[14] : null); kw.major = P[11] ?? (isNum(P[13]) ? PD + 2 * P[13] : null); }
   else { kw.minor = P[10] ?? (isNum(P[13]) ? PD - 2 * P[13] : null); kw.major = P[11] ?? (isNum(P[14]) ? PD + 2 * P[14] : null); }
   const run = () => {
@@ -2556,6 +2558,7 @@ function loadState(mod, state, units) {      // restore a screen exactly: the pr
   S[mod] = clone(state);
   const so = S[mod];   // profiles saved before v1.3.9 kept the Combo Stub P2 under the shared key p2
   if (so.opts && so.opts.depth === 'Combo Stub' && so.typed && so.typed.p2 !== undefined && so.typed.cp2 === undefined) { so.typed.cp2 = so.typed.p2; delete so.typed.p2; }
+  migrateSpan(mod);
   save();
   if (location.hash.toUpperCase() !== '#' + mod) location.hash = '#' + mod; else route();
 }
@@ -2607,7 +2610,7 @@ function optField(mod, key, label, title) {
   const t = st(mod).typed[key] ?? '';
   return h('label', {class: 'opt', title: title || null}, h('span', {}, label),
     h('input', {type: 'text', inputmode: 'decimal', autocomplete: 'off', spellcheck: 'false', 'data-key': key, value: t,
-      class: t !== '' ? 'typed' : '', oninput: onInput, onfocus: selAll}));
+      class: t !== '' ? 'typed' : '', oninput: key === 'spanW' ? null : onInput, onfocus: selAll}));
 }
 function optsBar(mod) {
   const M = MODS[mod], o = st(mod).opts, u = UNITS === 'M' ? 'mm' : 'in';
@@ -2680,7 +2683,32 @@ function tableHel(mod) {
   };
   return h('div', {class: 'hel', id: 'tbl'}, mk(M.L.filter(l => l[0] <= 18), 'Trans.', true), mk(M.L.filter(l => l[0] > 18), 'Normal', false));
 }
+// Enter in the span measure box: CTT = back-solve(span measure, span teeth or the recommended count), typed as the thickness; nothing else is kept
+function spanSolve(mod, raw) {
+  if (mod !== 'EXT' && mod !== 'HELIX') return false;
+  const T = st(mod).typed, ck = mod === 'EXT' ? '16' : '8', g = groupOf(mod, ck);
+  const W = parseTyped(mod, 'spanW', raw);
+  if (!(typeof W === 'number' && W > 0)) return false;
+  const keep = Object.assign({}, T), restore = () => { for (const k of Object.keys(T)) delete T[k]; Object.assign(T, keep); delete T.spanW; };
+  for (const k of Object.keys(T)) if (k === 'spanW' || groupOf(mod, k) === g) delete T[k];
+  const v0 = compute(mod);
+  if (v0.err || !v0.span) { restore(); return false; }
+  const kTyped = T.spanK !== undefined;
+  if (!kTyped) T.spanK = String(v0.span.k);
+  T.spanW = String(raw); SPAN_SOLVE = true;
+  let v; try { v = compute(mod); } finally { SPAN_SOLVE = false; delete T.spanW; if (!kTyped) delete T.spanK; }
+  const r = v.err ? null : (v.rows || []).find(x => String(x.n) === ck);
+  if (!r || !isNum(r.g)) { restore(); return false; }
+  T[ck] = String(+(r.g * LF()).toPrecision(12));
+  const ci = document.querySelector(`#row-${ck} td.g input`); if (ci) { ci.value = T[ck]; ci.classList.add('typed'); }
+  save(); return true;
+}
+function migrateSpan(mod) {     // states saved before v1.3.10 kept the span measure as a standing input
+  const T = S[mod] && S[mod].typed; if (!T || T.spanW === undefined) return;
+  const raw = T.spanW; delete T.spanW; spanSolve(mod, raw);
+}
 function screen(mod) {
+  if (mod === 'EXT' || mod === 'HELIX') migrateSpan(mod);
   const M = MODS[mod], a = app(); a.textContent = '';
   const hasSpan = mod === 'EXT' || mod === 'HELIX', u = UNITS === 'M' ? 'mm' : 'in';
   a.append(h('section', {class: 'screen', id: 'screen-' + mod},
@@ -2701,7 +2729,7 @@ function screen(mod) {
     M.helical ? tableHel(mod) : tableSpur(mod),
     hasSpan ? h('div', {class: 'span', id: 'spanbox'}, h('span', {class: 'sl'}, 'Span'),
       optField(mod, 'spanK', 'teeth', 'Number of teeth spanned (blank = recommended)'),
-      optField(mod, 'spanW', `measure (${u})`, 'Type a measured span to solve the tooth thickness'),
+      optField(mod, 'spanW', `measure (${u})`, 'Type a measured span and press Enter to solve the tooth thickness (once)'),
       h('span', {class: 'spantext', id: 'spantext'})) : null,
     h('div', {class: 'warn', id: 'warn'}),
     h('div', {class: 'more', id: 'more'}),
@@ -2852,6 +2880,7 @@ document.addEventListener('keydown', e => {
   if (t && t.tagName === 'INPUT' && CUR) {
     if (e.key === 'Enter') {
       e.preventDefault();
+      if (t.getAttribute('data-key') === 'spanW' && t.value.trim() !== '') { spanSolve(CUR, t.value); t.value = ''; }
       const all = Array.from(document.querySelectorAll('#app input[data-key]'));
       const i = all.indexOf(t); if (i >= 0 && all[i + 1]) { all[i + 1].focus(); all[i + 1].select(); }
       update();
