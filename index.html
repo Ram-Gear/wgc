@@ -236,12 +236,12 @@ a.idlink:hover,a.btn:hover{color:var(--acch)}
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.11</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.12</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.11, build 2026-11-02. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.11';</script>
+<!-- Web Gear Calc v1.3.12, build 2026-11-02. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.12';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -2092,6 +2092,10 @@ const OPT_KIND = {p2: 'num', cp2: 'num', cAdd: 'len', cDed: 'len', cCtt: 'len', 
 const OPT_GROUP = {shMow: 'shm', shSpan: 'shm'};
 // span: the tooth count only picks which span is reported; a typed span measure back-solves CTT once, on Enter (spanSolve), then is dropped
 let SPAN_SOLVE = false;
+// one-shot measurements (v1.3.12): a typed MOW/MUW/MOB (line 17) or SPL tool point width (line 5) is used only by measSolve on Enter
+const MEAS = {EXT: '17', INT: '17', HELIX: '17', INHEL: '17', SPL: '5'};
+const MEAS_TO = {EXT: '16', INT: '16', HELIX: '8', INHEL: '8'};     // the thickness the measurement solves (SPL: minor or width, per option)
+let MEAS_SOLVE = false;
 
 const STD_DEPTHS = ['Hob 2.1571', 'Shaper 2.25', 'F.F. 2.335', 'FP 2.2+.002', 'AGMA Stub', 'Combo Stub', 'Custom Std.'];
 const MODS = {
@@ -2146,6 +2150,7 @@ function inputs(mod) {
       for (const k of ['2', 'cp2', 'p2']) { const i = bad.indexOf(k); if (i >= 0) bad.splice(i, 1); }
     }
   }
+  if (MEAS[mod] && !MEAS_SOLVE) { delete P[MEAS[mod]]; const i = bad.indexOf(MEAS[mod]); if (i >= 0) bad.splice(i, 1); }
   return {P, bad};
 }
 // "6/8", "6 / 8", "6 over 8" -> [6, 8, key]; only for P1, P2 >= 1 (a pitch pair, never a fraction such as 1/2)
@@ -2470,7 +2475,9 @@ function cSpl(P, o) {
   if (!(N >= 3) || !(maj > 0)) return need('Enter the Number of Splines (line 1, 3 or more) and the Major Diameter (line 2).');
   const pw = P[5];
   let std = null;
-  if (mn > 0 && w > 0) std = G.spline(N, maj, mn, w);
+  const O = o.splOrig;      // GCP3 keeps the Original column at the values from before a point-width solve
+  if (O && O.N === N) std = G.spline(O.N, O.maj, O.mn, O.w);
+  else if (mn > 0 && w > 0) std = G.spline(N, maj, mn, w);
   if (isNum(pw)) {
     if (o.splSolve === 'width') { if (!(mn > 0)) return need('Point width -> spline width: enter the minor diameter (line 3) or the whole depth (line 6).'); w = G.splineWidthFromPoint(N, mn, pw); }
     else { if (!(w > 0)) return need('Point width -> minor: enter the spline width (line 4).'); mn = G.splineMinorFromPoint(N, w, pw); }
@@ -2481,7 +2488,7 @@ function cSpl(P, o) {
   const rows = SPL_L.map(([n, label, kind]) => ({n, label, kind, g: g[n], s: std[n]}));
   const warn = isFinite(g['5']) ? [] : ['*Error*: the spline width does not fit on this minor diameter.'];
   return {geo: isFinite(g['5']) ? {kind: 'spl', N: Math.round(N), maj, min: mn, w} : null, hdr: '', rows, more: [], warnings: warn,
-    notes: isNum(pw) ? [`Tool point width solved for ${o.splSolve === 'width' ? 'spline width (2)' : 'minor diameter (1)'}; the Standard column shows the values before that.`] : []};
+    notes: isNum(pw) || (O && O.N === N) ? [`Tool point width solved for ${o.splSolve === 'width' ? 'spline width (2)' : 'minor diameter (1)'}; the Original column shows the values before that.`] : []};
 }
 
 const COMPUTE = {EXT: cExt, INT: cInt, HELIX: (P, o) => cHel(P, o, false), INHEL: (P, o) => cHel(P, o, true), WORM: cWorm, RACK: cRack, SPL: cSpl};
@@ -2560,14 +2567,14 @@ function loadState(mod, state, units) {      // restore a screen exactly: the pr
   S[mod] = clone(state);
   const so = S[mod];   // profiles saved before v1.3.9 kept the Combo Stub P2 under the shared key p2
   if (so.opts && so.opts.depth === 'Combo Stub' && so.typed && so.typed.p2 !== undefined && so.typed.cp2 === undefined) { so.typed.cp2 = so.typed.p2; delete so.typed.p2; }
-  migrateSpan(mod);
+  migrateSpan(mod); migrateMeas(mod);
   save();
   if (location.hash.toUpperCase() !== '#' + mod) location.hash = '#' + mod; else route();
 }
 function computeState(mod, state, units) {   // compute a saved state off-screen (the current screen state is left untouched)
   const keep = S[mod], c = clone(state);
   if (units !== UNITS) convertTyped(mod, c.typed, UNITS);
-  S[mod] = c;
+  S[mod] = c; migrateMeas(mod, true);
   try { return compute(mod); } finally { S[mod] = keep; }
 }
 // Help: a fixed question only (never user data, gear values or the current screen)
@@ -2646,7 +2653,7 @@ function optsBar(mod) {
         h('option', {value: 'width', selected: o.splSolve === 'width'}, '2) spline width'))));
   }
   bar.append(h('span', {class: 'grow'}),
-    h('button', {class: 'ghost', id: 'clearBtn', onclick: () => { st(mod).typed = {}; save(); screen(mod); }, title: 'Clear every typed value on this screen'}, 'Clear all'));
+    h('button', {class: 'ghost', id: 'clearBtn', onclick: () => { st(mod).typed = {}; delete st(mod).opts.splOrig; save(); screen(mod); }, title: 'Clear every typed value on this screen'}, 'Clear all'));
   return bar;
 }
 function cellInput(mod, r) {
@@ -2705,12 +2712,41 @@ function spanSolve(mod, raw) {
   const ci = document.querySelector(`#row-${ck} td.g input`); if (ci) { ci.value = T[ck]; ci.classList.add('typed'); }
   save(); return true;
 }
+// Enter in a measurement box (MOW/MUW/MOB line 17, SPL point width line 5): solve the thickness (SPL: minor or width) once,
+// store it as typed, drop the measurement; a later wire change then keeps the thickness and recomputes the measurement (as GCP3)
+function measSolve(mod, raw, quiet = false) {
+  const mk = MEAS[mod]; if (!mk) return false;
+  const T = st(mod).typed, o = st(mod).opts, x = parseTyped(mod, mk, raw);
+  if (!(typeof x === 'number' && x > 0)) { delete T[mk]; return false; }
+  const keep = Object.assign({}, T), restore = () => { for (const k of Object.keys(T)) delete T[k]; Object.assign(T, keep); delete T[mk]; };
+  const g = groupOf(mod, mk);
+  for (const k of Object.keys(T)) if (k === mk || (g && groupOf(mod, k) === g)) delete T[k];
+  const v0 = mod === 'SPL' ? compute(mod) : null;
+  T[mk] = String(raw); MEAS_SOLVE = true;
+  let v; try { v = compute(mod); } finally { MEAS_SOLVE = false; delete T[mk]; }
+  const ck = mod === 'SPL' ? (o.splSolve === 'width' ? '4' : '3') : MEAS_TO[mod];
+  const r = v.err ? null : (v.rows || []).find(z => String(z.n) === ck);
+  if (!r || !isNum(r.g) || !isFinite(r.g)) { restore(); return false; }
+  if (mod === 'SPL') {
+    if (!o.splOrig && v0 && !v0.err) { const R = n => (v0.rows.find(z => z.n === n) || {}).g; o.splOrig = {N: R(1), maj: R(2), mn: R(3), w: R(4)}; }
+    if (ck === '3') delete T['6'];
+  } else for (const k of Object.keys(T)) if (groupOf(mod, k) === groupOf(mod, ck)) delete T[k];
+  T[ck] = String(+(r.g * LF()).toPrecision(12));
+  if (quiet) return true;
+  for (const k of [ck, mk, '6']) { const ci = document.querySelector(`#in-${mod}-${k}`); if (ci) { ci.value = T[k] ?? ''; ci.classList.toggle('typed', T[k] !== undefined); } }
+  save(); return true;
+}
+function migrateMeas(mod, quiet = false) {     // states saved before v1.3.12 kept the measurement as a standing input
+  const T = S[mod] && S[mod].typed, mk = MEAS[mod]; if (!T || !mk || T[mk] === undefined) return;
+  const raw = T[mk]; delete T[mk]; measSolve(mod, raw, quiet);
+}
 function migrateSpan(mod) {     // states saved before v1.3.10 kept the span measure as a standing input
   const T = S[mod] && S[mod].typed; if (!T || T.spanW === undefined) return;
   const raw = T.spanW; delete T.spanW; spanSolve(mod, raw);
 }
 function screen(mod) {
   if (mod === 'EXT' || mod === 'HELIX') migrateSpan(mod);
+  migrateMeas(mod);
   const M = MODS[mod], a = app(); a.textContent = '';
   const hasSpan = mod === 'EXT' || mod === 'HELIX', u = UNITS === 'M' ? 'mm' : 'in';
   a.append(h('section', {class: 'screen', id: 'screen-' + mod},
@@ -2759,6 +2795,13 @@ function onInput(e) {
   }
   save(); update();
 }
+// leaving a measurement box without Enter: the typed measurement is dropped (it acts only on Enter, once)
+document.addEventListener('change', e => {
+  const el = e.target, key = el && el.getAttribute && el.getAttribute('data-key');
+  if (!CUR || !MEAS[CUR] || key !== MEAS[CUR]) return;
+  const T = st(CUR).typed; if (T[key] === undefined) return;
+  delete T[key]; el.value = ''; save(); update();
+}, true);
 // on leaving line 2 or the P2 box, split a typed combination pitch "6/8" into line 2 = 6 and P2 = 8 (and select Combo Stub)
 document.addEventListener('change', e => {
   const el = e.target, key = el && el.getAttribute && el.getAttribute('data-key');
@@ -2883,6 +2926,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Enter') {
       e.preventDefault();
       if (t.getAttribute('data-key') === 'spanW' && t.value.trim() !== '') { spanSolve(CUR, t.value); t.value = ''; }
+      if (MEAS[CUR] && t.getAttribute('data-key') === MEAS[CUR] && t.value.trim() !== '') { measSolve(CUR, t.value); t.value = ''; t.classList.remove('typed'); }
       const all = Array.from(document.querySelectorAll('#app input[data-key]'));
       const i = all.indexOf(t); if (i >= 0 && all[i + 1]) { all[i + 1].focus(); all[i + 1].select(); }
       update();
