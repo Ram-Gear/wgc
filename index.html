@@ -236,12 +236,12 @@ a.idlink:hover,a.btn:hover{color:var(--acch)}
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.12</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.13</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.12, build 2026-11-02. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.12';</script>
+<!-- Web Gear Calc v1.3.13, build 2026-11-03. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.13';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -498,13 +498,13 @@ function intSpur(DP, PA, N, o = {}) {
   if (minor < BD) warnings.push('Minor below Base Diameter');
   return {given: g, standard: s, diff: d, more, warnings};
 }
-function genInternal(DP, PA, Ng, csw, Ns, DsMajor, DsMinor, sWire, sMow) {   // [RE]
-  const phi = PA * D2R, PDg = Ng / DP, BDg = PDg * cos(phi), BDs = Ns / DP * cos(phi);
-  const psiS = shaperPsiFromMow(Ns, BDs, sMow, sWire), psiG = csw / PDg + inv(phi);
+function genInternal(DP, PA, Ng, csw, Ns, DsMajor, DsMinor, sWire, sMow, o = {}) {   // [RE]; o = {sSpanK, sSpan}: shaper measured by span instead of MOW
+  const phi = PA * D2R, PDg = Ng / DP, BDg = PDg * cos(phi), BDs = Ns / DP * cos(phi), BP = pi / DP * cos(phi);
+  const psiS = sMow > 0 ? shaperPsiFromMow(Ns, BDs, sMow, sWire) : shaperPsiFromSpan(Ns, BDs, BP, o.sSpanK, o.sSpan), psiG = csw / PDg + inv(phi);
   const ig = (Ng * psiG - Ns * psiS) / (Ng - Ns), ag = ainv(ig), C = (BDg - BDs) / (2 * cos(ag));
   const Cs = (Ng - Ns) / (2 * DP);
   return {ag, ig, C, genPD: BDg / cos(ag), genDP: Ng / (BDg / cos(ag)), majorP: 2 * C + DsMajor,
-          stdMajor: 2 * Cs + DsMajor, stdMinor: max(2 * Cs + DsMinor, BDg), stdCSW: Ns / DP * (psiS - inv(phi))};
+          stdMajor: 2 * Cs + DsMajor, stdMinor: max(2 * Cs + DsMinor, BDg), stdCSW: Ns / DP * (psiS - inv(phi)), psiS};
 }
 
 // ------------------------------------------------------------------ HELIX / INHEL
@@ -2103,7 +2103,7 @@ const MODS = {
     cols: ['Given', 'Standard', 'Diff.Produced Using Std.'], blurb: 'Spur gears and involute splines: MOW, span, TIF, shaper exact'},
   HELIX: {name: 'External Helical Gears', screen: 'External Helical Gears Screen', tcol: 16, L: helL(false), helical: true,
     depths: [...STD_DEPTHS, 'Shaper Ex.'], blurb: 'Transverse and normal planes, MOW, span, lead'},
-  INT: {name: 'Internal Spur Gears', screen: 'Internal Spur Gears Screen', tcol: 19, L: INT_L, depths: ['Shaper 2.25', 'Hob 2.1571', 'F.F. 2.335', 'FP 2.2+.002', 'AGMA Stub', 'Combo Stub', 'Custom Std.', 'Shaper Ex.', 'Inv Spline'],
+  INT: {name: 'Internal Spur Gears', screen: 'Internal Spur Gears Screen', tcol: 19, L: INT_L, depths: [...STD_DEPTHS, 'Shaper Ex.', 'Inv Spline'],
     cols: ['Given', 'Standard', 'Diff.Produced Using Std.'], blurb: 'Internal gears and splines: MUW, space width, shaper exact'},
   WORM: {name: 'Worm Gears', screen: 'Worm Gears Screen', tcol: 26, L: WORM_L, cols: ['Given', 'Standard', 'Operating'], blurb: 'Worm and gear set, operating values at a center distance'},
   RACK: {name: 'Rack / Rackworm', screen: 'Rackworm Screen', tcol: 19, L: RACK_L, depths: STD_DEPTHS, cols: ['Given', 'Standard'], blurb: 'Racks and rack-type worms: tooth, wire over addendum'},
@@ -2266,9 +2266,9 @@ function cExt(P, o) {
 }
 function shaperBlock(sh, C) {
   const meas = sh.m > 0 ? sh.m : sh.sp, wire = sh.m > 0 ? sh.w : null;
-  return {head: 'Shaper #Teeth,MajorDiam    MinorDiam    Wire size    Measure      Gen CtrDis  ', pre: ' Data  ', pos: [7, 14, 27, 40, 53, 67],
+  return {head: `Shaper #Teeth,MajorDiam    MinorDiam    ${wire === null ? '#Teeth Span ' : 'Wire size   '} Measure      Gen CtrDis  `, pre: ' Data  ', pos: [7, 14, 27, 40, 53, 67],
     items: [V('Shaper teeth', Math.round(sh.Ns), 'int'), V('Major Diam', sh.maj, 'len'), V('Minor Diam', sh.min, 'len'),
-      V('Wire size', wire === null ? '' : wire, 'len'), V(sh.m > 0 ? 'Measure (MOW)' : `Span ${sh.k} T`, meas, 'len'), V('Gen CtrDis', C, 'len')]};
+      wire === null ? V('Span teeth', Math.round(sh.k), 'int') : V('Wire size', wire, 'len'), V(sh.m > 0 ? 'Measure (MOW)' : `Span ${sh.k} T`, meas, 'len'), V('Gen CtrDis', C, 'len')]};
 }
 
 // ------------------------------------------------------------------ INT
@@ -2287,13 +2287,14 @@ function cInt(P, o) {
   const run = () => { let r = G.intSpur(DP, PA, N, kw); if (isNum(P[11])) { kw.major = r.given.minor + 2 * P[11]; r = G.intSpur(DP, PA, N, kw); } return r; };
   let r = run(), gi = null, sh = null;
   if (ds.shaper) {
-    sh = {Ns: P.shN, maj: P.shMaj, min: P.shMin, w: P.shWire, m: P.shMow};
-    if (!(sh.Ns > 0 && sh.maj > 0 && sh.min > 0 && sh.w > 0 && sh.m > 0))
-      return need('Shaper Ex.: enter the shaper # teeth, major and minor diameters, wire size and measure over wire.');
-    gi = G.genInternal(DP, PA, N, r.given.CSW, Math.round(sh.Ns), sh.maj, sh.min, sh.w, sh.m);
-    kw.depth = 'Custom'; kw.spline = null; kw.combo = null; kw.custom = {add: (PD - gi.stdMinor) / 2, ded: (gi.stdMajor - PD) / 2, ctt: null};
+    sh = {Ns: P.shN, maj: P.shMaj, min: P.shMin, w: P.shWire, m: P.shMow, k: P.shK, sp: P.shSpan};
+    if (!(sh.Ns > 0 && sh.maj > 0 && sh.min > 0 && ((sh.w > 0 && sh.m > 0) || (sh.k > 0 && sh.sp > 0))))
+      return need('Shaper Ex.: enter the shaper # teeth, major and minor diameters, and MOW with wire size (or span teeth and span measure).');
+    const so = sh.m > 0 ? {} : {sSpanK: Math.round(sh.k), sSpan: sh.sp};
+    gi = G.genInternal(DP, PA, N, r.given.CSW, Math.round(sh.Ns), sh.maj, sh.min, sh.w, sh.m, so);
+    kw.depth = 'Custom'; kw.spline = null; kw.combo = null; kw.custom = {add: (PD - gi.stdMinor) / 2, ded: (gi.stdMajor - PD) / 2, ctt: CP - gi.stdCSW};   // as EXT: the Standard column takes the shaper's thickness (GCP3 ISHS: CSW = CP - shaper tooth at its PD)
     r = run();
-    gi = G.genInternal(DP, PA, N, r.given.CSW, Math.round(sh.Ns), sh.maj, sh.min, sh.w, sh.m);
+    gi = G.genInternal(DP, PA, N, r.given.CSW, Math.round(sh.Ns), sh.maj, sh.min, sh.w, sh.m, so);
     notes.push('Shaper Ex. clearance / interference at the minor is not computed yet (gap G-2); the internal shaper TIF is shown as N/A.');
   }
   const g = r.given, s = r.standard, m = r.more;
@@ -2316,7 +2317,7 @@ function cInt(P, o) {
   const phiR = PA * D2R;
   let gen;
   if (gi) { const BDs = Math.round(sh.Ns) / DP * Math.cos(phiR);
-    gen = {type: 'shaper', Ns: Math.round(sh.Ns), Rbs: BDs / 2, Rsa: sh.maj / 2, Rsr: sh.min / 2, psiS: G.shaperPsiFromMow(Math.round(sh.Ns), BDs, sh.m, sh.w), C: gi.C}; }
+    gen = {type: 'shaper', Ns: Math.round(sh.Ns), Rbs: BDs / 2, Rsa: sh.maj / 2, Rsr: sh.min / 2, psiS: gi.psiS, C: gi.C}; }
   else gen = {type: 'fillet', Rr: d.major / 2, rho: 0.25 / DP};
   const geo = {kind: 'spur', internal: true, N, P: DP, phi: phiR, t: g.CSW, Rt: g.minor / 2, majorGiven: g.major, gen, PD, BD: g.BD,
     combo: ds.cmath || null};
@@ -2643,7 +2644,7 @@ function optsBar(mod) {
     if (o.depth === 'Shaper Ex.') {
       bar.append(h('span', {class: 'opthead'}, 'Shaper:'), optField(mod, 'shN', '# Teeth'), optField(mod, 'shMaj', `Major (${u})`),
         optField(mod, 'shMin', `Minor (${u})`), optField(mod, 'shWire', `Wire (${u})`), optField(mod, 'shMow', `MOW (${u})`));
-      if (mod === 'EXT') bar.append(h('span', {class: 'or'}, 'or'), optField(mod, 'shK', 'Span teeth'), optField(mod, 'shSpan', `Span (${u})`));
+      if (mod === 'EXT' || mod === 'INT') bar.append(h('span', {class: 'or'}, 'or'), optField(mod, 'shK', 'Span teeth'), optField(mod, 'shSpan', `Span (${u})`));
     }
   }
   if (mod === 'SPL') {
@@ -2755,9 +2756,9 @@ function screen(mod) {
       h('button', {id: 'saveBtn', onclick: () => download(mod), title: 'Save the printout as a text file (GCP3 format)'}, 'Save .TXT'),
       h('button', {id: 'copyBtn', class: 'ghost', onclick: () => copyText(mod)}, 'Copy'),
       h('button', {id: 'printBtn', onclick: () => { update(); window.print(); }, title: 'Print the GCP3-format printout'}, 'Print'),
-      (mod === 'EXT' || mod === 'HELIX') && window.GCP3GEARS ? h('button', {id: 'saveGearBtn', title: 'Save this gear (all inputs and options) as a named profile in this browser',
+      (mod === 'EXT' || mod === 'HELIX' || mod === 'INT') && window.GCP3GEARS ? h('button', {id: 'saveGearBtn', title: 'Save this gear (all inputs and options) as a named profile in this browser',
         onclick: () => { update(); window.GCP3GEARS.saveDialog(mod, LAST); }}, 'Save gear\u2026') : null,
-      (mod === 'EXT' || mod === 'HELIX') && window.GCP3GEARS ? h('button', {id: 'loadGearBtn', title: 'Load a saved gear profile into this screen',
+      (mod === 'EXT' || mod === 'HELIX' || mod === 'INT') && window.GCP3GEARS ? h('button', {id: 'loadGearBtn', title: 'Load a saved gear profile into this screen',
         onclick: () => window.GCP3GEARS.loadDialog(mod)}, 'Load gear\u2026') : null,
       (mod === 'EXT' || mod === 'HELIX') && window.GCP3MESHUI ? h('button', {class: 'ghost', id: 'meshBtn', title: 'Open the Two-Gear Mesh screen with this gear as Gear 1',
         onclick: () => { update(); window.GCP3MESHUI.carry(mod, LAST); }}, 'Mesh with mate') : null,
@@ -4163,7 +4164,7 @@ function figDraw(r, keep) {
 // gear parameters of a computed EXT / HELIX screen result: normal DP (1/in), normal PA, helix angle (deg, 0 = spur), N
 function params(mod, v) {
   if (!v || v.err || !v.geo) return null;
-  if (mod === 'EXT') { const g = v.geo; return {Pn: g.P, pa: g.phi / D2R, ha: 0, N: g.N}; }
+  if (mod === 'EXT' || mod === 'INT') { const g = v.geo; return {Pn: g.P, pa: g.phi / D2R, ha: 0, N: g.N}; }   // INT: for the gear-profile summary only (MESH takes EXT / HELIX)
   const rr = v.rowsR || [], gv = n => { const x = rr.find(q => q.n === n); return x ? x.g : null; };
   return {Pn: +gv(20), pa: +gv(22), ha: +v.geo.HA, N: v.geo.N};
 }
@@ -4285,7 +4286,7 @@ if (X0) {
 </script>
 <script>
 /* Web Gear Calc - saved gear profiles (new in v1.3.0). Plain script, loaded after ui_mesh.js.
-   A profile is the whole EXT or HELIX screen state ({typed, opts}: every entered input, the thickness method and value, hob/cutter,
+   A profile is the whole EXT, HELIX or INT screen state ({typed, opts}: every entered input, the thickness method and value, hob/cutter,
    Shaper Ex. and span/pin data, depth system) plus its units, so loading restores the screen exactly.
    Stored in localStorage key 'gcp3web.gears'. A file:// copy and the website (https://ram-gear.github.io/wgc/) have SEPARATE stores:
    move gears with Export / Import (JSON). */
@@ -4293,7 +4294,7 @@ if (X0) {
 'use strict';
 const U = window.GCP3UI, {h, flash} = U;
 const $ = (s, el) => (el || document).querySelector(s);
-const KEY = 'gcp3web.gears', FORMAT = 'web-gear-calc-gear-profiles', MODS_OK = ['EXT', 'HELIX'];
+const KEY = 'gcp3web.gears', FORMAT = 'web-gear-calc-gear-profiles', MODS_OK = ['EXT', 'HELIX', 'INT'];
 const TOL = 1e-6;                      // relative tolerance for "same pitch / pressure angle / helix angle"
 const same = (a, b) => Math.abs(a - b) <= TOL * Math.max(Math.abs(a), Math.abs(b), 1);
 
@@ -4473,7 +4474,7 @@ function manager() {
       }}, 'Delete')));
   dialog('gm-dlg', 'Saved gears (profiles)', [
     ps.length ? h('table', {class: 'gcp gptab', id: 'gm-tab'}, h('thead', {}, h('tr', {}, ['Name', 'Type', 'Gear', 'Units', 'Saved', ''].map(t => h('th', {}, t)))), h('tbody', {}, ps.map(row)))
-      : h('p', {id: 'gm-empty'}, 'No gears saved in this browser yet. Use "Save gear\u2026" on the EXT or HELIX screen, or Import a file.'),
+      : h('p', {id: 'gm-empty'}, 'No gears saved in this browser yet. Use "Save gear\u2026" on the EXT, HELIX or INT screen, or Import a file.'),
     msg,
     h('p', {class: 'note'}, 'Profiles are kept in this browser\u2019s storage for this location. The downloaded WebGearCalc.html (file://) and the website keep SEPARATE lists, and each browser has its own: use Export all / Import to move gears between them or to back them up.'),
     file],
