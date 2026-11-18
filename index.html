@@ -236,12 +236,12 @@ a.idlink:hover,a.btn:hover{color:var(--acch)}
 <body>
 <header id="bar"></header>
 <main id="app"><noscript>This page needs JavaScript turned on.</noscript></main>
-<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.13</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
+<footer id="credit"><span id="wgcver">Web Gear Calc v1.3.14</span> · Based on GCP3 (Gear Calculation Program) by Scott Atkinson, Ash Gear &amp; Supply Corp., Novi, MI. · <a id="helpPageFoot" href="https://ram-gear.github.io/wgc/help.html" target="_blank" rel="noopener noreferrer">Help page</a></footer>
 <div id="flash" role="status" aria-live="polite"></div>
 <pre id="printdoc" aria-hidden="true"></pre>
 <div id="printfig" aria-hidden="true"></div>
-<!-- Web Gear Calc v1.3.13, build 2026-11-03. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
-<script>window.WGC_VERSION = 'v1.3.13';</script>
+<!-- Web Gear Calc v1.3.14, build 2026-11-17. Based on GCP3 (Gear Calculation Program) by Scott Atkinson. Single file: works offline from a folder (file://) in Chrome, Edge and Firefox. -->
+<script>window.WGC_VERSION = 'v1.3.14';</script>
 <script>
 /* GCP3 core math - port of spec/ref/gcp3ref.py (inch units, angles in degrees at the API).
    Plain script: defines global GCP3 in the browser, module.exports in node. No ES modules (file:// safe). */
@@ -2090,7 +2090,7 @@ const SPL_L = [[1, 'Number of Splines', 'int', 1], [2, 'Major Diameter', 'len', 
 const OPT_KIND = {p2: 'num', cp2: 'num', cAdd: 'len', cDed: 'len', cCtt: 'len', cTip: 'len', shN: 'int', shMaj: 'len', shMin: 'len', shWire: 'len',
   shMow: 'len', shK: 'int', shSpan: 'len', spanK: 'int', spanW: 'len'};
 const OPT_GROUP = {shMow: 'shm', shSpan: 'shm'};
-// span: the tooth count only picks which span is reported; a typed span measure back-solves CTT once, on Enter (spanSolve), then is dropped
+// span: the tooth count only picks which span is reported; a typed span measure back-solves CTT once, on Enter, Tab or click-away (commitSpan), then is dropped
 let SPAN_SOLVE = false;
 // one-shot measurements (v1.3.12): a typed MOW/MUW/MOB (line 17) or SPL tool point width (line 5) is used only by measSolve on Enter
 const MEAS = {EXT: '17', INT: '17', HELIX: '17', INHEL: '17', SPL: '5'};
@@ -2693,7 +2693,8 @@ function tableHel(mod) {
   };
   return h('div', {class: 'hel', id: 'tbl'}, mk(M.L.filter(l => l[0] <= 18), 'Trans.', true), mk(M.L.filter(l => l[0] > 18), 'Normal', false));
 }
-// Enter in the span measure box: CTT = back-solve(span measure, span teeth or the recommended count), typed as the thickness; nothing else is kept
+// Enter, Tab or click-away in the span measure box: CTT = back-solve(span measure, span teeth or the recommended count),
+// typed as the thickness; the measure is then dropped. On failure the typed measure stays and a reason is shown.
 function spanSolve(mod, raw) {
   if (mod !== 'EXT' && mod !== 'HELIX') return false;
   const T = st(mod).typed, ck = mod === 'EXT' ? '16' : '8', g = groupOf(mod, ck);
@@ -2743,7 +2744,21 @@ function migrateMeas(mod, quiet = false) {     // states saved before v1.3.12 ke
 }
 function migrateSpan(mod) {     // states saved before v1.3.10 kept the span measure as a standing input
   const T = S[mod] && S[mod].typed; if (!T || T.spanW === undefined) return;
-  const raw = T.spanW; delete T.spanW; spanSolve(mod, raw);
+  const raw = T.spanW; delete T.spanW;
+  if (!spanSolve(mod, raw)) T.spanW = raw;   // keep a failed measure so the box and the reason stay visible
+}
+const SPAN_FAIL = "Couldn't solve tooth thickness from that span; check span teeth.";
+function commitSpan(el) {          // one-shot span solve on Enter, Tab or click-away; skip if this same value was just tried (Enter then blur)
+  if (!CUR || !el || el.getAttribute('data-key') !== 'spanW') return;
+  const raw = el.value.trim(), T = st(CUR).typed;
+  if (!raw) { delete T.spanW; delete el._spanTried; return; }
+  if (el._spanTried === raw) return;
+  el._spanTried = raw;
+  if (spanSolve(CUR, raw)) {
+    el.value = ''; el.classList.remove('typed', 'bad'); delete T.spanW; delete el._spanTried;
+  } else {
+    T.spanW = raw; el.value = raw; el.classList.add('typed'); save();
+  }
 }
 function screen(mod) {
   if (mod === 'EXT' || mod === 'HELIX') migrateSpan(mod);
@@ -2768,7 +2783,7 @@ function screen(mod) {
     M.helical ? tableHel(mod) : tableSpur(mod),
     hasSpan ? h('div', {class: 'span', id: 'spanbox'}, h('span', {class: 'sl'}, 'Span'),
       optField(mod, 'spanK', 'teeth', 'Number of teeth spanned (blank = recommended)'),
-      optField(mod, 'spanW', `measure (${u})`, 'Type a measured span and press Enter to solve the tooth thickness (once)'),
+      optField(mod, 'spanW', `measure (${u})`, 'Type a measured span and press Enter, Tab or click away to solve the tooth thickness (once)'),
       h('span', {class: 'spantext', id: 'spantext'})) : null,
     h('div', {class: 'warn', id: 'warn'}),
     h('div', {class: 'more', id: 'more'}),
@@ -2829,7 +2844,8 @@ function update() {
       h('span', {class: 'cnote'}, `(Cutter is the inverse: cutter ADD 1.25 / ${fmt(c.P2)} cuts the gear dedendum, cutter DED 1 / ${fmt(c.P2)} forms the gear addendum.)`));
   }
   const msg = $('#msg');
-  msg.textContent = v.err || ''; msg.className = 'msg' + (v.err ? ' on' : '');
+  const spanMsg = (T.spanW !== undefined && !SPAN_SOLVE) ? SPAN_FAIL : '';
+  msg.textContent = v.err || spanMsg || ''; msg.className = 'msg' + (v.err || spanMsg ? ' on' : '');
   const rows = (v.rows || []).concat(v.rowsR || []);
   const byN = {}; rows.forEach(r => { byN[r.n] = r; });
   for (const [n, , kind] of M.L) {
@@ -2926,15 +2942,15 @@ document.addEventListener('keydown', e => {
   if (t && t.tagName === 'INPUT' && CUR) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if (t.getAttribute('data-key') === 'spanW' && t.value.trim() !== '') { spanSolve(CUR, t.value); t.value = ''; }
+      if (t.getAttribute('data-key') === 'spanW') commitSpan(t);
       if (MEAS[CUR] && t.getAttribute('data-key') === MEAS[CUR] && t.value.trim() !== '') { measSolve(CUR, t.value); t.value = ''; t.classList.remove('typed'); }
       const all = Array.from(document.querySelectorAll('#app input[data-key]'));
       const i = all.indexOf(t); if (i >= 0 && all[i + 1]) { all[i + 1].focus(); all[i + 1].select(); }
       update();
-    } else if (e.key === 'Escape') { t.value = ''; t.dispatchEvent(new Event('input', {bubbles: true})); }
+    } else if (e.key === 'Escape') { t.value = ''; if (t.getAttribute('data-key') === 'spanW') { delete st(CUR).typed.spanW; delete t._spanTried; } t.dispatchEvent(new Event('input', {bubbles: true})); }
   }
 });
-document.addEventListener('focusout', e => { if (e.target && e.target.tagName === 'INPUT' && CUR) setTimeout(update, 0); });
+document.addEventListener('focusout', e => { if (e.target && e.target.tagName === 'INPUT' && CUR) { if (e.target.getAttribute('data-key') === 'spanW') commitSpan(e.target); setTimeout(update, 0); } });
 window.addEventListener('hashchange', route);
 window.GCP3UI = {compute, printText, MODS, st, setUnits, getState, loadState, computeState, get last() { return LAST; }, h, save, parseNum, fv, flash, selAll, route,
   get units() { return UNITS; }, LF, ORDER};
